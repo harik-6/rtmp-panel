@@ -123,10 +123,10 @@ const Main = () => {
         <div className={classes.routes}>
           <Switch>
             <Route path="/home" component={Home} />
-            <Route path="/channles" component={Channels} />
+            <Route path="/channels" component={Channels} />
             <Route path="" exact>
               {" "}
-              <Redirect to="/channles" />{" "}
+              <Redirect to="/home" />{" "}
             </Route>
           </Switch>
         </div>

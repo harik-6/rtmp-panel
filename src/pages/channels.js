@@ -29,6 +29,16 @@ const useStyles = makeStyles((theme) =>
       marginTop: theme.spacing(3),
       backgroundColor: "#FFFFFF",
     },
+    paperhead: {
+      textAlign: "center",
+      fontSize: "18px",
+      fontWeight: "bold",
+      marginBottom: theme.spacing(3),
+    },
+    paperbody: {
+      textAlign: "center",
+      fontSize: "56px",
+    },
   })
 );
 
@@ -39,10 +49,16 @@ const Channels = () => {
       <Grid className={classes.chcardcnt} container>
         <Grid item lg={12} container justify="space-between" spacing={2}>
           <Grid item lg={6}>
-            <Paper elevation={0} className={classes.paper}></Paper>
+            <Paper elevation={0} className={classes.paper}>
+              <p className={classes.paperhead}>Total channels</p>
+              <p className={classes.paperbody}>4</p>
+            </Paper>
           </Grid>
           <Grid item lg={6}>
-            <Paper elevation={0} className={classes.paper}></Paper>
+            <Paper elevation={0} className={classes.paper}>
+              <p className={classes.paperhead}>Active channels</p>
+              <p className={classes.paperbody}>2</p>
+            </Paper>
           </Grid>
         </Grid>
         <Grid item lg={12}>
@@ -72,7 +88,7 @@ const Channels = () => {
                   </TableCell>
                 </TableRow>
                 <TableRow key={"2"}>
-                  <TableCell align="left">1.</TableCell>
+                  <TableCell align="left">2.</TableCell>
                   <TableCell align="left">Test</TableCell>
                   <TableCell align="left">
                     http://livechannel.live/test
@@ -80,7 +96,7 @@ const Channels = () => {
                   <TableCell align="left">
                     <LiveIcon
                       style={{
-                        color: "green",
+                        color: "grey",
                       }}
                     />
                   </TableCell>

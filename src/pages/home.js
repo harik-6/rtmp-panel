@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import { Grid, Paper } from "@material-ui/core";
+import {
+  Grid,
+  Paper,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from "@material-ui/core";
 import ReactPlayer from "react-player";
+import Slide from "@material-ui/core/Slide";
+import userService from "../service/user.service";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const player_width = 640 * 1.15;
 const player_height = 360 * 1.15;
@@ -13,7 +29,6 @@ const useStyles = makeStyles((theme) =>
       paddingRight: theme.spacing(2),
     },
     videoplayer: {
-      marginTop: theme.spacing(4),
       height: player_height + "px",
       width: player_width + "px",
       backgroundColor: "#000000",
@@ -33,14 +48,46 @@ const useStyles = makeStyles((theme) =>
       height: "80px",
       padding: theme.spacing(1),
     },
+    actioncnt: {
+      height: "48px",
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(1),
+    },
+    txtfield: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+    },
   })
 );
 
 const Home = () => {
+  const [openForm, setOpenForm] = useState(false);
+  const [user, setUser] = useState(null);
+  const createNewChannel = async () => {};
+
   const classes = useStyles();
   return (
     <div className={classes.home}>
       <Grid container>
+        <Grid
+          item
+          lg={12}
+          container
+          direction="row"
+          justify="flex-end"
+          className={classes.actioncnt}
+        >
+          <Grid item lg={2}>
+            <Button
+              onClick={() => setOpenForm(true)}
+              variant="contained"
+              color="primary"
+              disableElevation
+            >
+              Create channel
+            </Button>
+          </Grid>
+        </Grid>
         <Grid item lg={12} container justify="center">
           <div className={classes.videoplayer}>
             <ReactPlayer
@@ -79,6 +126,52 @@ const Home = () => {
           </Paper>
         </Grid>
       </Grid>
+      <Dialog
+        open={openForm}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setOpenForm(false)}
+        aria-labelledby="create-channel-form"
+        fullWidth
+      >
+        <DialogTitle id="create-channel-form-title">
+          {"Create a new channel"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="create-channel-form-title-description">
+            <TextField
+              className={classes.txtfield}
+              fullWidth
+              id="chname"
+              label="Chanel Name"
+            />
+            <TextField
+              className={classes.txtfield}
+              fullWidth
+              id="chkey"
+              label="Chanel Key"
+            />
+            <TextField
+              className={classes.txtfield}
+              fullWidth
+              id="trmp"
+              label="RTMP"
+              disabled
+              value={"rtmp://dnsaddress:1935/key"}
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={createNewChannel}
+            variant="contained"
+            color="primary"
+            disableElevation
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
