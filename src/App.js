@@ -1,9 +1,9 @@
-import "./App.css";
-
+import "./App.scss";
+import Main from "./pages/main";
 function App() {
   return (
-    <div className="App">
-      <h1>Hello world</h1>
+    <div className="app-main">
+      <Main />
     </div>
   );
 }

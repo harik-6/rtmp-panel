@@ -11,9 +11,23 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.app-main {
+  font-family: "Roboto", sans-serif;
+  height: 100vh;
+  width: 100vw;
+  background-color: #ebe9e9;
+}
+
+a {
+  text-decoration: none !important;
 }
