@@ -45,12 +45,12 @@ const UserService = {
     try {
       const db = firebase.firestore().collection("channels");
       const newchannel = {
-        name: channelname,
-        key,
+        name: channelname.toLowerCase(),
+        key: key.toLowerCase(),
         createat: new Date(),
         owner: user.username,
         ownerid: user.userid,
-        server: "ipaddress",
+        server: "ec2-3-6-93-227.ap-south-1.compute.amazonaws.com",
       };
       await db.add(newchannel);
     } catch {

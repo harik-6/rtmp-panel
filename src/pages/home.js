@@ -11,11 +11,14 @@ import {
   DialogTitle,
   TextField,
   CircularProgress,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import Slide from "@material-ui/core/Slide";
 import AppContext from "../context/context";
 import service from "../service/user.service";
+import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -45,7 +48,9 @@ const useStyles = makeStyles((theme) =>
     urlheader: {
       fontWeight: "bold",
     },
-    urlvalue: {},
+    urlvalue: {
+      padding: "8px",
+    },
     paper: {
       height: "80px",
       padding: theme.spacing(1),
@@ -73,13 +78,30 @@ const useStyles = makeStyles((theme) =>
 
 const Home = () => {
   const { user, channels, actions } = useContext(AppContext);
-  const [chindex, setChIndex] = useState(0);
-  const [openForm, setOpenForm] = useState(false);
-  const [loading, setloading] = useState(false);
-  const [creating, setcreating] = useState(false);
+  const [chlist, setchlist] = useState([]);
   const [chname, setchname] = useState("");
   const [chkey, setchkey] = useState("");
   const [ch, setCh] = useState(null);
+  // preloaders and errors
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openForm, setOpenForm] = useState(false);
+  const [loading, setloading] = useState(false);
+  const [creating, setcreating] = useState(false);
+  const [chnameerror, setchnameerror] = useState(false);
+  const [chkeyerror, setchkeyerror] = useState(false);
+
+  const changeRtmp = (index) => {
+    setCh(chlist[index]);
+    closeMenu();
+  };
+
+  const openMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closeMenu = () => {
+    setAnchorEl(null);
+  };
 
   const handleChName = (e) => {
     setchname(e.target.value);
@@ -90,29 +112,49 @@ const Home = () => {
   };
 
   const createNewChannel = async () => {
-    setcreating(true);
-    const channel = await service.createChannel(user, chname, chkey);
-    if (channel !== null) {
-      setcreating(false);
-      setOpenForm(false);
-      this.loadChannels();
+    if (user.channelLimit === channels.length) {
+      alert("Channel limit exceeded");
+      return;
+    } else {
+      if (chname.length > 0 && chkey.length > 0) {
+        const existname = chlist.map((ch) => ch.name);
+        const existkey = chlist.map((ch) => ch.key);
+        if (existname.indexOf(chname.toLowerCase()) !== -1) {
+          setchnameerror(true);
+          return;
+        }
+        if (existkey.indexOf(chkey.toLowerCase()) !== -1) {
+          setchkeyerror(true);
+          return;
+        }
+        setcreating(true);
+        const channel = await service.createChannel(user, chname, chkey);
+        if (channel !== null) {
+          setcreating(false);
+          setOpenForm(false);
+          loadChannels();
+        }
+      }
     }
   };
 
   const loadChannels = async () => {
-    if (channels.length === 0) {
-      setloading(true);
-      const channels = await service.getChannels(user);
-      actions.loadChannels(channels);
-      if (channels.length > 0) {
-        setCh(channels[0]);
-      } else {
-        setCh(null);
-      }
-      setloading(false);
+    setloading(true);
+    const chs = await service.getChannels(user);
+    actions.loadChannels(chs);
+    if (chs.length > 0) {
+      setchlist(chs);
+      setCh(chs[0]);
     } else {
-      setCh(channels[chindex]);
+      setCh(null);
     }
+    setloading(false);
+  };
+
+  const closeCreatepop = () => {
+    setOpenForm(false);
+    setchkeyerror(false);
+    setchnameerror(false);
   };
 
   useEffect(() => {
@@ -137,6 +179,19 @@ const Home = () => {
             justify="flex-end"
             className={classes.actioncnt}
           >
+            {chlist.length > 0 && (
+              <Grid item lg={2}>
+                <Button
+                  aria-controls="change-channel-menu"
+                  aria-haspopup="true"
+                  onClick={openMenu}
+                  disableElevation
+                >
+                  {ch.name}
+                  <DownArrowIcon />
+                </Button>
+              </Grid>
+            )}
             <Grid item lg={2}>
               <Button
                 onClick={() => setOpenForm(true)}
@@ -179,20 +234,25 @@ const Home = () => {
                 <Grid item lg={6} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
                     <p className={classes.urlheader}>Rtmp</p>
-                    <p>{`rtmp://${ch.server}:1935/${ch.key}`}</p>
+                    <p
+                      className={classes.urlvalue}
+                    >{`rtmp://${ch.server}:1935/${ch.key}`}</p>
                   </Paper>
                 </Grid>
                 <Grid item lg={6} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
                     <p className={classes.urlheader}>Stream link</p>
-                    <p>{`http://${ch.server}:8080/${ch.key}`}</p>
+                    <p
+                      className={classes.urlvalue}
+                    >{`http://${ch.server}:8080/${ch.key}`}</p>
                   </Paper>
                 </Grid>
               </Grid>
               <Grid item lg={12} xs={12} className={classes.urls}>
                 <Paper elevation={0} square className={classes.paper}>
                   <p className={classes.urlheader}>Iframe source</p>
-                  <p></p>
+                  <p>{`<iframe src=http://${ch.server}:8080/${ch.key} width='400px'
+                  height='400px' allowfullscreen mozallowfullscreen msallowfullscreen allow='autoplay' ></iframe>`}</p>
                 </Paper>
               </Grid>
             </>
@@ -203,7 +263,7 @@ const Home = () => {
         open={openForm}
         TransitionComponent={Transition}
         keepMounted
-        onClose={() => setOpenForm(false)}
+        onClose={closeCreatepop}
         aria-labelledby="create-channel-form"
         fullWidth
       >
@@ -221,6 +281,9 @@ const Home = () => {
               disabled={creating}
               onChange={handleChName}
             />
+            {chnameerror && (
+              <p style={{ color: "red" }}>Name already exists.</p>
+            )}
             <TextField
               className={classes.txtfield}
               fullWidth
@@ -230,13 +293,14 @@ const Home = () => {
               disabled={creating}
               onChange={handleChKey}
             />
+            {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>}
             <TextField
               className={classes.txtfield}
               fullWidth
               id="trmp"
               label="RTMP"
               disabled
-              value={`rtmp://dnsaddress:1935/${chkey}`}
+              value={`rtmp://ec2-3-6-93-227.ap-south-1.compute.amazonaws.com:1935/${chkey}`}
             />
           </DialogContentText>
           {creating && (
@@ -258,6 +322,17 @@ const Home = () => {
           )}
         </DialogActions>
       </Dialog>
+      <Menu
+        id="switch-channel-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+      >
+        {chlist.map((channel, index) => (
+          <MenuItem onClick={() => changeRtmp(index)}>{channel.name}</MenuItem>
+        ))}
+      </Menu>
     </div>
   );
 };

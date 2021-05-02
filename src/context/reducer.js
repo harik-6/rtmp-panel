@@ -1,5 +1,11 @@
 const AppReducer = (state, action) => {
   switch (action.type) {
+    case "logout":
+      return {
+        ...state,
+        user: null,
+        channels: [],
+      };
     case "setlogin":
       return {
         ...state,

@@ -23,6 +23,12 @@ const AppState = (props) => {
     });
   };
 
+  const logout = () => {
+    dispatch({
+      type: "logout",
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -30,6 +36,7 @@ const AppState = (props) => {
         actions: {
           loginUser,
           loadChannels,
+          logout,
         },
       }}
     >

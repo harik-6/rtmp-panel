@@ -73,6 +73,7 @@ const Login = () => {
   const [username, setusername] = useState("");
   const [password, setpassword] = useState("");
   const [logingin, setloginin] = useState(false);
+  const [error, seterror] = useState(false);
   const { actions } = useContext(AppConext);
 
   const handleusername = (e) => {
@@ -84,12 +85,15 @@ const Login = () => {
   };
   const loginUser = async () => {
     setloginin(true);
-    const user = await service.getUser(username, password);
-    if (user == null) {
-      setloginin(false);
-      return;
-    } else {
-      actions.loginUser(user);
+    if (username.length > 0 && password.length > 0) {
+      const user = await service.getUser(username, password);
+      if (user == null) {
+        setloginin(false);
+        seterror(true);
+        return;
+      } else {
+        actions.loginUser(user);
+      }
     }
   };
   return (
@@ -108,6 +112,9 @@ const Login = () => {
             <Paper className={classes.loginform}>
               <p className={classes.welcomemsg}>Welcome back</p>
               <p className={classes.loginmessage}>Login to continue</p>
+              {error && (
+                <p style={{ color: "red" }}>Username or Password incorrect.</p>
+              )}
               <TextField
                 className={classes.txtfield}
                 fullWidth
