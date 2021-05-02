@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Grid,
@@ -7,7 +7,9 @@ import {
   Button,
   CircularProgress,
 } from "@material-ui/core";
+import AppConext from "../context/context";
 import service from "../service/user.service";
+
 const useStyles = makeStyles((theme) =>
   createStyles({
     login: {
@@ -66,11 +68,12 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const Login = ({ loginCallback }) => {
+const Login = () => {
   const classes = useStyles();
   const [username, setusername] = useState("");
   const [password, setpassword] = useState("");
   const [logingin, setloginin] = useState(false);
+  const { actions } = useContext(AppConext);
 
   const handleusername = (e) => {
     setusername(e.target.value);
@@ -86,7 +89,7 @@ const Login = ({ loginCallback }) => {
       setloginin(false);
       return;
     } else {
-      loginCallback(true);
+      actions.loginUser(user);
     }
   };
   return (

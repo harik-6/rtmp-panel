@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import "./App.scss";
 import Main from "./pages/main";
 import firebase from "firebase";
 import Login from "./pages/login";
+import AppState from "./context/state";
+import AppConext from "./context/context";
 
 var firebaseConfig = {
   apiKey: "AIzaSyBA3ppvW8obmP_2j_-hkAQUg5F2JqBcMfM",
@@ -19,16 +21,17 @@ if (firebase.apps.length === 0) {
 }
 
 function App() {
-  const [isloggedIn, setloginStatus] = useState(false);
-
-  const changeLoginStatus = (status) => {
-    setloginStatus(status);
-  };
   return (
-    <div className="app-main">
-      {isloggedIn ? <Main /> : <Login loginCallback={changeLoginStatus} />}
-    </div>
+    <AppState>
+      {" "}
+      <Auth />{" "}
+    </AppState>
   );
 }
+
+const Auth = () => {
+  const { user } = useContext(AppConext);
+  return <div className="app-main">{user === null ? <Login /> : <Main />}</div>;
+};
 
 export default App;

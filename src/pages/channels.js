@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Grid,
@@ -11,6 +11,7 @@ import {
   TableContainer,
 } from "@material-ui/core";
 import LiveIcon from "@material-ui/icons/FiberManualRecordRounded";
+import AppContext from "../context/context";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -39,10 +40,19 @@ const useStyles = makeStyles((theme) =>
       textAlign: "center",
       fontSize: "56px",
     },
+    preloadercnt: {
+      height: "400px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    preloadertxt: { fontSize: "20px", marginTop: "16px" },
   })
 );
 
 const Channels = () => {
+  const { channels } = useContext(AppContext);
   const classes = useStyles();
   return (
     <div className={classes.channels}>
@@ -51,59 +61,57 @@ const Channels = () => {
           <Grid item lg={6}>
             <Paper elevation={0} className={classes.paper}>
               <p className={classes.paperhead}>Total channels</p>
-              <p className={classes.paperbody}>4</p>
+              <p className={classes.paperbody}>{channels.length}</p>
             </Paper>
           </Grid>
           <Grid item lg={6}>
             <Paper elevation={0} className={classes.paper}>
               <p className={classes.paperhead}>Active channels</p>
-              <p className={classes.paperbody}>2</p>
+              <p className={classes.paperbody}>{channels.length}</p>
             </Paper>
           </Grid>
         </Grid>
         <Grid item lg={12}>
-          <TableContainer className={classes.tablecnt}>
-            <Table aria-label="channel-list">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left">S.No</TableCell>
-                  <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Rtmp</TableCell>
-                  <TableCell align="left">Health</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow key={"1"}>
-                  <TableCell align="left">1.</TableCell>
-                  <TableCell align="left">Test</TableCell>
-                  <TableCell align="left">
-                    http://livechannel.live/test
-                  </TableCell>
-                  <TableCell align="left">
-                    <LiveIcon
-                      style={{
-                        color: "green",
-                      }}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow key={"2"}>
-                  <TableCell align="left">2.</TableCell>
-                  <TableCell align="left">Test</TableCell>
-                  <TableCell align="left">
-                    http://livechannel.live/test
-                  </TableCell>
-                  <TableCell align="left">
-                    <LiveIcon
-                      style={{
-                        color: "grey",
-                      }}
-                    />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {channels.length <= 0 ? (
+            <>
+              <div className={classes.preloadercnt}>
+                <p className={classes.preloadertxt}>
+                  You don't have any channel.Create one
+                </p>
+              </div>
+            </>
+          ) : (
+            <TableContainer className={classes.tablecnt}>
+              <Table aria-label="channel-list">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left">S.No</TableCell>
+                    <TableCell align="left">Name</TableCell>
+                    <TableCell align="left">Stream</TableCell>
+                    <TableCell align="left">Health</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {channels.map((channel, index) => (
+                    <TableRow key={channel.key}>
+                      <TableCell align="left">{`${index + 1}.`}</TableCell>
+                      <TableCell align="left">{channel.name}</TableCell>
+                      <TableCell align="left">
+                        {`http://${channel.server}:8080/${channel.key}`}
+                      </TableCell>
+                      <TableCell align="left">
+                        <LiveIcon
+                          style={{
+                            color: "green",
+                          }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </Grid>
       </Grid>
     </div>
