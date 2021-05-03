@@ -16,7 +16,7 @@ const AppState = (props) => {
     });
   };
 
-  const loadChannels = (channels) => {
+  const setChannles = (channels) => {
     dispatch({
       type: "setchannels",
       payload: channels,
@@ -35,7 +35,7 @@ const AppState = (props) => {
         ...state,
         actions: {
           loginUser,
-          loadChannels,
+          setChannles,
           logout,
         },
       }}

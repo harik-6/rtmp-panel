@@ -99,7 +99,7 @@ const Login = () => {
   return (
     <div className={classes.login}>
       <Grid container className={classes.logingrid}>
-        <Grid item lg={12} alignItems="center" align container spacing={1}>
+        <Grid item lg={12} alignItems="center" container spacing={1}>
           <Grid item lg={7}>
             <div className={classes.txtcnt}>
               <p className={classes.maintxt}>Streamnet</p>

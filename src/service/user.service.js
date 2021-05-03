@@ -1,20 +1,6 @@
 import firebase from "firebase";
 import sha1 from "sha1";
 
-// channels = {
-//   name,
-//   key,
-//   createat,
-//   owner,
-//   ownerid,
-//   server
-// };
-// users = {
-//   username,
-//   password,
-//   userid,
-//   channelLimit
-// }
 const UserService = {
   getUser: async (username, password) => {
     password = sha1(password);
@@ -50,10 +36,12 @@ const UserService = {
         createat: new Date(),
         owner: user.username,
         ownerid: user.userid,
-        server: "ec2-3-6-93-227.ap-south-1.compute.amazonaws.com",
+        server: process.env.REACT_APP_RTMP_SERVER,
       };
-      await db.add(newchannel);
+      const savedchannel = await db.add(newchannel);
+      return savedchannel.id;
     } catch {
+      console.log("catch block");
       return null;
     }
   },
@@ -72,6 +60,7 @@ const UserService = {
             owner,
             ownerid,
             server,
+            authToken: doc.id,
           };
         })
         .filter((channel) => channel.ownerid === user.userid);

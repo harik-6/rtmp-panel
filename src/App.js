@@ -7,16 +7,15 @@ import AppState from "./context/state";
 import AppConext from "./context/context";
 
 var firebaseConfig = {
-  apiKey: "AIzaSyBA3ppvW8obmP_2j_-hkAQUg5F2JqBcMfM",
-  authDomain: "rtmp-20210502.firebaseapp.com",
-  projectId: "rtmp-20210502",
-  storageBucket: "rtmp-20210502.appspot.com",
-  messagingSenderId: "960062588255",
-  appId: "1:960062588255:web:df73df59638b0424e662ea",
+  apiKey: process.env.REACT_APP_FB_APIKEY,
+  authDomain: process.env.REACT_APP_FB_AUTHDOMAIN,
+  projectId: process.env.REACT_APP_FB_PROJECTID,
+  storageBucket: process.env.REACT_APP_FB_STORAGE,
+  messagingSenderId: process.env.REACT_APP_FB_MSGSENDERID,
+  appId: process.env.REACT_APP_FB_APPID,
 };
 
 if (firebase.apps.length === 0) {
-  console.log("Firebase initialized");
   firebase.initializeApp(firebaseConfig);
 }
 

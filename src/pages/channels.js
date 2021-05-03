@@ -97,7 +97,8 @@ const Channels = () => {
                       <TableCell align="left">{`${index + 1}.`}</TableCell>
                       <TableCell align="left">{channel.name}</TableCell>
                       <TableCell align="left">
-                        {`http://${channel.server}:8080/${channel.key}`}
+                        {`http://${channel.server}:8080/live/${channel.key}
+                        ?channel=${channel.name}&token=${channel.authToken}`}
                       </TableCell>
                       <TableCell align="left">
                         <LiveIcon

@@ -130,18 +130,29 @@ const Home = () => {
         setcreating(true);
         const channel = await service.createChannel(user, chname, chkey);
         if (channel !== null) {
+          actions.setChannles([]);
           setcreating(false);
           setOpenForm(false);
-          loadChannels();
+          loadChannels(true);
         }
       }
     }
   };
 
-  const loadChannels = async () => {
+  const loadChannels = async (forceload) => {
     setloading(true);
-    const chs = await service.getChannels(user);
-    actions.loadChannels(chs);
+    let chs = [];
+    if (forceload) {
+      chs = await service.getChannels(user);
+      actions.setChannles(chs);
+    } else {
+      if (channels.length === 0) {
+        chs = await service.getChannels(user);
+        actions.setChannles(chs);
+      } else {
+        chs = channels;
+      }
+    }
     if (chs.length > 0) {
       setchlist(chs);
       setCh(chs[0]);
@@ -158,7 +169,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    loadChannels();
+    loadChannels(false);
   }, []);
 
   const classes = useStyles();
@@ -204,13 +215,13 @@ const Home = () => {
             </Grid>
           </Grid>
           {ch === null ? (
-            <>
+            <React.Fragment>
               <div className={classes.preloadercnt}>
                 <p className={classes.preloadertxt}>
                   You don't have any channel.Create one
                 </p>
               </div>
-            </>
+            </React.Fragment>
           ) : (
             <>
               <Grid item lg={12} container justify="center">
@@ -236,7 +247,7 @@ const Home = () => {
                     <p className={classes.urlheader}>Rtmp</p>
                     <p
                       className={classes.urlvalue}
-                    >{`rtmp://${ch.server}:1935/${ch.key}`}</p>
+                    >{`rtmp://${ch.server}:1935/${ch.key}?channel=${ch.name}&token=${ch.authToken}`}</p>
                   </Paper>
                 </Grid>
                 <Grid item lg={6} xs={12} className={classes.urls}>
@@ -244,14 +255,14 @@ const Home = () => {
                     <p className={classes.urlheader}>Stream link</p>
                     <p
                       className={classes.urlvalue}
-                    >{`http://${ch.server}:8080/${ch.key}`}</p>
+                    >{`http://${ch.server}:8080/live/${ch.key}?channel=${ch.name}&token=${ch.authToken}`}</p>
                   </Paper>
                 </Grid>
               </Grid>
               <Grid item lg={12} xs={12} className={classes.urls}>
                 <Paper elevation={0} square className={classes.paper}>
                   <p className={classes.urlheader}>Iframe source</p>
-                  <p>{`<iframe src=http://${ch.server}:8080/${ch.key} width='400px'
+                  <p>{`<iframe src=http://${ch.server}:8080/live/${ch.key}?channel=${ch.name}&token=${ch.authToken} width='400px'
                   height='400px' allowfullscreen mozallowfullscreen msallowfullscreen allow='autoplay' ></iframe>`}</p>
                 </Paper>
               </Grid>
@@ -300,7 +311,7 @@ const Home = () => {
               id="trmp"
               label="RTMP"
               disabled
-              value={`rtmp://ec2-3-6-93-227.ap-south-1.compute.amazonaws.com:1935/${chkey}`}
+              value={`rtmp:${process.env.REACT_APP_RTMP_SERVER}:1935/${chkey}?channel=${chname}&token`}
             />
           </DialogContentText>
           {creating && (
