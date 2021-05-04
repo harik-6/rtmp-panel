@@ -98,6 +98,7 @@ const Channels = () => {
   const [chkeyerror, setchkeyerror] = useState(false);
   const [creating, setcreating] = useState(false);
   const [deletesnack, setdeletesnack] = useState(false);
+  const [openDeleteConfirm, setDeleteConfirm] = useState(false);
 
   const handleChName = (e) => {
     setchname(e.target.value);
@@ -166,7 +167,13 @@ const Channels = () => {
     }
   };
 
+  const askConfirmation = () => {
+    setDeleteConfirm(true);
+    closeMenu();
+  };
+
   const deleteChannel = async () => {
+    setDeleteConfirm(false);
     setMsg("Deleting channel " + chnl.name);
     setLoading(true);
     closeMenu();
@@ -176,6 +183,7 @@ const Channels = () => {
   };
 
   const loadChannels = async () => {
+    setMsg("Loading channels...");
     setLoading(true);
     const chs = await service.getChannels(user);
     actions.setChannles(chs);
@@ -221,7 +229,7 @@ const Channels = () => {
                     <TableRow>
                       <TableCell align="left">S.No</TableCell>
                       <TableCell align="left">Name</TableCell>
-                      <TableCell align="left">Stream</TableCell>
+                      <TableCell align="left">Hls</TableCell>
                       <TableCell align="left">Health</TableCell>
                       <TableCell align="left">{""}</TableCell>
                     </TableRow>
@@ -232,8 +240,7 @@ const Channels = () => {
                         <TableCell align="left">{`${index + 1}.`}</TableCell>
                         <TableCell align="left">{channel.name}</TableCell>
                         <TableCell align="left">
-                          {`http://${channel.server}:8080/hls/${channel.key}.m3u8
-                      ?psk=${channel.authToken}`}
+                          {`http://${channel.server}:8080/hls/${channel.key}.m3u8?psk=${channel.authToken}`}
                         </TableCell>
                         <TableCell align="left">
                           <LiveIcon
@@ -330,7 +337,7 @@ const Channels = () => {
         onClose={closeMenu}
       >
         <MenuItem onClick={openCreateChannelForm}>Edit channel </MenuItem>
-        <MenuItem onClick={deleteChannel}>Delete channel</MenuItem>
+        <MenuItem onClick={askConfirmation}>Delete channel</MenuItem>
       </Menu>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -340,6 +347,36 @@ const Channels = () => {
         message="Channel successfully deleted"
         key={"err-snack"}
       />
+      {/* Delete a channel confirmation dialog */}
+      <Dialog
+        open={openDeleteConfirm}
+        keepMounted
+        onClose={() => setDeleteConfirm(false)}
+        aria-labelledby="delete-channel-confirmation"
+        fullWidth
+      >
+        <DialogTitle id="create-channel-form-title">
+          {`Are you sure you want to delete ${chnl === null ? "" : chnl.name}?`}
+        </DialogTitle>
+        <DialogActions>
+          <Button
+            onClick={() => setDeleteConfirm(false)}
+            variant="outlined"
+            color="primary"
+            disableElevation
+          >
+            Close
+          </Button>
+          <Button
+            onClick={deleteChannel}
+            variant="contained"
+            color="primary"
+            disableElevation
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

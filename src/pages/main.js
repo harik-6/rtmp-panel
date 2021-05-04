@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) =>
     },
     sidenav: {
       width: "200px",
-      height: "110vh",
+      height: "150vh",
       backgroundColor: "#121858",
       overflow: "hidden",
     },
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) =>
       fontWeight: "bold",
       color: "#ffffff",
       fontSize: "24px",
-      paddingTop: "8px",
+      marginTop: theme.spacing(2),
     },
   })
 );

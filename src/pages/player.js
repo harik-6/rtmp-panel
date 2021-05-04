@@ -156,9 +156,10 @@ const Home = () => {
         setcreating(true);
         const channel = await service.createChannel(user, chname, chkey);
         if (channel !== null) {
+          console.log("falsing out eveytinh");
           actions.setChannles([]);
           setcreating(false);
-          setOpenForm(false);
+          closeCreatepop();
           loadChannels(true);
         }
       }
@@ -307,8 +308,10 @@ const Home = () => {
                 lg={12}
                 spacing={2}
               >
-                <Grid item lg={6} xs={12} className={classes.urls}>
+                <Grid item lg={12} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
+                    <p className={classes.urlheader}>Rtmp</p>
+                    <br />
                     <p className={classes.urlheader}>Stream</p>
                     <p
                       className={classes.urlvalue}
@@ -317,9 +320,9 @@ const Home = () => {
                     <p className={classes.urlvalue}>{ch.key}</p>
                   </Paper>
                 </Grid>
-                <Grid item lg={6} xs={12} className={classes.urls}>
+                <Grid item lg={12} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>Live link</p>
+                    <p className={classes.urlheader}>Hls</p>
                     <p
                       className={classes.urlvalue}
                     >{`http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.authToken}`}</p>
@@ -329,7 +332,7 @@ const Home = () => {
               <Grid item lg={12} xs={12} className={classes.urls}>
                 <Paper elevation={0} square className={classes.paper}>
                   <p className={classes.urlheader}>Iframe source</p>
-                  <p>{`<iframe src=http://${ch.server}:8080/live/${ch.key}.m3u8?psk=${ch.authToken} width='400px'
+                  <p>{`<iframe src=http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.authToken} width='400px'
                   height='400px' allowfullscreen mozallowfullscreen msallowfullscreen allow='autoplay' ></iframe>`}</p>
                 </Paper>
               </Grid>
