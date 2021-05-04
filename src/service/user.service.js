@@ -23,7 +23,8 @@ const UserService = {
         return loggedUser;
       }
       return null;
-    } catch {
+    } catch (error) {
+      console.log("Error in getting user", error.message);
       return null;
     }
   },
@@ -40,12 +41,11 @@ const UserService = {
       };
       const savedchannel = await db.add(newchannel);
       return savedchannel.id;
-    } catch {
-      console.log("catch block");
+    } catch (error) {
+      console.log("Error in creating channel", error.message);
       return null;
     }
   },
-
   getChannels: async (user) => {
     try {
       const db = firebase.firestore().collection("channels");
@@ -64,8 +64,33 @@ const UserService = {
           };
         })
         .filter((channel) => channel.ownerid === user.userid);
-    } catch {
+    } catch (error) {
+      console.log("Error in getting channel", error.message);
       return null;
+    }
+  },
+  editchannel: async (channel) => {
+    try {
+      const db = firebase.firestore().collection("channels");
+      await db.doc(channel.authToken).update({
+        name: channel.name,
+        key: channel.key,
+      });
+      return channel.id;
+    } catch (error) {
+      console.log("Error in editing channel", error.message);
+      return null;
+    }
+  },
+
+  deleteChannel: async (channel) => {
+    try {
+      const db = firebase.firestore().collection("channels");
+      await db.doc(channel.authToken).delete();
+      return true;
+    } catch (error) {
+      console.log("Error in deleting channel", error.message);
+      return false;
     }
   },
 };

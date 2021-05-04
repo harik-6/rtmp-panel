@@ -11,7 +11,7 @@ import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/HomeRounded";
 import ChannelIcon from "@material-ui/icons/VideocamRounded";
 import LogoutIcon from "@material-ui/icons/ExitToAppRounded";
-import Home from "./home";
+import Player from "./player";
 import Channels from "./channels";
 import AppContext from "../context/context";
 
@@ -25,14 +25,18 @@ const useStyles = makeStyles((theme) =>
     },
     sidenav: {
       width: "200px",
-      height: "100%",
+      height: "110vh",
       backgroundColor: "#121858",
+      overflow: "hidden",
     },
     routes: {
       flex: 1,
+      overflow: "visible",
+      scrollBehavior: "smooth",
     },
     navlist: {
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(2),
+      marginLeft: theme.spacing(1),
     },
     navtextactive: {
       color: "#FFFFFF",
@@ -61,6 +65,13 @@ const useStyles = makeStyles((theme) =>
     navbtn: {
       marginBottom: "8px",
     },
+    appname: {
+      textAlign: "center",
+      fontWeight: "bold",
+      color: "#ffffff",
+      fontSize: "24px",
+      paddingTop: "8px",
+    },
   })
 );
 
@@ -78,6 +89,7 @@ const Main = () => {
     <div className={classes.appmain}>
       <Router>
         <div className={classes.sidenav}>
+          <p className={classes.appname}>StreamWell</p>
           <List className={classes.navlist} aria-label="navigation-list">
             <Link to="/home">
               <ListItem
@@ -138,7 +150,7 @@ const Main = () => {
         </div>
         <div className={classes.routes}>
           <Switch>
-            <Route path="/home" component={Home} />
+            <Route path="/home" component={Player} />
             <Route path="/channels" component={Channels} />
             <Route path="" exact>
               {" "}

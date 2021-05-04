@@ -13,12 +13,15 @@ import {
   CircularProgress,
   Menu,
   MenuItem,
+  Snackbar,
+  IconButton,
 } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import Slide from "@material-ui/core/Slide";
 import AppContext from "../context/context";
 import service from "../service/user.service";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
+import RefreshIcon from "@material-ui/icons/RefreshRounded";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -52,7 +55,7 @@ const useStyles = makeStyles((theme) =>
       padding: "8px",
     },
     paper: {
-      height: "80px",
+      height: "auto",
       padding: theme.spacing(1),
     },
     actioncnt: {
@@ -73,6 +76,19 @@ const useStyles = makeStyles((theme) =>
       justifyContent: "center",
     },
     preloadertxt: { fontSize: "20px", marginTop: "16px" },
+    viderrcnt: {
+      display: "flex",
+      height: player_height + "px",
+      width: player_width + "px",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    viderrormsg: {
+      paddingBottom: "8px",
+      fontSize: "24px",
+      color: "#ffffff",
+    },
   })
 );
 
@@ -89,6 +105,8 @@ const Home = () => {
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
   const [chkeyerror, setchkeyerror] = useState(false);
+  const [errorsnack, seterrorsnack] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   const changeRtmp = (index) => {
     setCh(chlist[index]);
@@ -111,9 +129,17 @@ const Home = () => {
     setchkey(e.target.value);
   };
 
+  const openSnack = () => {
+    seterrorsnack(true);
+  };
+
+  const closeSnack = () => {
+    seterrorsnack(false);
+  };
+
   const createNewChannel = async () => {
     if (user.channelLimit === channels.length) {
-      alert("Channel limit exceeded");
+      openSnack();
       return;
     } else {
       if (chname.length > 0 && chkey.length > 0) {
@@ -166,6 +192,25 @@ const Home = () => {
     setOpenForm(false);
     setchkeyerror(false);
     setchnameerror(false);
+    setchname("");
+    setchkey("");
+  };
+
+  const openCreateChannelForm = () => {
+    if (user.channelLimit === channels.length) {
+      openSnack();
+      return;
+    } else {
+      setOpenForm(true);
+    }
+  };
+
+  const onVideoError = () => {
+    setVideoError(true);
+  };
+
+  const playVideoAgain = () => {
+    setVideoError(false);
   };
 
   useEffect(() => {
@@ -178,7 +223,7 @@ const Home = () => {
       {loading ? (
         <div className={classes.preloadercnt}>
           <CircularProgress />
-          <p className={classes.preloadertxt}>Loading profile</p>
+          <p className={classes.preloadertxt}>Loading profile...</p>
         </div>
       ) : (
         <Grid container>
@@ -205,7 +250,7 @@ const Home = () => {
             )}
             <Grid item lg={2}>
               <Button
-                onClick={() => setOpenForm(true)}
+                onClick={openCreateChannelForm}
                 variant="contained"
                 color="primary"
                 disableElevation
@@ -226,12 +271,32 @@ const Home = () => {
             <>
               <Grid item lg={12} container justify="center">
                 <div className={classes.videoplayer}>
-                  <ReactPlayer
-                    width={player_width}
-                    height={player_height}
-                    playing={true}
-                    url=""
-                  />
+                  {videoError ? (
+                    <div className={classes.viderrcnt}>
+                      <p className={classes.viderrormsg}>
+                        Video is unavailabe right now.Try again.{" "}
+                      </p>
+                      <IconButton
+                        color="primary"
+                        aria-label="retry video"
+                        component="span"
+                        onClick={playVideoAgain}
+                      >
+                        <RefreshIcon
+                          style={{ color: "white", fontSize: "48px" }}
+                        />
+                      </IconButton>
+                    </div>
+                  ) : (
+                    <ReactPlayer
+                      width={player_width}
+                      height={player_height}
+                      url={`http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.authToken}`}
+                      controls={true}
+                      loop={true}
+                      onError={onVideoError}
+                    />
+                  )}
                 </div>
               </Grid>
               <Grid
@@ -244,25 +309,27 @@ const Home = () => {
               >
                 <Grid item lg={6} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>Rtmp</p>
+                    <p className={classes.urlheader}>Stream</p>
                     <p
                       className={classes.urlvalue}
-                    >{`rtmp://${ch.server}:1935/${ch.key}?channel=${ch.name}&token=${ch.authToken}`}</p>
+                    >{`rtmp://${ch.server}:1935/show`}</p>
+                    <p className={classes.urlheader}>Key</p>
+                    <p className={classes.urlvalue}>{ch.key}</p>
                   </Paper>
                 </Grid>
                 <Grid item lg={6} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>Stream link</p>
+                    <p className={classes.urlheader}>Live link</p>
                     <p
                       className={classes.urlvalue}
-                    >{`http://${ch.server}:8080/live/${ch.key}?channel=${ch.name}&token=${ch.authToken}`}</p>
+                    >{`http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.authToken}`}</p>
                   </Paper>
                 </Grid>
               </Grid>
               <Grid item lg={12} xs={12} className={classes.urls}>
                 <Paper elevation={0} square className={classes.paper}>
                   <p className={classes.urlheader}>Iframe source</p>
-                  <p>{`<iframe src=http://${ch.server}:8080/live/${ch.key}?channel=${ch.name}&token=${ch.authToken} width='400px'
+                  <p>{`<iframe src=http://${ch.server}:8080/live/${ch.key}.m3u8?psk=${ch.authToken} width='400px'
                   height='400px' allowfullscreen mozallowfullscreen msallowfullscreen allow='autoplay' ></iframe>`}</p>
                 </Paper>
               </Grid>
@@ -341,9 +408,19 @@ const Home = () => {
         onClose={closeMenu}
       >
         {chlist.map((channel, index) => (
-          <MenuItem onClick={() => changeRtmp(index)}>{channel.name}</MenuItem>
+          <MenuItem key={channel.name} onClick={() => changeRtmp(index)}>
+            {channel.name}
+          </MenuItem>
         ))}
       </Menu>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={errorsnack}
+        onClose={closeSnack}
+        autoHideDuration={5000}
+        message="Channel limit exceeded"
+        key={"err-snack"}
+      />
     </div>
   );
 };
