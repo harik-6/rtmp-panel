@@ -32,7 +32,7 @@ const UserService = {
     try {
       const db = firebase.firestore().collection("channels");
       const newchannel = {
-        name: channelname.toLowerCase(),
+        name: new String(channelname).toLowerCase().replace(" ", ""),
         key: key.toLowerCase(),
         createat: new Date(),
         owner: user.username,
@@ -43,6 +43,18 @@ const UserService = {
       return savedchannel.id;
     } catch (error) {
       console.log("Error in creating channel", error.message);
+      return null;
+    }
+  },
+  getAllTokens: async () => {
+    try {
+      const db = firebase.firestore().collection("channels");
+      const snapshot = await db.get();
+      const names = snapshot.docsmap((doc) => doc.data().name);
+      const keys = snapshot.docsmap((doc) => doc.data().key);
+      return [...names, ...keys];
+    } catch (error) {
+      console.log("Error in getting channel", error.message);
       return null;
     }
   },

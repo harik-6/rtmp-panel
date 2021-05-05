@@ -143,13 +143,12 @@ const Home = () => {
       return;
     } else {
       if (chname.length > 0 && chkey.length > 0) {
-        const existname = chlist.map((ch) => ch.name);
-        const existkey = chlist.map((ch) => ch.key);
-        if (existname.indexOf(chname.toLowerCase()) !== -1) {
+        const alltokens = service.getAllTokens();
+        if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
           setchnameerror(true);
           return;
         }
-        if (existkey.indexOf(chkey.toLowerCase()) !== -1) {
+        if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
           setchkeyerror(true);
           return;
         }
@@ -315,9 +314,11 @@ const Home = () => {
                     <p className={classes.urlheader}>Stream</p>
                     <p
                       className={classes.urlvalue}
-                    >{`rtmp://${ch.server}:1935/show`}</p>
+                    >{`rtmp://${ch.server}:1935/live`}</p>
                     <p className={classes.urlheader}>Key</p>
-                    <p className={classes.urlvalue}>{ch.key}</p>
+                    <p
+                      className={classes.urlvalue}
+                    >{`${ch.key}?psk=${ch.name}&token=${ch.name}`}</p>
                   </Paper>
                 </Grid>
                 <Grid item lg={12} xs={12} className={classes.urls}>
@@ -325,15 +326,15 @@ const Home = () => {
                     <p className={classes.urlheader}>Hls</p>
                     <p
                       className={classes.urlvalue}
-                    >{`http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.authToken}`}</p>
+                    >{`http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.name}&token=${ch.name}`}</p>
                   </Paper>
                 </Grid>
               </Grid>
               <Grid item lg={12} xs={12} className={classes.urls}>
                 <Paper elevation={0} square className={classes.paper}>
-                  <p className={classes.urlheader}>Iframe source</p>
-                  <p>{`<iframe src=http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.authToken} width='400px'
-                  height='400px' allowfullscreen mozallowfullscreen msallowfullscreen allow='autoplay' ></iframe>`}</p>
+                  <p className={classes.urlheader}>Iframe</p>
+                  <p>{`<iframe scrolling src=http://${ch.server}:8080/${ch.key}.m3u8?psk=${ch.name}&token=${ch.name} 
+                  width="400px" height="400px" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen allow="autoplay" ></iframe>`}</p>
                 </Paper>
               </Grid>
             </>

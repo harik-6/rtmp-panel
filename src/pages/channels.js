@@ -138,17 +138,12 @@ const Channels = () => {
 
   const editChannel = async () => {
     if (chname.length > 0 && chkey.length > 0) {
-      const existname = channels
-        .map((ch) => ch.name)
-        .filter((ch) => chnl.name !== chname);
-      const existkey = channels
-        .map((ch) => ch.key)
-        .filter((ch) => chnl.key !== chkey);
-      if (existname.indexOf(chname.toLowerCase()) !== -1) {
+      const alltokens = service.getAllTokens();
+      if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
         setchnameerror(true);
         return;
       }
-      if (existkey.indexOf(chkey.toLowerCase()) !== -1) {
+      if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
         setchkeyerror(true);
         return;
       }
