@@ -139,13 +139,15 @@ const Channels = () => {
   const editChannel = async () => {
     if (chname.length > 0 && chkey.length > 0) {
       const alltokens = service.getAllTokens();
-      if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
-        setchnameerror(true);
-        return;
-      }
-      if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-        setchkeyerror(true);
-        return;
+      if(alltokens.length > 0) {
+        if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
+          setchnameerror(true);
+          return;
+        }
+        if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
+          setchkeyerror(true);
+          return;
+        }
       }
       setcreating(true);
       const channel = await service.editchannel({

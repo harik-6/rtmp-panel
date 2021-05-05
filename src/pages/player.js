@@ -144,13 +144,15 @@ const Home = () => {
     } else {
       if (chname.length > 0 && chkey.length > 0) {
         const alltokens = service.getAllTokens();
-        if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
-          setchnameerror(true);
-          return;
-        }
-        if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-          setchkeyerror(true);
-          return;
+        if(alltokens.length > 0) {
+          if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
+            setchnameerror(true);
+            return;
+          }
+          if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
+            setchkeyerror(true);
+            return;
+          }
         }
         setcreating(true);
         const channel = await service.createChannel(user, chname, chkey);
@@ -309,8 +311,6 @@ const Home = () => {
               >
                 <Grid item lg={12} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>Rtmp</p>
-                    <br />
                     <p className={classes.urlheader}>Stream</p>
                     <p
                       className={classes.urlvalue}
@@ -319,6 +319,14 @@ const Home = () => {
                     <p
                       className={classes.urlvalue}
                     >{`${ch.key}?psk=${ch.name}&token=${ch.name}`}</p>
+                  </Paper>
+                </Grid>
+                 <Grid item lg={12} xs={12} className={classes.urls}>
+                  <Paper elevation={0} square className={classes.paper}>
+                    <p className={classes.urlheader}>Rtmp</p>
+                    <p
+                      className={classes.urlvalue}
+                    >{`rtmp://${ch.server}:8080/live/${ch.key}.m3u8?psk=${ch.name}&token=${ch.name}`}</p>
                   </Paper>
                 </Grid>
                 <Grid item lg={12} xs={12} className={classes.urls}>
@@ -333,7 +341,7 @@ const Home = () => {
               <Grid item lg={12} xs={12} className={classes.urls}>
                 <Paper elevation={0} square className={classes.paper}>
                   <p className={classes.urlheader}>Iframe</p>
-                  <p>{`<iframe scrolling src=http://${ch.server}:8080/${ch.key}.m3u8?psk=${ch.name}&token=${ch.name} 
+                  <p>{`<iframe scrolling src=http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.name}&token=${ch.name} 
                   width="400px" height="400px" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen allow="autoplay" ></iframe>`}</p>
                 </Paper>
               </Grid>
@@ -370,7 +378,7 @@ const Home = () => {
               className={classes.txtfield}
               fullWidth
               id="chkey"
-              label="Chanel Key"
+              label="Stream Key"
               value={chkey}
               disabled={creating}
               onChange={handleChKey}
