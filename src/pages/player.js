@@ -143,7 +143,7 @@ const Home = () => {
       return;
     } else {
       if (chname.length > 0 && chkey.length > 0) {
-        const alltokens = service.getAllTokens();
+        const alltokens = await service.getAllTokens();
         if(alltokens.length > 0) {
           if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
             setchnameerror(true);
@@ -194,6 +194,7 @@ const Home = () => {
     setOpenForm(false);
     setchkeyerror(false);
     setchnameerror(false);
+    setcreating(false);
     setchname("");
     setchkey("");
   };
@@ -293,7 +294,7 @@ const Home = () => {
                     <ReactPlayer
                       width={player_width}
                       height={player_height}
-                      url={`http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.authToken}`}
+                      url={ch.httpLink}
                       controls={true}
                       loop={true}
                       onError={onVideoError}
@@ -311,37 +312,37 @@ const Home = () => {
               >
                 <Grid item lg={12} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>Stream</p>
+                    <p className={classes.urlheader}>Stream URL</p>
                     <p
                       className={classes.urlvalue}
-                    >{`rtmp://${ch.server}:1935/live`}</p>
+                    >{ch.displayStreamLink}</p>
                     <p className={classes.urlheader}>Key</p>
                     <p
                       className={classes.urlvalue}
-                    >{`${ch.key}?psk=${ch.name}&token=${ch.name}`}</p>
+                    >{ch.token}</p>
                   </Paper>
                 </Grid>
                  <Grid item lg={12} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>Rtmp</p>
+                    <p className={classes.urlheader}>RTMP Play URL</p>
                     <p
                       className={classes.urlvalue}
-                    >{`rtmp://${ch.server}:8080/live/${ch.key}.m3u8?psk=${ch.name}&token=${ch.name}`}</p>
+                    >{ch.rtmpLink}</p>
                   </Paper>
                 </Grid>
                 <Grid item lg={12} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>Hls</p>
+                    <p className={classes.urlheader}>HLS</p>
                     <p
                       className={classes.urlvalue}
-                    >{`http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.name}&token=${ch.name}`}</p>
+                    >{ch.httpLink}</p>
                   </Paper>
                 </Grid>
               </Grid>
               <Grid item lg={12} xs={12} className={classes.urls}>
                 <Paper elevation={0} square className={classes.paper}>
-                  <p className={classes.urlheader}>Iframe</p>
-                  <p>{`<iframe scrolling src=http://${ch.server}:8080/hls/${ch.key}.m3u8?psk=${ch.name}&token=${ch.name} 
+                  <p className={classes.urlheader}>Embedded Code</p>
+                  <p className={classes.urlvalue}>{`<iframe scrolling src=${ch.httpLink} 
                   width="400px" height="400px" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen allow="autoplay" ></iframe>`}</p>
                 </Paper>
               </Grid>
@@ -362,35 +363,35 @@ const Home = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="create-channel-form-title-description">
-            <TextField
+          <TextField
               className={classes.txtfield}
               fullWidth
-              id="chname"
-              label="Chanel Name"
-              value={chname}
+              id="chkey"
+              label="Channel name"
+              value={chkey}
               disabled={creating}
-              onChange={handleChName}
+              onChange={handleChKey}
             />
             {chnameerror && (
               <p style={{ color: "red" }}>Name already exists.</p>
             )}
-            <TextField
+             <TextField
               className={classes.txtfield}
               fullWidth
-              id="chkey"
-              label="Stream Key"
-              value={chkey}
+              id="chname"
+              label="Key"
+              value={chname}
               disabled={creating}
-              onChange={handleChKey}
+              onChange={handleChName}
             />
             {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>}
             <TextField
               className={classes.txtfield}
               fullWidth
-              id="trmp"
-              label="RTMP"
+              id="rtmp"
+              label="Server"
               disabled
-              value={`rtmp:${process.env.REACT_APP_RTMP_SERVER}:1935/${chkey}?channel=${chname}&token`}
+              value={user.userServer}
             />
           </DialogContentText>
           {creating && (

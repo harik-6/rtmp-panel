@@ -21,7 +21,7 @@ import {
   MenuItem,
   Snackbar,
 } from "@material-ui/core";
-import LiveIcon from "@material-ui/icons/FiberManualRecordRounded";
+// import LiveIcon from "@material-ui/icons/FiberManualRecordRounded";
 import MenuIcon from "@material-ui/icons/MoreVertRounded";
 import Slide from "@material-ui/core/Slide";
 import service from "../service/user.service";
@@ -196,19 +196,19 @@ const Channels = () => {
         </div>
       ) : (
         <Grid className={classes.chcardcnt} container>
-          <Grid item lg={12} container justify="space-between" spacing={2}>
+          <Grid item lg={12} container justify="space-around" spacing={2}>
             <Grid item lg={6}>
               <Paper elevation={0} className={classes.paper}>
                 <p className={classes.paperhead}>Total channels</p>
                 <p className={classes.paperbody}>{channels.length}</p>
               </Paper>
             </Grid>
-            <Grid item lg={6}>
+            {/* <Grid item lg={6}>
               <Paper elevation={0} className={classes.paper}>
                 <p className={classes.paperhead}>Active channels</p>
                 <p className={classes.paperbody}>{channels.length}</p>
               </Paper>
-            </Grid>
+            </Grid> */}
           </Grid>
           <Grid item lg={12}>
             {channels.length <= 0 ? (
@@ -225,9 +225,9 @@ const Channels = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell align="left">S.No</TableCell>
-                      <TableCell align="left">Name</TableCell>
+                      <TableCell align="left">Key</TableCell>
                       <TableCell align="left">Hls</TableCell>
-                      <TableCell align="left">Health</TableCell>
+                      {/* <TableCell align="left">Health</TableCell> */}
                       <TableCell align="left">{""}</TableCell>
                     </TableRow>
                   </TableHead>
@@ -235,17 +235,17 @@ const Channels = () => {
                     {channels.map((channel, index) => (
                       <TableRow key={channel.key}>
                         <TableCell align="left">{`${index + 1}.`}</TableCell>
-                        <TableCell align="left">{channel.name}</TableCell>
+                        <TableCell align="left">{channel.key}</TableCell>
                         <TableCell align="left">
-                          {`http://${channel.server}:8080/hls/${channel.key}.m3u8?psk=${channel.authToken}`}
+                          {channel.rtmpLink}
                         </TableCell>
-                        <TableCell align="left">
+                        {/* <TableCell align="left">
                           <LiveIcon
                             style={{
                               color: "green",
                             }}
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell align="right">
                           <MenuIcon
                             onClick={(event) => {

@@ -7,14 +7,22 @@ const UserService = {
     try {
       const db = firebase.firestore().collection("users");
       const snapshot = await db.get();
+      console.log("getting user");
       const loggedUser = snapshot.docs
         .map((doc) => {
-          const { username, password, channelLimit } = doc.data();
+          const { username, password, channelLimit,userServer,rtmpProtocol,
+            httpProtocol,httpPort,userStub,streamExt } = doc.data();
           return {
             userid: doc.id,
             username,
             password,
             channelLimit,
+            userServer,
+            rtmpProtocol,
+            httpProtocol,
+            httpPort,
+            userStub,
+            streamExt
           };
         })
         .filter((user) => user.username === username)[0];
@@ -24,25 +32,34 @@ const UserService = {
       }
       return null;
     } catch (error) {
-      console.log("Error in getting user", error.message);
+      // console.log("Error in getting user", error.message);
       return null;
     }
   },
   createChannel: async (user, channelname, key) => {
     try {
       const db = firebase.firestore().collection("channels");
+      const { userServer,rtmpProtocol,httpProtocol,httpPort,userStub,streamExt } = user;
+      let httpLink = `${httpProtocol}://${userServer}/hls/${channelname}.${streamExt}`;
+      if(httpPort === "8080") {
+        httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`
+      }
       const newchannel = {
-        name: new String(channelname).toLowerCase().replace(" ", ""),
-        key: key.toLowerCase(),
+        name: new String(key).toLowerCase().replace(" ", ""),
+        key: channelname.toLowerCase(),
         createat: new Date(),
         owner: user.username,
         ownerid: user.userid,
-        server: process.env.REACT_APP_RTMP_SERVER,
+        server: userServer,
+        displayStreamLink : `${rtmpProtocol}://${userServer}/${userStub}`,
+        rtmpLink: `${rtmpProtocol}://${userServer}/${userStub}/${key}`,
+        httpLink,
+        token : `${key}?psk=${channelname}&token=${channelname}`
       };
       const savedchannel = await db.add(newchannel);
       return savedchannel.id;
     } catch (error) {
-      console.log("Error in creating channel", error.message);
+      // console.log("Error in creating channel", error.message);
       return null;
     }
   },
@@ -50,11 +67,11 @@ const UserService = {
     try {
       const db = firebase.firestore().collection("channels");
       const snapshot = await db.get();
-      const names = snapshot.docsmap((doc) => doc.data().name);
-      const keys = snapshot.docsmap((doc) => doc.data().key);
+      const names = snapshot.docs.map((doc) => doc.data().name);
+      const keys = snapshot.docs.map((doc) => doc.data().key);
       return [...names, ...keys];
     } catch (error) {
-      console.log("Error in getting channel", error.message);
+      // console.log("Error in getting tokens", error.message);
       return null;
     }
   },
@@ -64,7 +81,8 @@ const UserService = {
       const snapshot = await db.get();
       return snapshot.docs
         .map((doc) => {
-          const { server, name, key, createdat, owner, ownerid } = doc.data();
+          const { server, name, key, createdat, owner, ownerid,rtmpLink,httpLink,
+            token,displayStreamLink } = doc.data();
           return {
             name,
             key,
@@ -72,36 +90,39 @@ const UserService = {
             owner,
             ownerid,
             server,
-            authToken: doc.id,
+            rtmpLink,
+            httpLink,
+            token,
+            displayStreamLink,
+            channelId : doc.id
           };
         })
         .filter((channel) => channel.ownerid === user.userid);
     } catch (error) {
-      console.log("Error in getting channel", error.message);
+      // console.log("Error in getting channel", error.message);
       return null;
     }
   },
   editchannel: async (channel) => {
     try {
       const db = firebase.firestore().collection("channels");
-      await db.doc(channel.authToken).update({
+      await db.doc(channel.channelId).update({
         name: channel.name,
         key: channel.key,
       });
       return channel.id;
     } catch (error) {
-      console.log("Error in editing channel", error.message);
+      // console.log("Error in editing channel", error.message);
       return null;
     }
   },
-
   deleteChannel: async (channel) => {
     try {
       const db = firebase.firestore().collection("channels");
-      await db.doc(channel.authToken).delete();
+      await db.doc(channel.channelId).delete();
       return true;
     } catch (error) {
-      console.log("Error in deleting channel", error.message);
+      // console.log("Error in deleting channel", error.message);
       return false;
     }
   },
