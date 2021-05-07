@@ -201,20 +201,20 @@ const Channels = () => {
         </div>
       ) : (
         <Grid className={classes.chcardcnt} container>
-          <Grid item lg={12} container justify="space-around" spacing={2}>
+          {/* <Grid item lg={12} container justify="space-around" spacing={2}>
             <Grid item lg={6}>
               <Paper elevation={0} className={classes.paper}>
                 <p className={classes.paperhead}>Total channels</p>
                 <p className={classes.paperbody}>{channels.length}</p>
               </Paper>
             </Grid>
-            {/* <Grid item lg={6}>
+            <Grid item lg={6}>
               <Paper elevation={0} className={classes.paper}>
                 <p className={classes.paperhead}>Active channels</p>
                 <p className={classes.paperbody}>{channels.length}</p>
               </Paper>
-            </Grid> */}
-          </Grid>
+            </Grid>
+          </Grid> */}
           <Grid item lg={12}>
             {channels.length <= 0 ? (
               <>
