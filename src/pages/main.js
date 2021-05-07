@@ -89,7 +89,7 @@ const Main = () => {
     <div className={classes.appmain}>
       <Router>
         <div className={classes.sidenav}>
-          <p className={classes.appname}>StreamWell</p>
+          <p className={classes.appname}>AndariTV</p>
           <List className={classes.navlist} aria-label="navigation-list">
             <Link to="/home">
               <ListItem
