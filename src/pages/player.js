@@ -338,13 +338,13 @@ const Home = () => {
                   </Paper>
                 </Grid>
               </Grid>
-              <Grid item lg={12} xs={12} className={classes.urls}>
+              {/* <Grid item lg={12} xs={12} className={classes.urls}>
                 <Paper elevation={0} square className={classes.paper}>
                   <p className={classes.urlheader}>Embedded Code</p>
                   <p className={classes.urlvalue}>{`<iframe scrolling src=${ch.httpLink.replace(".m3u8","")}
                   width="400px" height="400px" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen allow="autoplay" ></iframe>`}</p>
                 </Paper>
-              </Grid>
+              </Grid> */}
             </>
           )}
         </Grid>
