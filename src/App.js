@@ -1,10 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import "./App.scss";
 import Main from "./pages/main";
 import firebase from "firebase";
 import Login from "./pages/login";
 import AppState from "./context/state";
 import AppConext from "./context/context";
+import Preview from "./pages/preview";
 
 var firebaseConfig = {
   apiKey: process.env.REACT_APP_FB_APIKEY,
@@ -21,11 +28,28 @@ if (firebase.apps.length === 0) {
 
 function App() {
   return (
-    <AppState>
-      {" "}
-      <Auth />{" "}
-    </AppState>
+    <Router>
+      <Switch>
+        <Route path="/preview" component={Preview} />
+        <Route path="/login">
+          <AppState>
+            <Auth />
+          </AppState>
+        </Route>
+        <Route path="*" exact>
+          <Redirect to="/login" />
+        </Route>
+      </Switch>
+    </Router>
   );
+  // return showPreview ? (
+  //   <Preview />
+  // ) : (
+  //   <AppState>
+  //     {" "}
+  //     <Auth />{" "}
+  //   </AppState>
+  // );
 }
 
 const Auth = () => {

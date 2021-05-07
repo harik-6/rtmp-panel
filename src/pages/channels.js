@@ -187,6 +187,11 @@ const Channels = () => {
     setTimeout(() => setLoading(false), 500);
   };
 
+  const previewChannel = () => {
+    const previewurl = window.location.href.replace("channels","")+"preview/"+chnl.name;
+    window.open(previewurl,'_newtab');
+  }
+
   return (
     <div className={classes.channels}>
       {loading ? (
@@ -335,6 +340,7 @@ const Channels = () => {
       >
         <MenuItem onClick={openCreateChannelForm}>Edit channel </MenuItem>
         <MenuItem onClick={askConfirmation}>Delete channel</MenuItem>
+        <MenuItem onClick={previewChannel}>Preview</MenuItem>
       </Menu>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
