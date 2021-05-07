@@ -242,7 +242,7 @@ const Channels = () => {
                         <TableCell align="left">{`${index + 1}.`}</TableCell>
                         <TableCell align="left">{channel.key}</TableCell>
                         <TableCell align="left">
-                          {channel.rtmpLink}
+                          {channel.httpLink}
                         </TableCell>
                         {/* <TableCell align="left">
                           <LiveIcon
