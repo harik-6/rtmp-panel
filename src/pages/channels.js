@@ -340,7 +340,7 @@ const Channels = () => {
       >
         <MenuItem onClick={openCreateChannelForm}>Edit channel </MenuItem>
         <MenuItem onClick={askConfirmation}>Delete channel</MenuItem>
-        <MenuItem onClick={previewChannel}>Preview</MenuItem>
+        {/* <MenuItem onClick={previewChannel}>Preview</MenuItem> */}
       </Menu>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}

@@ -7,7 +7,6 @@ const UserService = {
     try {
       const db = firebase.firestore().collection("users");
       const snapshot = await db.get();
-      console.log("getting user");
       const loggedUser = snapshot.docs
         .map((doc) => {
           const { username, password, channelLimit,userServer,rtmpProtocol,
@@ -40,7 +39,7 @@ const UserService = {
     try {
       const db = firebase.firestore().collection("channels");
       const { userServer,rtmpProtocol,httpProtocol,httpPort,userStub,streamExt } = user;
-      let httpLink = `${httpProtocol}://${userServer}/hls/${channelname}.${streamExt}`;
+      let httpLink = `${httpProtocol}://${userServer}/hls/${key}.${streamExt}`;
       if(httpPort === "8080") {
         httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`
       }

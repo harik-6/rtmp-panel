@@ -53,7 +53,6 @@ const Preview = () => {
   useEffect(() => {
       const url = window.location.href;
       const replaced = url.replace("preview","hls")+".m3u8";
-      console.log(replaced);
       setHttpLink(replaced)
   }, []);
 
