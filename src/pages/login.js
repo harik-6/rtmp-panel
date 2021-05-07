@@ -103,10 +103,7 @@ const Login = () => {
         <Grid item lg={12} alignItems="center" container spacing={1}>
           <Grid item lg={7}>
             <div className={classes.txtcnt}>
-              <p className={classes.maintxt}>StreamWell</p>
-              <p className={classes.subtxt}>
-                For fastest and smooth streaming network.
-              </p>
+              <p className={classes.maintxt}>AndariTV</p>
             </div>
           </Grid>
           <Grid item lg={3}>
