@@ -44,8 +44,8 @@ const UserService = {
         httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`
       }
       const newchannel = {
-        name: new String(key).toLowerCase().replace(" ", ""),
-        key: channelname.toLowerCase(),
+        name: key.toLowerCase().replace(" ", ""),
+        key: channelname.toLowerCase().replace(" ", ""),
         createat: new Date(),
         owner: user.username,
         ownerid: user.userid,
@@ -106,8 +106,8 @@ const UserService = {
     try {
       const db = firebase.firestore().collection("channels");
       await db.doc(channel.channelId).update({
-        name: channel.name,
-        key: channel.key,
+        name: channel.name.toLowerCase().replace(" ", ""),
+        key: channel.key.toLowerCase().replace(" ", ""),
       });
       return channel.id;
     } catch (error) {
