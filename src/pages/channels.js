@@ -154,7 +154,7 @@ const Channels = () => {
         ...chnl,
         name: chname.toLowerCase(),
         key: chkey.toLowerCase(),
-      });
+      },user);
       if (channel !== null) {
         actions.setChannles([]);
         setcreating(false);
@@ -303,14 +303,14 @@ const Channels = () => {
               onChange={handleChKey}
             />
             {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>}
-            <TextField
+            {/* <TextField
               className={classes.txtfield}
               fullWidth
               id="trmp"
               label="RTMP"
               disabled
-              value={`rtmp:${process.env.REACT_APP_RTMP_SERVER}:1935/${chkey}?channel=${chname}&token`}
-            />
+              value={`rtmp:${user.userServer}:1935/${chkey}?channel=${chname}&token`}
+            /> */}
           </DialogContentText>
           {creating && (
             <div style={{ display: "flex", justifyContent: "center" }}>

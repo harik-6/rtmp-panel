@@ -89,11 +89,7 @@ const Main = () => {
     <div className={classes.appmain}>
       <Router>
         <div className={classes.sidenav}>
-<<<<<<< HEAD
-          <p className={classes.appname}>AndariTV</p>
-=======
           <p className={classes.appname}>{process.env.REACT_APP_NAME}</p>
->>>>>>> 96909eaf66bf2b649bf6bd40b66b714bbe71f60d
           <List className={classes.navlist} aria-label="navigation-list">
             <Link to="/home">
               <ListItem

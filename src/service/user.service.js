@@ -38,14 +38,16 @@ const UserService = {
   createChannel: async (user, channelname, key) => {
     try {
       const db = firebase.firestore().collection("channels");
+      key = key.toLowerCase().replace(" ", "");
+      channelname = channelname.toLowerCase().replace(" ", "");
       const { userServer,rtmpProtocol,httpProtocol,httpPort,userStub,streamExt } = user;
       let httpLink = `${httpProtocol}://${userServer}/hls/${key}.${streamExt}`;
       if(httpPort === "8080") {
         httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`
       }
       const newchannel = {
-        name: key.toLowerCase().replace(" ", ""),
-        key: channelname.toLowerCase().replace(" ", ""),
+        name: key,
+        key: channelname,
         createat: new Date(),
         owner: user.username,
         ownerid: user.userid,
@@ -102,16 +104,27 @@ const UserService = {
       return null;
     }
   },
-  editchannel: async (channel) => {
+  editchannel: async (channel,user) => {
     try {
       const db = firebase.firestore().collection("channels");
+      const channelname = channel.key.toLowerCase().replace(" ", "");
+      const key = channel.name.toLowerCase().replace(" ", "");
+      const { userServer,rtmpProtocol,httpProtocol,httpPort,userStub,streamExt } = user;
+      let httpLink = `${httpProtocol}://${userServer}/hls/${key}.${streamExt}`;
+      if(httpPort === "8080") {
+        httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`
+      }
       await db.doc(channel.channelId).update({
-        name: channel.name.toLowerCase().replace(" ", ""),
-        key: channel.key.toLowerCase().replace(" ", ""),
+        name : key,
+        key : channelname,
+        displayStreamLink : `${rtmpProtocol}://${userServer}/${userStub}`,
+        rtmpLink: `${rtmpProtocol}://${userServer}/${userStub}/${key}`,
+        httpLink,
+        token : `${key}?psk=${channelname}&token=${channelname}`
       });
       return channel.id;
     } catch (error) {
-      // console.log("Error in editing channel", error.message);
+      console.log("Error in editing channel", error.message);
       return null;
     }
   },
