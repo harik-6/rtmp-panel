@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,10 +10,8 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/HomeRounded";
 import ChannelIcon from "@material-ui/icons/VideocamRounded";
-import LogoutIcon from "@material-ui/icons/ExitToAppRounded";
 import Player from "./player";
 import Channels from "./channels";
-import AppContext from "../context/context";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -25,11 +23,14 @@ const useStyles = makeStyles((theme) =>
     },
     sidenav: {
       width: "200px",
-      height: "150vh",
       backgroundColor: "#121858",
       overflow: "hidden",
+      position:"fixed",
+      top:"0",
+      bottom:"0",
     },
     routes: {
+      marginLeft:"200px",
       flex: 1,
       overflow: "visible",
       scrollBehavior: "smooth",
@@ -77,14 +78,11 @@ const useStyles = makeStyles((theme) =>
 
 const Main = () => {
   const classes = useStyles();
-  const { actions } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(1);
   const changePage = (page) => {
     setActiveTab(page);
   };
-  const logoutUser = () => {
-    actions.logout();
-  };
+  
   return (
     <div className={classes.appmain}>
       <Router>
@@ -136,16 +134,6 @@ const Main = () => {
                 />
               </ListItem>
             </Link>
-            <ListItem disableGutters={true} onClick={logoutUser} button>
-              <ListItemIcon className={classes.icon}>
-                <LogoutIcon />
-              </ListItemIcon>
-              <ListItemText
-                disableTypography={true}
-                className={classes.navtext}
-                primary="Logout"
-              />
-            </ListItem>
           </List>
         </div>
         <div className={classes.routes}>

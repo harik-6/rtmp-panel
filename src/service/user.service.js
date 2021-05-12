@@ -98,7 +98,8 @@ const UserService = {
             channelId : doc.id
           };
         })
-        .filter((channel) => channel.ownerid === user.userid);
+        .filter((channel) => channel.ownerid === user.userid)
+        .sort((a,b) => new Date(a.createdat)-new Date(b.createdat));
     } catch (error) {
       // console.log("Error in getting channel", error.message);
       return null;

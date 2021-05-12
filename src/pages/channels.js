@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Grid,
-  Paper,
   Table,
   TableHead,
   TableRow,
@@ -20,12 +19,15 @@ import {
   Menu,
   MenuItem,
   Snackbar,
+  IconButton
 } from "@material-ui/core";
 // import LiveIcon from "@material-ui/icons/FiberManualRecordRounded";
 import MenuIcon from "@material-ui/icons/MoreVertRounded";
 import Slide from "@material-ui/core/Slide";
 import service from "../service/user.service";
 import AppContext from "../context/context";
+import PlusIcon from "@material-ui/icons/AddRounded";
+import CreateNewChannel from "./components/createchannel";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -99,6 +101,8 @@ const Channels = () => {
   const [creating, setcreating] = useState(false);
   const [deletesnack, setdeletesnack] = useState(false);
   const [openDeleteConfirm, setDeleteConfirm] = useState(false);
+  const [openCreateForm,setOpenCreateForm] = useState(false);
+  const [errorsnack, seterrorsnack] = useState(false);
 
   const handleChName = (e) => {
     setchname(e.target.value);
@@ -123,7 +127,7 @@ const Channels = () => {
     setAnchorEl(null);
   };
 
-  const closeCreatepop = () => {
+  const closeEditpop = () => {
     setOpenForm(false);
     setchkeyerror(false);
     setchnameerror(false);
@@ -131,7 +135,24 @@ const Channels = () => {
     setchkey("");
   };
 
+  const openSnack = () => {
+    seterrorsnack(true);
+  };
+
+  const closeSnack = () => {
+    seterrorsnack(false);
+  };
+
   const openCreateChannelForm = () => {
+    if (user.channelLimit === channels.length) {
+      openSnack();
+      return;
+    } else {
+      setOpenCreateForm(true);
+    }
+  };
+
+  const openEditChannelForm = () => {
     setOpenForm(true);
     closeMenu();
   };
@@ -187,11 +208,6 @@ const Channels = () => {
     setTimeout(() => setLoading(false), 500);
   };
 
-  const previewChannel = () => {
-    const previewurl = window.location.href.replace("channels","")+"preview/"+chnl.name;
-    window.open(previewurl,'_newtab');
-  }
-
   return (
     <div className={classes.channels}>
       {loading ? (
@@ -201,20 +217,6 @@ const Channels = () => {
         </div>
       ) : (
         <Grid className={classes.chcardcnt} container>
-          {/* <Grid item lg={12} container justify="space-around" spacing={2}>
-            <Grid item lg={6}>
-              <Paper elevation={0} className={classes.paper}>
-                <p className={classes.paperhead}>Total channels</p>
-                <p className={classes.paperbody}>{channels.length}</p>
-              </Paper>
-            </Grid>
-            <Grid item lg={6}>
-              <Paper elevation={0} className={classes.paper}>
-                <p className={classes.paperhead}>Active channels</p>
-                <p className={classes.paperbody}>{channels.length}</p>
-              </Paper>
-            </Grid>
-          </Grid> */}
           <Grid item lg={12}>
             {channels.length <= 0 ? (
               <>
@@ -272,7 +274,7 @@ const Channels = () => {
         open={openForm}
         TransitionComponent={Transition}
         keepMounted
-        onClose={closeCreatepop}
+        onClose={closeEditpop}
         aria-labelledby="create-channel-form"
         fullWidth
       >
@@ -303,14 +305,6 @@ const Channels = () => {
               onChange={handleChKey}
             />
             {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>}
-            {/* <TextField
-              className={classes.txtfield}
-              fullWidth
-              id="trmp"
-              label="RTMP"
-              disabled
-              value={`rtmp:${user.userServer}:1935/${chkey}?channel=${chname}&token`}
-            /> */}
           </DialogContentText>
           {creating && (
             <div style={{ display: "flex", justifyContent: "center" }}>
@@ -338,9 +332,8 @@ const Channels = () => {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
       >
-        <MenuItem onClick={openCreateChannelForm}>Edit channel </MenuItem>
+        <MenuItem onClick={openEditChannelForm}>Edit channel </MenuItem>
         <MenuItem onClick={askConfirmation}>Delete channel</MenuItem>
-        {/* <MenuItem onClick={previewChannel}>Preview</MenuItem> */}
       </Menu>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -380,6 +373,33 @@ const Channels = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <IconButton
+        style={{
+          position: "fixed",
+          right: "24px",
+          bottom: "24px",
+          background: "#121858",
+        }}
+        onClick={openCreateChannelForm}
+      >
+        <PlusIcon style={{ color: "white", fontSize: "32px" }} />
+      </IconButton>
+      <CreateNewChannel
+        openForm={openCreateForm}
+        closeCreatepop={() => setOpenCreateForm(false)}
+        successCallback={() => {
+          setOpenCreateForm(false)
+          loadChannels();
+        }}
+      />
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={errorsnack}
+        onClose={closeSnack}
+        autoHideDuration={5000}
+        message="Channel limit exceeded"
+        key={"err-snack"}
+      />
     </div>
   );
 };

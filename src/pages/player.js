@@ -4,12 +4,6 @@ import {
   Grid,
   Paper,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
   CircularProgress,
   Menu,
   MenuItem,
@@ -17,15 +11,12 @@ import {
   IconButton,
 } from "@material-ui/core";
 import ReactPlayer from "react-player";
-import Slide from "@material-ui/core/Slide";
 import AppContext from "../context/context";
 import service from "../service/user.service";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import RefreshIcon from "@material-ui/icons/RefreshRounded";
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import PlusIcon from "@material-ui/icons/AddRounded";
+import CreateNewChannel from "./components/createchannel";
 
 const player_width = 640 * 1.15;
 const player_height = 360 * 1.15;
@@ -95,16 +86,11 @@ const useStyles = makeStyles((theme) =>
 const Home = () => {
   const { user, channels, actions } = useContext(AppContext);
   const [chlist, setchlist] = useState([]);
-  const [chname, setchname] = useState("");
-  const [chkey, setchkey] = useState("");
   const [ch, setCh] = useState(null);
   // preloaders and errors
   const [anchorEl, setAnchorEl] = useState(null);
   const [openForm, setOpenForm] = useState(false);
   const [loading, setloading] = useState(false);
-  const [creating, setcreating] = useState(false);
-  const [chnameerror, setchnameerror] = useState(false);
-  const [chkeyerror, setchkeyerror] = useState(false);
   const [errorsnack, seterrorsnack] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
@@ -121,14 +107,6 @@ const Home = () => {
     setAnchorEl(null);
   };
 
-  const handleChName = (e) => {
-    setchname(e.target.value);
-  };
-
-  const handleChKey = (e) => {
-    setchkey(e.target.value);
-  };
-
   const openSnack = () => {
     seterrorsnack(true);
   };
@@ -137,33 +115,8 @@ const Home = () => {
     seterrorsnack(false);
   };
 
-  const createNewChannel = async () => {
-    if (user.channelLimit === channels.length) {
-      openSnack();
-      return;
-    } else {
-      if (chname.length > 0 && chkey.length > 0) {
-        const alltokens = await service.getAllTokens();
-        if(alltokens.length > 0) {
-          if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
-            setchnameerror(true);
-            return;
-          }
-          if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-            setchkeyerror(true);
-            return;
-          }
-        }
-        setcreating(true);
-        const channel = await service.createChannel(user, chname, chkey);
-        if (channel !== null) {
-          actions.setChannles([]);
-          setcreating(false);
-          closeCreatepop();
-          loadChannels(true);
-        }
-      }
-    }
+  const logoutUser = () => {
+    actions.logout();
   };
 
   const loadChannels = async (forceload) => {
@@ -191,11 +144,6 @@ const Home = () => {
 
   const closeCreatepop = () => {
     setOpenForm(false);
-    setchkeyerror(false);
-    setchnameerror(false);
-    setcreating(false);
-    setchname("");
-    setchkey("");
   };
 
   const openCreateChannelForm = () => {
@@ -238,7 +186,7 @@ const Home = () => {
             className={classes.actioncnt}
           >
             {chlist.length > 0 && (
-              <Grid item lg={2}>
+              <Grid item lg={3}>
                 <Button
                   aria-controls="change-channel-menu"
                   aria-haspopup="true"
@@ -250,14 +198,9 @@ const Home = () => {
                 </Button>
               </Grid>
             )}
-            <Grid item lg={2}>
-              <Button
-                onClick={openCreateChannelForm}
-                variant="contained"
-                color="primary"
-                disableElevation
-              >
-                Create channel
+            <Grid item lg={1}>
+              <Button onClick={logoutUser} color="primary" disableElevation>
+                Logout
               </Button>
             </Grid>
           </Grid>
@@ -313,106 +256,36 @@ const Home = () => {
                 <Grid item lg={12} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
                     <p className={classes.urlheader}>Stream URL</p>
-                    <p
-                      className={classes.urlvalue}
-                    >{ch.displayStreamLink}</p>
+                    <p className={classes.urlvalue}>{ch.displayStreamLink}</p>
                     <p className={classes.urlheader}>Key</p>
-                    <p
-                      className={classes.urlvalue}
-                    >{ch.token}</p>
+                    <p className={classes.urlvalue}>{ch.token}</p>
                   </Paper>
                 </Grid>
-                 <Grid item lg={12} xs={12} className={classes.urls}>
+                <Grid item lg={12} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
                     <p className={classes.urlheader}>RTMP Play URL</p>
-                    <p
-                      className={classes.urlvalue}
-                    >{ch.rtmpLink}</p>
+                    <p className={classes.urlvalue}>{ch.rtmpLink}</p>
                   </Paper>
                 </Grid>
                 <Grid item lg={12} xs={12} className={classes.urls}>
                   <Paper elevation={0} square className={classes.paper}>
                     <p className={classes.urlheader}>HLS</p>
-                    <p
-                      className={classes.urlvalue}
-                    >{ch.httpLink}</p>
+                    <p className={classes.urlvalue}>{ch.httpLink}</p>
                   </Paper>
                 </Grid>
               </Grid>
-              {/* <Grid item lg={12} xs={12} className={classes.urls}>
-                <Paper elevation={0} square className={classes.paper}>
-                  <p className={classes.urlheader}>Embedded Code</p>
-                  <p className={classes.urlvalue}>{`<iframe scrolling src=${ch.httpLink.replace(".m3u8","")}
-                  width="400px" height="400px" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen allow="autoplay" ></iframe>`}</p>
-                </Paper>
-              </Grid> */}
             </>
           )}
         </Grid>
       )}
-      <Dialog
-        open={openForm}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={closeCreatepop}
-        aria-labelledby="create-channel-form"
-        fullWidth
-      >
-        <DialogTitle id="create-channel-form-title">
-          {"Create a new channel"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="create-channel-form-title-description">
-          <TextField
-              className={classes.txtfield}
-              fullWidth
-              id="chkey"
-              label="Channel name"
-              value={chkey}
-              disabled={creating}
-              onChange={handleChKey}
-            />
-            {chnameerror && (
-              <p style={{ color: "red" }}>Name already exists.</p>
-            )}
-             <TextField
-              className={classes.txtfield}
-              fullWidth
-              id="chname"
-              label="Key"
-              value={chname}
-              disabled={creating}
-              onChange={handleChName}
-            />
-            {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>}
-            <TextField
-              className={classes.txtfield}
-              fullWidth
-              id="rtmp"
-              label="Server"
-              disabled
-              value={user.userServer}
-            />
-          </DialogContentText>
-          {creating && (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <CircularProgress />
-            </div>
-          )}
-        </DialogContent>
-        <DialogActions>
-          {!creating && (
-            <Button
-              onClick={createNewChannel}
-              variant="contained"
-              color="primary"
-              disableElevation
-            >
-              Create
-            </Button>
-          )}
-        </DialogActions>
-      </Dialog>
+      <CreateNewChannel
+        openForm={openForm}
+        closeCreatepop={closeCreatepop}
+        successCallback={() => {
+          closeCreatepop();
+          loadChannels(true);
+        }}
+      />
       <Menu
         id="switch-channel-menu"
         anchorEl={anchorEl}
@@ -434,6 +307,17 @@ const Home = () => {
         message="Channel limit exceeded"
         key={"err-snack"}
       />
+       <IconButton
+        style={{
+          position: "fixed",
+          right: "24px",
+          bottom: "24px",
+          background: "#121858",
+        }}
+        onClick={openCreateChannelForm}
+      >
+        <PlusIcon style={{ color: "white", fontSize: "32px" }} />
+      </IconButton>
     </div>
   );
 };
