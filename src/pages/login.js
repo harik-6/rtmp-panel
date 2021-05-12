@@ -13,10 +13,10 @@ import service from "../service/user.service";
 const useStyles = makeStyles((theme) =>
   createStyles({
     login: {
-      height: "100vh",
-      width: "100vw",
+      height: "100%",
+      width: "100%",
       backgroundImage: `url(${process.env.PUBLIC_URL}/bg2.jpg)`,
-      overflow: "hidden",
+      overflowX:"hidden"
     },
     logingrid: {
       height: "100%",
@@ -100,8 +100,8 @@ const Login = () => {
   return (
     <div className={classes.login}>
       <Grid container className={classes.logingrid}>
-        <Grid item lg={12} alignItems="center" container spacing={1}>
-          <Grid item lg={7}>
+        <Grid item xs={12} sm={12} lg={12} alignItems="center" container spacing={1}>
+          <Grid item  xs={7} sm={6} lg={7}>
             <div className={classes.txtcnt}>
               <p className={classes.maintxt}>{process.env.REACT_APP_NAME}</p>
               <p className={classes.subtxt}>
@@ -109,7 +109,7 @@ const Login = () => {
               </p>
             </div>
           </Grid>
-          <Grid item lg={3}>
+          <Grid item xs={12}  sm={6} lg={3} >
             <Paper className={classes.loginform}>
               <p className={classes.welcomemsg}>Welcome back</p>
               <p className={classes.loginmessage}>Login to continue</p>
