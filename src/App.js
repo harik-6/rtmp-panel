@@ -30,7 +30,9 @@ function App() {
 
 const Auth = () => {
   const { user } = useContext(AppConext);
-  return <div className="app-main">{user === null ? <Login /> : <Main />}</div>;
+  return <div className="app-main">
+    {user === null ? <Login /> : <Main />}
+    </div>;
 };
 
 export default App;

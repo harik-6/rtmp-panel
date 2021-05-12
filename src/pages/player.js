@@ -296,6 +296,7 @@ const Home = () => {
                       url={ch.httpLink}
                       controls={true}
                       loop={true}
+                      playing={true}
                       onError={onVideoError}
                     />
                   )}
