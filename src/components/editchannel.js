@@ -31,12 +31,11 @@ const EditChannel = ({
   openForm,
   closeForm,
   successCallback,
-  presentname,
-  presentkey,
+  channel
 }) => {
   const { user, actions } = useContext(AppContext);
-  const [chname, setchname] = useState(presentname);
-  const [chkey, setchkey] = useState(presentkey);
+  const [chname, setchname] = useState(channel.name);
+  const [chkey, setchkey] = useState(channel.key);
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
   const [chkeyerror, setchkeyerror] = useState(false);
@@ -63,12 +62,12 @@ const EditChannel = ({
         }
       }
       setcreating(true);
-      const channel = await channelservice.editchannel({
-        ...chnl,
+      const editedchannel = await channelservice.editchannel({
+        ...channel,
         name: chname.toLowerCase(),
         key: chkey.toLowerCase(),
       },user);
-      if (channel !== null) {
+      if (editedchannel !== null) {
         actions.setChannles([]);
         successCallback();
         closeDialog();

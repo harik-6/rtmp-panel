@@ -140,6 +140,7 @@ const Channels = () => {
   };
 
   const loadChannels = async () => {
+    actions.setChannles([]);
     setMsg("Loading channels...");
     setLoading(true);
     const chs = await channelservice.getChannels(user);
@@ -207,19 +208,22 @@ const Channels = () => {
           loadChannels();
         }}
       />
-      <EditChannel
-        openForm={openEditForm}
-        closeForm={closeEditChannelForm}
-        successCallback={loadChannels}
-        presentname={chnl.name}
-        presentkey={chnl.key}
-      />
-      <DeleteConfirmationDialog
-        openForm={openDeleteConfirm}
-        closeForm={() => setDeleteConfirm(false)}
-        onDeleteYes={deleteChannel}
-        channel={chnl.name}
-      />
+      {chnl !== null && (
+        <EditChannel
+          openForm={openEditForm}
+          closeForm={closeEditChannelForm}
+          successCallback={loadChannels}
+          channel={chnl}
+        />
+      )}
+      {chnl !== null && (
+        <DeleteConfirmationDialog
+          openForm={openDeleteConfirm}
+          closeForm={() => setDeleteConfirm(false)}
+          onDeleteYes={deleteChannel}
+          channel={chnl}
+        />
+      )}
       <Menu
         id="edit-channel-menu"
         anchorEl={anchorEl}

@@ -24,8 +24,8 @@ if (firebase.apps.length === 0) {
 function App() {
   return (
     <AppState>
-      {/* <Auth /> */}
-      <LandingPage />
+      <Auth />
+      {/* <LandingPage /> */}
     </AppState>
   );
 }
