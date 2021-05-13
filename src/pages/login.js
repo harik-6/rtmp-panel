@@ -130,7 +130,7 @@ const Login = () => {
                 fullWidth
                 variant="outlined"
                 id="password"
-                label="password"
+                label="Password"
                 type="password"
                 value={password}
                 onChange={handlepass}
