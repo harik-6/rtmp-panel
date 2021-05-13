@@ -5,7 +5,6 @@ import firebase from "firebase";
 import Login from "./pages/login";
 import AppState from "./context/state";
 import AppConext from "./context/context";
-import LandingPage from "./pages/landing/landing.page";
 // import Preview from "./pages/preview";
 
 var firebaseConfig = {
@@ -25,7 +24,6 @@ function App() {
   return (
     <AppState>
       <Auth />
-      {/* <LandingPage /> */}
     </AppState>
   );
 }
