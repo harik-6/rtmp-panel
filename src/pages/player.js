@@ -218,9 +218,9 @@ const Home = () => {
                 <div className={classes.videoplayer}>
                   {videoError ? (
                     <div className={classes.viderrcnt}>
-                      <p className={classes.viderrormsg}>
+                      {/* <p className={classes.viderrormsg}>
                         Video is unavailabe right now.Try again.{" "}
-                      </p>
+                      </p> */}
                       <IconButton
                         color="primary"
                         aria-label="retry video"
