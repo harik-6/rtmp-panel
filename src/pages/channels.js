@@ -8,10 +8,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
   CircularProgress,
   Menu,
   MenuItem,
@@ -20,7 +16,6 @@ import {
 } from "@material-ui/core";
 // import LiveIcon from "@material-ui/icons/FiberManualRecordRounded";
 import MenuIcon from "@material-ui/icons/MoreVertRounded";
-import Slide from "@material-ui/core/Slide";
 import channelservice from "../service/channel.service";
 import AppContext from "../context/context";
 import PlusIcon from "@material-ui/icons/AddRounded";
