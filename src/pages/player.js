@@ -16,7 +16,7 @@ import service from "../service/user.service";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import RefreshIcon from "@material-ui/icons/RefreshRounded";
 import PlusIcon from "@material-ui/icons/AddRounded";
-import CreateNewChannel from "./components/createchannel";
+import CreateNewChannel from "../components/createchannel";
 
 const player_width = 640 * 1.15;
 const player_height = 360 * 1.15;

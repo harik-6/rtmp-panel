@@ -105,7 +105,7 @@ const Login = () => {
             <div className={classes.txtcnt}>
               <p className={classes.maintxt}>{process.env.REACT_APP_NAME}</p>
               <p className={classes.subtxt}>
-                For fastest and smooth streaming network.
+                A cloud base streaming platform for fast and smooth live streaming.
               </p>
             </div>
           </Grid>

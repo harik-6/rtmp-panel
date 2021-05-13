@@ -27,7 +27,7 @@ import Slide from "@material-ui/core/Slide";
 import service from "../service/user.service";
 import AppContext from "../context/context";
 import PlusIcon from "@material-ui/icons/AddRounded";
-import CreateNewChannel from "./components/createchannel";
+import CreateNewChannel from "../components/createchannel";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

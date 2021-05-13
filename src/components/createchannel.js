@@ -11,8 +11,8 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
-import AppContext from "../../context/context";
-import service from "../../service/user.service";
+import AppContext from "../context/context";
+import service from "../service/user.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
