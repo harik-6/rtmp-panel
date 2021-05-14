@@ -66,7 +66,8 @@ const useStyles = makeStyles((theme) =>
     },
     preloadertxtloader: { fontSize: "20px", marginTop: "16px" },
     tbcell: {
-      padding: "4px",
+      paddingTop: "4px",
+      paddingBottom: "4px"
     },
   })
 );
@@ -163,9 +164,9 @@ const Channels = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell align="left">S.No</TableCell>
+                      <TableCell align="left">Name</TableCell>
                       <TableCell align="left">Key</TableCell>
                       <TableCell align="left">Hls</TableCell>
-                      <TableCell align="left">{""}</TableCell>
                       <TableCell align="left">{""}</TableCell>
                       <TableCell align="left">{""}</TableCell>
                     </TableRow>
@@ -176,6 +177,9 @@ const Channels = () => {
                         <TableCell className={classes.tbcell} align="left">{`${
                           index + 1
                         }.`}</TableCell>
+                        <TableCell className={classes.tbcell} align="left">
+                          {channel.name}
+                        </TableCell>
                         <TableCell className={classes.tbcell} align="left">
                           {channel.key}
                         </TableCell>

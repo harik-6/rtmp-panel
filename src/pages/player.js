@@ -18,6 +18,7 @@ import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import RefreshIcon from "@material-ui/icons/RefreshRounded";
 import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../components/createchannel";
+import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
 
 const player_width = 640 * 1.15;
 const player_height = 360 * 1.15;
@@ -85,11 +86,19 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: "#121858",
       width: theme.spacing(4.5),
       height: theme.spacing(4.5),
-      cursor:"pointer"
+      cursor: "pointer",
     },
-    profilemenu : {
-      marginTop : "16px"
-    }
+    profilemenu: {
+      marginTop: "16px",
+    },
+    iconlive: {
+      color: "green",
+      marginRight: "4px",
+    },
+    iconidle: {
+      color: "grey",
+      marginRight: "4px",
+    },
   })
 );
 
@@ -104,6 +113,7 @@ const Home = () => {
   const [loading, setloading] = useState(false);
   const [errorsnack, seterrorsnack] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [isLive, setChannelLive] = useState(false);
 
   const changeRtmp = (index) => {
     setCh(chlist[index]);
@@ -174,12 +184,18 @@ const Home = () => {
     }
   };
 
+  const onVideoStart = () => {
+    setChannelLive(true);
+  }
+
   const onVideoError = () => {
+    setChannelLive(false);
     setVideoError(true);
   };
 
   const playVideoAgain = () => {
     setVideoError(false);
+    // setChannelLive(true);
   };
 
   useEffect(() => {
@@ -204,25 +220,36 @@ const Home = () => {
             justify="flex-end"
             className={classes.actioncnt}
           >
+            <Grid item container alignItems="center" lg={5}>
+              {isLive ? (
+                <React.Fragment>
+                  <RoundIcon className={classes.iconlive} /> Live
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <RoundIcon className={classes.iconidle} /> Idle
+                </React.Fragment>
+              )}
+            </Grid>
             {chlist.length > 0 && (
               <Grid item container justify="flex-end" lg={4}>
-                <Grid lg={6}  >
-                <Button
-                  aria-controls="change-channel-menu"
-                  aria-haspopup="true"
-                  onClick={openMenu}
-                  disableElevation
-                >
-                  {ch.name}
-                  <DownArrowIcon />
-                </Button>
+                <Grid lg={6}>
+                  <Button
+                    aria-controls="change-channel-menu"
+                    aria-haspopup="true"
+                    onClick={openMenu}
+                    disableElevation
+                  >
+                    {ch.name}
+                    <DownArrowIcon />
+                  </Button>
                 </Grid>
               </Grid>
             )}
             <Grid item lg={1}>
               <Avatar onClick={openProfileMenu} className={classes.avatar}>
-                {(user.username||"S")[0].toUpperCase()}
-                </Avatar>
+                {(user.username || "S")[0].toUpperCase()}
+              </Avatar>
             </Grid>
           </Grid>
           {ch === null ? (
@@ -239,9 +266,6 @@ const Home = () => {
                 <div className={classes.videoplayer}>
                   {videoError ? (
                     <div className={classes.viderrcnt}>
-                      {/* <p className={classes.viderrormsg}>
-                        Video is unavailabe right now.Try again.{" "}
-                      </p> */}
                       <IconButton
                         color="primary"
                         aria-label="retry video"
@@ -259,9 +283,10 @@ const Home = () => {
                       height={player_height}
                       url={ch.httpLink}
                       controls={true}
-                      loop={true}
+                      // loop={true}
                       playing={true}
                       onError={onVideoError}
+                      onStart={onVideoStart}
                     />
                   )}
                 </div>
