@@ -27,6 +27,8 @@ import Slide from "@material-ui/core/Slide";
 import service from "../service/user.service";
 import AppContext from "../context/context";
 import PlusIcon from "@material-ui/icons/AddRounded";
+import DeleteIcon from '@material-ui/icons/DeleteRounded';
+import EditIcon from '@material-ui/icons/EditRounded';
 import CreateNewChannel from "./components/createchannel";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -234,7 +236,8 @@ const Channels = () => {
                       <TableCell align="left">S.No</TableCell>
                       <TableCell align="left">Key</TableCell>
                       <TableCell align="left">Hls</TableCell>
-                      {/* <TableCell align="left">Health</TableCell> */}
+                      <TableCell align="left">{""}</TableCell>
+                      <TableCell align="left">{""}</TableCell>
                       <TableCell align="left">{""}</TableCell>
                     </TableRow>
                   </TableHead>
@@ -246,21 +249,26 @@ const Channels = () => {
                         <TableCell align="left">
                           {channel.httpLink}
                         </TableCell>
-                        {/* <TableCell align="left">
-                          <LiveIcon
-                            style={{
-                              color: "green",
-                            }}
-                          />
-                        </TableCell> */}
                         <TableCell align="right">
+                          <IconButton onClick={() => {
+                              setActiveChanel(index);
+                          }} >
+                            <EditIcon />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell align="right">
+                          <IconButton>
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                        {/* <TableCell align="right">
                           <MenuIcon
                             onClick={(event) => {
                               setActiveChanel(index);
                               openMenu(event);
                             }}
                           />
-                        </TableCell>
+                        </TableCell> */}
                       </TableRow>
                     ))}
                   </TableBody>
