@@ -9,6 +9,7 @@ import {
   MenuItem,
   Snackbar,
   IconButton,
+  Avatar,
 } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import AppContext from "../context/context";
@@ -80,6 +81,15 @@ const useStyles = makeStyles((theme) =>
       fontSize: "24px",
       color: "#ffffff",
     },
+    avatar: {
+      backgroundColor: "#121858",
+      width: theme.spacing(4.5),
+      height: theme.spacing(4.5),
+      cursor:"pointer"
+    },
+    profilemenu : {
+      marginTop : "16px"
+    }
   })
 );
 
@@ -89,6 +99,7 @@ const Home = () => {
   const [ch, setCh] = useState(null);
   // preloaders and errors
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorProfileEl, setProfileAnchorEl] = useState(null);
   const [openForm, setOpenForm] = useState(false);
   const [loading, setloading] = useState(false);
   const [errorsnack, seterrorsnack] = useState(false);
@@ -97,6 +108,14 @@ const Home = () => {
   const changeRtmp = (index) => {
     setCh(chlist[index]);
     closeMenu();
+  };
+
+  const openProfileMenu = (event) => {
+    setProfileAnchorEl(event.currentTarget);
+  };
+
+  const closeProfieMenu = () => {
+    setProfileAnchorEl(null);
   };
 
   const openMenu = (event) => {
@@ -186,7 +205,8 @@ const Home = () => {
             className={classes.actioncnt}
           >
             {chlist.length > 0 && (
-              <Grid item lg={3}>
+              <Grid item container justify="flex-end" lg={4}>
+                <Grid lg={6}  >
                 <Button
                   aria-controls="change-channel-menu"
                   aria-haspopup="true"
@@ -196,12 +216,13 @@ const Home = () => {
                   {ch.name}
                   <DownArrowIcon />
                 </Button>
+                </Grid>
               </Grid>
             )}
             <Grid item lg={1}>
-              <Button onClick={logoutUser} color="primary" disableElevation>
-                Logout
-              </Button>
+              <Avatar onClick={openProfileMenu} className={classes.avatar}>
+                {(user.username||"S")[0].toUpperCase()}
+                </Avatar>
             </Grid>
           </Grid>
           {ch === null ? (
@@ -307,7 +328,7 @@ const Home = () => {
         message="Channel limit exceeded"
         key={"err-snack"}
       />
-       <IconButton
+      <IconButton
         style={{
           position: "fixed",
           right: "24px",
@@ -318,6 +339,16 @@ const Home = () => {
       >
         <PlusIcon style={{ color: "white", fontSize: "32px" }} />
       </IconButton>
+      <Menu
+        id="profile-avatar-menu"
+        anchorEl={anchorProfileEl}
+        keepMounted
+        open={Boolean(anchorProfileEl)}
+        onClose={closeProfieMenu}
+        className={classes.profilemenu}
+      >
+        <MenuItem onClick={logoutUser}>Logout</MenuItem>
+      </Menu>
     </div>
   );
 };

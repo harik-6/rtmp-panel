@@ -14,14 +14,12 @@ import {
   Snackbar,
   IconButton,
 } from "@material-ui/core";
-// import LiveIcon from "@material-ui/icons/FiberManualRecordRounded";
-import MenuIcon from "@material-ui/icons/MoreVertRounded";
 import channelservice from "../service/channel.service";
 import AppContext from "../context/context";
 import PlusIcon from "@material-ui/icons/AddRounded";
-import DeleteIcon from '@material-ui/icons/DeleteRounded';
-import EditIcon from '@material-ui/icons/EditRounded';
-import CreateNewChannel from "./components/createchannel";
+import DeleteIcon from "@material-ui/icons/DeleteRounded";
+import EditIcon from "@material-ui/icons/EditRounded";
+import CreateNewChannel from "../components/createchannel";
 import EditChannel from "../components/editchannel";
 import DeleteConfirmationDialog from "../components/deletechannel";
 
@@ -69,6 +67,9 @@ const useStyles = makeStyles((theme) =>
       justifyContent: "center",
     },
     preloadertxtloader: { fontSize: "20px", marginTop: "16px" },
+    tbcell: {
+      padding: "4px",
+    },
   })
 );
 
@@ -80,7 +81,6 @@ const Channels = () => {
   const [msg, setMsg] = useState("Loading channels...");
   // loaders and errors
   const [loading, setLoading] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [deletesnack, setdeletesnack] = useState(false);
   const [openEditForm, setOpenEditForm] = useState(false);
   const [openDeleteConfirm, setDeleteConfirm] = useState(false);
@@ -90,14 +90,6 @@ const Channels = () => {
   const setActiveChanel = (index) => {
     const actchannel = channels[index];
     setChannel(actchannel);
-  };
-
-  const openMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const closeMenu = () => {
-    setAnchorEl(null);
   };
 
   const openSnack = () => {
@@ -119,7 +111,6 @@ const Channels = () => {
 
   const openEditChannelForm = () => {
     setOpenEditForm(true);
-    closeMenu();
   };
 
   const closeEditChannelForm = () => {
@@ -128,14 +119,12 @@ const Channels = () => {
 
   const askConfirmation = () => {
     setDeleteConfirm(true);
-    closeMenu();
   };
 
   const deleteChannel = async () => {
     setDeleteConfirm(false);
     setMsg("Deleting channel " + chnl.name);
     setLoading(true);
-    closeMenu();
     await channelservice.deleteChannel(chnl);
     setdeletesnack(true);
     loadChannels();
@@ -145,9 +134,11 @@ const Channels = () => {
     actions.setChannles([]);
     setMsg("Loading channels...");
     setLoading(true);
-    const chs = await channelservice.getChannels(user);
-    actions.setChannles(chs);
-    setTimeout(() => setLoading(false), 500);
+    setTimeout(async () => {
+      const chs = await channelservice.getChannels(user);
+      actions.setChannles(chs);
+      setLoading(false);
+    }, 1000);
   };
 
   return (
@@ -184,20 +175,32 @@ const Channels = () => {
                   <TableBody>
                     {channels.map((channel, index) => (
                       <TableRow key={channel.key}>
-                        <TableCell align="left">{`${index + 1}.`}</TableCell>
-                        <TableCell align="left">{channel.key}</TableCell>
-                        <TableCell align="left">
+                        <TableCell className={classes.tbcell} align="left">{`${
+                          index + 1
+                        }.`}</TableCell>
+                        <TableCell className={classes.tbcell} align="left">
+                          {channel.key}
+                        </TableCell>
+                        <TableCell className={classes.tbcell} align="left">
                           {channel.httpLink}
                         </TableCell>
-                        <TableCell align="right">
-                          <IconButton onClick={() => {
+                        <TableCell className={classes.tbcell} align="right">
+                          <IconButton
+                            onClick={() => {
                               setActiveChanel(index);
-                          }} >
+                              openEditChannelForm();
+                            }}
+                          >
                             <EditIcon />
                           </IconButton>
                         </TableCell>
-                        <TableCell align="right">
-                          <IconButton>
+                        <TableCell className={classes.tbcell} align="right">
+                          <IconButton
+                            onClick={() => {
+                              setActiveChanel(index);
+                              askConfirmation();
+                            }}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         </TableCell>
@@ -242,16 +245,6 @@ const Channels = () => {
           channel={chnl}
         />
       )}
-      <Menu
-        id="edit-channel-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={closeMenu}
-      >
-        <MenuItem onClick={openEditChannelForm}>Edit channel </MenuItem>
-        <MenuItem onClick={askConfirmation}>Delete channel</MenuItem>
-      </Menu>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={deletesnack}
