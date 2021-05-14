@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Button,
@@ -11,8 +11,8 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
-import AppContext from "../../context/context";
-import service from "../../service/user.service";
+import AppContext from "../context/context";
+import channelservice from "../service/channel.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -27,14 +27,18 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
-  const { user,actions } = useContext(AppContext);
-  const [chname, setchname] = useState("");
-  const [chkey, setchkey] = useState("");
+const EditChannel = ({
+  openForm,
+  closeForm,
+  successCallback,
+  channel
+}) => {
+  const { user, actions } = useContext(AppContext);
+  const [chname, setchname] = useState(channel.name);
+  const [chkey, setchkey] = useState(channel.key);
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
   const [chkeyerror, setchkeyerror] = useState(false);
-
 
   const handleChName = (e) => {
     setchname(e.target.value);
@@ -44,36 +48,40 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
     setchkey(e.target.value);
   };
 
-  const createNewChannel = async () => {
+  const editChannel = async () => {
     if (chname.length > 0 && chkey.length > 0) {
-        const alltokens = await service.getAllTokens();
-        if(alltokens.length > 0) {
-          if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
-            setchnameerror(true);
-            return;
-          }
-          if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-            setchkeyerror(true);
-            return;
-          }
+      const alltokens = channelservice.getAllTokens();
+      if(alltokens.length > 0) {
+        if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
+          setchnameerror(true);
+          return;
         }
-        setcreating(true);
-        const channel = await service.createChannel(user, chname, chkey);
-        if (channel !== null) {
-          actions.setChannles([]);
-          setcreating(false);
-          successCallback();
+        if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
+          setchkeyerror(true);
+          return;
         }
       }
+      setcreating(true);
+      const editedchannel = await channelservice.editchannel({
+        ...channel,
+        name: chname.toLowerCase(),
+        key: chkey.toLowerCase(),
+      },user);
+      if (editedchannel !== null) {
+        actions.setChannles([]);
+        successCallback();
+        closeDialog();
+      }
+    }
   };
 
-  const closePopup = () => {
-    setchname("");
-    setchname("");
-    setchkeyerror(false);
+  const closeDialog = () => {
     setchnameerror(false);
+    setchkeyerror(false);
     setcreating(false);
-    closeCreatepop();
+    setchname("");
+    setchkey("");
+    closeForm();
   }
 
   const classes = useStyles();
@@ -82,7 +90,7 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
       open={openForm}
       TransitionComponent={Transition}
       keepMounted
-      onClose={closePopup}
+      onClose={closeDialog}
       aria-labelledby="create-channel-form"
       fullWidth
     >
@@ -94,21 +102,21 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="chkey"
-            label="Channel name"
-            value={chkey}
+            id="chname"
+            label="Chanel Name"
+            value={chname}
             disabled={creating}
-            onChange={handleChKey}
+            onChange={handleChName}
           />
           {chnameerror && <p style={{ color: "red" }}>Name already exists.</p>}
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="chname"
-            label="Key"
-            value={chname}
+            id="chkey"
+            label="Chanel Key"
+            value={chkey}
             disabled={creating}
-            onChange={handleChName}
+            onChange={handleChKey}
           />
           {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>}
         </DialogContentText>
@@ -121,12 +129,12 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
       <DialogActions>
         {!creating && (
           <Button
-            onClick={createNewChannel}
+            onClick={editChannel}
             variant="contained"
             color="primary"
             disableElevation
           >
-            Create
+            Save changes
           </Button>
         )}
       </DialogActions>
@@ -134,4 +142,4 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
   );
 };
 
-export default CreateNewChannel;
+export default EditChannel;
