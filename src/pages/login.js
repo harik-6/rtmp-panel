@@ -7,6 +7,7 @@ import {
   Button,
   CircularProgress,
 } from "@material-ui/core";
+import {Link} from "react-router-dom";
 import AppConext from "../context/context";
 import service from "../service/user.service";
 
@@ -16,10 +17,7 @@ const useStyles = makeStyles((theme) =>
       height: "100%",
       width: "100%",
       backgroundImage: `url(${process.env.PUBLIC_URL}/bg2.jpg)`,
-      overflowX:"hidden"
-    },
-    logingrid: {
-      height: "100%",
+      overflowX: "hidden",
     },
     loginform: {
       height: "auto",
@@ -51,7 +49,7 @@ const useStyles = makeStyles((theme) =>
       fontWeight: "bold",
     },
     subtxt: {
-      fontSize: "16px",
+      fontSize: "18px",
       color: "#ffffff",
     },
     txtcnt: {
@@ -100,16 +98,47 @@ const Login = () => {
   return (
     <div className={classes.login}>
       <Grid container className={classes.logingrid}>
-        <Grid item xs={12} sm={12} lg={12} alignItems="center" container spacing={1}>
-          <Grid item  xs={7} sm={6} lg={7}>
+        <Grid
+          style={{ marginTop: "16px", marginBottom: "16px" }}
+          item
+          xs={12}
+          container
+          justify="flex-end"
+        >
+          <Grid item xs={12} lg={2}>
+            <Button
+              variant="text"
+              style={{
+                color: "white",
+                textTransform: "none",
+                textDecoration: "underline",
+              }}
+            >
+              <Link to={`${process.env.PUBLIC_URL}/streamwell_pricing.pdf`} target="_blank" download>
+                Download Pricing
+              </Link>
+            </Button>
+          </Grid>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          lg={12}
+          alignItems="center"
+          container
+          spacing={1}
+          style={{ marginTop: "32px" }}
+        >
+          <Grid item xs={7} sm={6} lg={7}>
             <div className={classes.txtcnt}>
               <p className={classes.maintxt}>{process.env.REACT_APP_NAME}</p>
               <p className={classes.subtxt}>
-                A cloud base streaming platform for fast and smooth live streaming.
+                While Stream is well, All is Well.
               </p>
             </div>
           </Grid>
-          <Grid item xs={12}  sm={6} lg={3} >
+          <Grid item xs={12} sm={6} lg={3}>
             <Paper className={classes.loginform}>
               <p className={classes.welcomemsg}>Welcome back</p>
               <p className={classes.loginmessage}>Login to continue</p>

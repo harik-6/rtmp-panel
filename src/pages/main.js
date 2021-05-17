@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-  Link,
-} from "react-router-dom";
+import { Switch, Route, Redirect, Link } from "react-router-dom";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/HomeRounded";
@@ -25,12 +19,12 @@ const useStyles = makeStyles((theme) =>
       width: "200px",
       backgroundColor: "#121858",
       overflow: "hidden",
-      position:"fixed",
-      top:"0",
-      bottom:"0",
+      position: "fixed",
+      top: "0",
+      bottom: "0",
     },
     routes: {
-      marginLeft:"200px",
+      marginLeft: "200px",
       flex: 1,
       overflow: "visible",
       scrollBehavior: "smooth",
@@ -82,71 +76,65 @@ const Main = () => {
   const changePage = (page) => {
     setActiveTab(page);
   };
-  
+
   return (
     <div className={classes.appmain}>
-      <Router>
-        <div className={classes.sidenav}>
-          <p className={classes.appname}>{process.env.REACT_APP_NAME}</p>
-          <List className={classes.navlist} aria-label="navigation-list">
-            <Link to="/home">
-              <ListItem
-                className={classes.navbtn}
-                disableGutters={true}
-                onClick={() => changePage(1)}
-                button
+      <div className={classes.sidenav}>
+        <p className={classes.appname}>{process.env.REACT_APP_NAME}</p>
+        <List className={classes.navlist} aria-label="navigation-list">
+          <Link to="/home">
+            <ListItem
+              className={classes.navbtn}
+              disableGutters={true}
+              onClick={() => changePage(1)}
+              button
+            >
+              <ListItemIcon
+                className={activeTab === 1 ? classes.iconactive : classes.icon}
               >
-                <ListItemIcon
-                  className={
-                    activeTab === 1 ? classes.iconactive : classes.icon
-                  }
-                >
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText
-                  disableTypography={true}
-                  className={
-                    activeTab === 1 ? classes.navtextactive : classes.navtext
-                  }
-                  primary="Home"
-                />
-              </ListItem>
-            </Link>
-            <Link to="/channels">
-              <ListItem
-                disableGutters={true}
-                onClick={() => changePage(2)}
-                button
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText
+                disableTypography={true}
+                className={
+                  activeTab === 1 ? classes.navtextactive : classes.navtext
+                }
+                primary="Home"
+              />
+            </ListItem>
+          </Link>
+          <Link to="/channels">
+            <ListItem
+              disableGutters={true}
+              onClick={() => changePage(2)}
+              button
+            >
+              <ListItemIcon
+                className={activeTab === 2 ? classes.iconactive : classes.icon}
               >
-                <ListItemIcon
-                  className={
-                    activeTab === 2 ? classes.iconactive : classes.icon
-                  }
-                >
-                  <ChannelIcon />
-                </ListItemIcon>
-                <ListItemText
-                  disableTypography={true}
-                  className={
-                    activeTab === 2 ? classes.navtextactive : classes.navtext
-                  }
-                  primary="Channels"
-                />
-              </ListItem>
-            </Link>
-          </List>
-        </div>
-        <div className={classes.routes}>
-          <Switch>
-            <Route path="/home" component={Player} />
-            <Route path="/channels" component={Channels} />
-            <Route path="" exact>
-              {" "}
-              <Redirect to="/home" />{" "}
-            </Route>
-          </Switch>
-        </div>
-      </Router>
+                <ChannelIcon />
+              </ListItemIcon>
+              <ListItemText
+                disableTypography={true}
+                className={
+                  activeTab === 2 ? classes.navtextactive : classes.navtext
+                }
+                primary="Channels"
+              />
+            </ListItem>
+          </Link>
+        </List>
+      </div>
+      <div className={classes.routes}>
+        <Switch>
+          <Route path="/home" component={Player} />
+          <Route path="/channels" component={Channels} />
+          <Route path="" exact>
+            {" "}
+            <Redirect to="/home" />{" "}
+          </Route>
+        </Switch>
+      </div>
     </div>
   );
 };
