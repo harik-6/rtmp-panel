@@ -207,6 +207,7 @@ const Home = () => {
 
   useEffect(() => {
     loadChannels(false);
+    //eslint-disable-next-line
   }, []);
 
   const classes = useStyles();

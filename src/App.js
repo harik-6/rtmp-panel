@@ -28,7 +28,7 @@ function App() {
     if(url.includes("play")) {
       setPreview(true);
     }
-  });
+  },[]);
   return prev ? (
     <Preview />
   ) : (
