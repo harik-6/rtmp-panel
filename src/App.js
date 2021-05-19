@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./App.scss";
 import Main from "./pages/main";
 import firebase from "firebase";
@@ -6,7 +6,7 @@ import Login from "./pages/login";
 import AppState from "./context/state";
 import AppConext from "./context/context";
 import { BrowserRouter as Router } from "react-router-dom";
-// import Preview from "./pages/preview";
+import Preview from "./pages/preview";
 
 var firebaseConfig = {
   apiKey: process.env.REACT_APP_FB_APIKEY,
@@ -22,7 +22,16 @@ if (firebase.apps.length === 0) {
 }
 
 function App() {
-  return (
+  const [prev, setPreview] = useState(false);
+  useEffect(() => {
+    const url = window.location.href;
+    if(url.includes("play")) {
+      setPreview(true);
+    }
+  });
+  return prev ? (
+    <Preview />
+  ) : (
     <AppState>
       <Router>
         <Auth />

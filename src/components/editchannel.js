@@ -38,10 +38,11 @@ const EditChannel = ({
   const [chkey, setchkey] = useState(channel.key);
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
-  const [chkeyerror, setchkeyerror] = useState(false);
+  // const [chkeyerror, setchkeyerror] = useState(false);
 
   const handleChName = (e) => {
     setchname(e.target.value);
+    handleChKey(e);
   };
 
   const handleChKey = (e) => {
@@ -56,10 +57,10 @@ const EditChannel = ({
           setchnameerror(true);
           return;
         }
-        if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-          setchkeyerror(true);
-          return;
-        }
+        // if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
+        //   setchkeyerror(true);
+        //   return;
+        // }
       }
       setcreating(true);
       const editedchannel = await channelservice.editchannel({
@@ -77,7 +78,7 @@ const EditChannel = ({
 
   const closeDialog = () => {
     setchnameerror(false);
-    setchkeyerror(false);
+    // setchkeyerror(false);
     setcreating(false);
     setchname("");
     setchkey("");
@@ -109,7 +110,7 @@ const EditChannel = ({
             onChange={handleChName}
           />
           {chnameerror && <p style={{ color: "red" }}>Name already exists.</p>}
-          <TextField
+          {/* <TextField
             className={classes.txtfield}
             fullWidth
             id="chkey"
@@ -118,7 +119,7 @@ const EditChannel = ({
             disabled={creating}
             onChange={handleChKey}
           />
-          {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>}
+          {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>} */}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

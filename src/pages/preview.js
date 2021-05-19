@@ -3,6 +3,7 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { IconButton } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import RefreshIcon from "@material-ui/icons/RefreshRounded";
+import CryptoJS from "crypto-js";
 
 const player_width = 640 * 1.75;
 const player_height = 360 * 1.75;
@@ -51,9 +52,13 @@ const Preview = () => {
   };
 
   useEffect(() => {
-      const url = window.location.href;
-      const replaced = url.replace("preview","hls")+".m3u8";
-      setHttpLink(replaced)
+    const url = window.location.href;
+    const sanitized = url.split("?v=")[1];
+    // console.log(sanitized);
+    const dec = CryptoJS.DES.decrypt(sanitized,process.env.REACT_APP_ENCKEY);
+    const hls = dec.toString(CryptoJS.enc.Utf8);
+    // console.log(hls);
+    setHttpLink(hls);
   }, []);
 
   const classes = useStyles();

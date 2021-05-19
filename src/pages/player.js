@@ -173,6 +173,7 @@ const Home = () => {
 
   const closeCreatepop = () => {
     setOpenForm(false);
+    closeMenu();
   };
 
   const openCreateChannelForm = () => {
@@ -186,7 +187,7 @@ const Home = () => {
 
   const onVideoStart = () => {
     setChannelLive(true);
-  }
+  };
 
   const onVideoError = () => {
     setChannelLive(false);
@@ -196,6 +197,12 @@ const Home = () => {
   const playVideoAgain = () => {
     setVideoError(false);
     // setChannelLive(true);
+  };
+
+  const rebootRtmp = () => {
+    closeMenu();
+    setloading(true);
+    setTimeout(() => loadChannels(true), 3000);
   };
 
   useEffect(() => {
@@ -320,6 +327,17 @@ const Home = () => {
                   </Paper>
                 </Grid>
               </Grid>
+              <Menu
+                id="profile-avatar-menu"
+                anchorEl={anchorProfileEl}
+                keepMounted
+                open={Boolean(anchorProfileEl)}
+                onClose={closeProfieMenu}
+                className={classes.profilemenu}
+              >
+                <MenuItem onClick={rebootRtmp}>Reboot</MenuItem>
+                <MenuItem onClick={logoutUser}>Logout</MenuItem>
+              </Menu>
             </>
           )}
         </Grid>
@@ -364,16 +382,6 @@ const Home = () => {
       >
         <PlusIcon style={{ color: "white", fontSize: "32px" }} />
       </IconButton>
-      <Menu
-        id="profile-avatar-menu"
-        anchorEl={anchorProfileEl}
-        keepMounted
-        open={Boolean(anchorProfileEl)}
-        onClose={closeProfieMenu}
-        className={classes.profilemenu}
-      >
-        <MenuItem onClick={logoutUser}>Logout</MenuItem>
-      </Menu>
     </div>
   );
 };

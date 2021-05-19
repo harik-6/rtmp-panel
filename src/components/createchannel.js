@@ -33,7 +33,7 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
   const [chkey, setchkey] = useState("");
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
-  const [chkeyerror, setchkeyerror] = useState(false);
+  // const [chkeyerror, setchkeyerror] = useState(false);
 
 
   const handleChName = (e) => {
@@ -42,6 +42,7 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
 
   const handleChKey = (e) => {
     setchkey(e.target.value);
+    handleChName(e);
   };
 
   const createNewChannel = async () => {
@@ -52,10 +53,10 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
             setchnameerror(true);
             return;
           }
-          if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-            setchkeyerror(true);
-            return;
-          }
+          // if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
+          //   setchkeyerror(true);
+          //   return;
+          // }
         }
         setcreating(true);
         const channel = await service.createChannel(user, chname, chkey);
@@ -70,7 +71,7 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
   const closePopup = () => {
     setchname("");
     setchname("");
-    setchkeyerror(false);
+    // setchkeyerror(false);
     setchnameerror(false);
     setcreating(false);
     closeCreatepop();
@@ -101,7 +102,7 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
             onChange={handleChKey}
           />
           {chnameerror && <p style={{ color: "red" }}>Name already exists.</p>}
-          <TextField
+          {/* <TextField
             className={classes.txtfield}
             fullWidth
             id="chname"
@@ -110,7 +111,7 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
             disabled={creating}
             onChange={handleChName}
           />
-          {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>}
+          {chkeyerror && <p style={{ color: "red" }}>Key already exists.</p>} */}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

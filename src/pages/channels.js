@@ -11,15 +11,18 @@ import {
   CircularProgress,
   Snackbar,
   IconButton,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
 import channelservice from "../service/channel.service";
 import AppContext from "../context/context";
 import PlusIcon from "@material-ui/icons/AddRounded";
-import DeleteIcon from "@material-ui/icons/DeleteRounded";
 import EditIcon from "@material-ui/icons/EditRounded";
+import MoreIcon from "@material-ui/icons/MoreVertOutlined";
 import CreateNewChannel from "../components/createchannel";
 import EditChannel from "../components/editchannel";
 import DeleteConfirmationDialog from "../components/deletechannel";
+import CryptoJS from "crypto-js";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -67,7 +70,7 @@ const useStyles = makeStyles((theme) =>
     preloadertxtloader: { fontSize: "20px", marginTop: "16px" },
     tbcell: {
       paddingTop: "4px",
-      paddingBottom: "4px"
+      paddingBottom: "4px",
     },
   })
 );
@@ -85,6 +88,15 @@ const Channels = () => {
   const [openDeleteConfirm, setDeleteConfirm] = useState(false);
   const [openCreateForm, setOpenCreateForm] = useState(false);
   const [errorsnack, seterrorsnack] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const openMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closeMenu = () => {
+    setAnchorEl(null);
+  };
 
   const setActiveChanel = (index) => {
     const actchannel = channels[index];
@@ -117,6 +129,7 @@ const Channels = () => {
   };
 
   const askConfirmation = () => {
+    closeMenu();
     setDeleteConfirm(true);
   };
 
@@ -138,6 +151,12 @@ const Channels = () => {
       actions.setChannles(chs);
       setLoading(false);
     }, 1000);
+  };
+
+  const openPreview = () => {
+    closeMenu();
+    const enc = CryptoJS.DES.encrypt(chnl.httpLink,process.env.REACT_APP_ENCKEY).toString();
+    window.open(`https://streamwell.in/play?v=${enc}`);
   };
 
   return (
@@ -198,22 +217,14 @@ const Channels = () => {
                         </TableCell>
                         <TableCell className={classes.tbcell} align="right">
                           <IconButton
-                            onClick={() => {
-                              setActiveChanel(index);
-                              askConfirmation();
-                            }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                        {/* <TableCell align="right">
-                          <MenuIcon
                             onClick={(event) => {
                               setActiveChanel(index);
                               openMenu(event);
                             }}
-                          />
-                        </TableCell> */}
+                          >
+                            <MoreIcon />
+                          </IconButton>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -221,6 +232,20 @@ const Channels = () => {
               </TableContainer>
             )}
           </Grid>
+          <Menu
+            id="option-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={closeMenu}
+            style={{
+              marginTop:"32px",
+              marginLeft:"-32px"
+            }}
+          >
+            <MenuItem onClick={openPreview}>Preview channel</MenuItem>
+            <MenuItem onClick={askConfirmation}>Delete channel</MenuItem>
+          </Menu>
         </Grid>
       )}
       <CreateNewChannel
@@ -261,7 +286,7 @@ const Channels = () => {
         onClose={closeSnack}
         autoHideDuration={5000}
         message="Channel limit exceeded"
-        key={"err-snack"}
+        key={"limit-snack"}
       />
       <IconButton
         style={{

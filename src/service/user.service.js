@@ -125,7 +125,7 @@ const UserService = {
       });
       return channel.id;
     } catch (error) {
-      console.log("Error in editing channel", error.message);
+      // console.log("Error in editing channel", error.message);
       return null;
     }
   },
