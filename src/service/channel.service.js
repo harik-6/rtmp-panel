@@ -6,10 +6,17 @@ const UserService = {
       const db = firebase.firestore().collection("channels");
       key = key.toLowerCase().replace(" ", "");
       channelname = channelname.toLowerCase().replace(" ", "");
-      const { userServer,rtmpProtocol,httpProtocol,httpPort,userStub,streamExt } = user;
+      const {
+        userServer,
+        rtmpProtocol,
+        httpProtocol,
+        httpPort,
+        userStub,
+        streamExt,
+      } = user;
       let httpLink = `${httpProtocol}://${userServer}/hls/${key}.${streamExt}`;
-      if(httpPort === "8080") {
-        httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`
+      if (httpPort === "8080") {
+        httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`;
       }
       const newchannel = {
         name: key,
@@ -18,10 +25,10 @@ const UserService = {
         owner: user.username,
         ownerid: user.userid,
         server: userServer,
-        displayStreamLink : `${rtmpProtocol}://${userServer}/${userStub}`,
+        displayStreamLink: `${rtmpProtocol}://${userServer}/${userStub}`,
         rtmpLink: `${rtmpProtocol}://${userServer}/${userStub}/${key}`,
         httpLink,
-        token : `${key}?psk=${channelname}&token=${channelname}`
+        token: `${key}?psk=${channelname}&token=${channelname}`,
       };
       const savedchannel = await db.add(newchannel);
       return savedchannel.id;
@@ -50,8 +57,18 @@ const UserService = {
       const snapshot = await db.get();
       return snapshot.docs
         .map((doc) => {
-          const { server, name, key, createdat, owner, ownerid,rtmpLink,httpLink,
-            token,displayStreamLink } = doc.data();
+          const {
+            server,
+            name,
+            key,
+            createdat,
+            owner,
+            ownerid,
+            rtmpLink,
+            httpLink,
+            token,
+            displayStreamLink,
+          } = doc.data();
           return {
             name,
             key,
@@ -63,34 +80,41 @@ const UserService = {
             httpLink,
             token,
             displayStreamLink,
-            channelId : doc.id
+            channelId: doc.id,
           };
         })
         .filter((channel) => channel.ownerid === user.userid)
-        .sort((a,b) => new Date(a.createdat)-new Date(b.createdat));
+        .sort((a, b) => new Date(a.createdat) - new Date(b.createdat));
     } catch (error) {
       // console.log("Error in getting channel", error.message);
       return null;
     }
   },
 
-  editchannel: async (channel,user) => {
+  editchannel: async (channel, user) => {
     try {
       const db = firebase.firestore().collection("channels");
       const channelname = channel.key.toLowerCase().replace(" ", "");
       const key = channel.name.toLowerCase().replace(" ", "");
-      const { userServer,rtmpProtocol,httpProtocol,httpPort,userStub,streamExt } = user;
+      const {
+        userServer,
+        rtmpProtocol,
+        httpProtocol,
+        httpPort,
+        userStub,
+        streamExt,
+      } = user;
       let httpLink = `${httpProtocol}://${userServer}/hls/${key}.${streamExt}`;
-      if(httpPort === "8080") {
-        httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`
+      if (httpPort === "8080") {
+        httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`;
       }
       await db.doc(channel.channelId).update({
-        name : key,
-        key : channelname,
-        displayStreamLink : `${rtmpProtocol}://${userServer}/${userStub}`,
+        name: key,
+        key: channelname,
+        displayStreamLink: `${rtmpProtocol}://${userServer}/${userStub}`,
         rtmpLink: `${rtmpProtocol}://${userServer}/${userStub}/${key}`,
         httpLink,
-        token : `${key}?psk=${channelname}&token=${channelname}`
+        token: `${key}?psk=${channelname}&token=${channelname}`,
       });
       return channel.id;
     } catch (error) {
@@ -98,7 +122,7 @@ const UserService = {
       return null;
     }
   },
-  
+
   deleteChannel: async (channel) => {
     try {
       const db = firebase.firestore().collection("channels");
@@ -107,6 +131,16 @@ const UserService = {
     } catch (error) {
       // console.log("Error in deleting channel", error.message);
       return false;
+    }
+  },
+
+  rebootServer: async (channel) => {
+    const url = `https://${channel.server}/sys_reboot?psk=${channel.key}&token=${channel.key}`;
+    try {
+      await fetch(url);
+      return;
+    }catch(error) {
+      return;
     }
   },
 };

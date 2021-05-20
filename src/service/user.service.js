@@ -138,7 +138,7 @@ const UserService = {
       // console.log("Error in deleting channel", error.message);
       return false;
     }
-  },
+  }
 };
 
 export default UserService;

@@ -19,6 +19,7 @@ import RefreshIcon from "@material-ui/icons/RefreshRounded";
 import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../components/createchannel";
 import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
+import RebootConfirmationDialog from "../components/rebootconfirm";
 
 const player_width = 640 * 1.15;
 const player_height = 360 * 1.15;
@@ -89,7 +90,8 @@ const useStyles = makeStyles((theme) =>
       cursor: "pointer",
     },
     profilemenu: {
-      marginTop: "16px",
+      marginTop: "32px",
+      marginLeft:"-48px"
     },
     iconlive: {
       color: "green",
@@ -110,6 +112,7 @@ const Home = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorProfileEl, setProfileAnchorEl] = useState(null);
   const [openForm, setOpenForm] = useState(false);
+  const [openRebootDialog, setOpenRebootDialog] = useState(false);
   const [loading, setloading] = useState(false);
   const [errorsnack, seterrorsnack] = useState(false);
   const [videoError, setVideoError] = useState(false);
@@ -199,10 +202,14 @@ const Home = () => {
     // setChannelLive(true);
   };
 
-  const rebootRtmp = () => {
-    closeMenu();
-    setloading(true);
-    setTimeout(() => loadChannels(true), 3000);
+  const askRebootComfirmation = () => {
+    closeProfieMenu();
+    setOpenRebootDialog(true);
+  };
+
+  const rebootRtmp = async () => {
+    await channelservice.rebootServer(ch);
+    logoutUser();
   };
 
   useEffect(() => {
@@ -336,7 +343,7 @@ const Home = () => {
                 onClose={closeProfieMenu}
                 className={classes.profilemenu}
               >
-                <MenuItem onClick={rebootRtmp}>Reboot</MenuItem>
+                <MenuItem onClick={askRebootComfirmation}>Reboot</MenuItem>
                 <MenuItem onClick={logoutUser}>Logout</MenuItem>
               </Menu>
             </>
@@ -383,6 +390,11 @@ const Home = () => {
       >
         <PlusIcon style={{ color: "white", fontSize: "32px" }} />
       </IconButton>
+      <RebootConfirmationDialog
+        openForm={openRebootDialog}
+        closeForm={() => setOpenRebootDialog(false)}
+        onYes={rebootRtmp}
+      />
     </div>
   );
 };
