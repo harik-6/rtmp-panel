@@ -16,6 +16,11 @@ const AppReducer = (state, action) => {
         ...state,
         channels: action.payload,
       };
+    case "sethealth":
+      return {
+        ...state,
+        healthList: action.payload,
+      };
     default:
       return state;
   }

@@ -94,11 +94,11 @@ const useStyles = makeStyles((theme) =>
       marginLeft:"-48px"
     },
     iconlive: {
-      color: "green",
+      color: "#32CD32",
       marginRight: "4px",
     },
     iconidle: {
-      color: "grey",
+      color: "red",
       marginRight: "4px",
     },
   })

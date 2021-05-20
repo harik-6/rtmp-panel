@@ -139,8 +139,22 @@ const UserService = {
     try {
       await fetch(url);
       return;
-    }catch(error) {
+    } catch (error) {
       return;
+    }
+  },
+
+  checkChannelHealth: async (channel) => {
+    try {
+      const response = await fetch(channel.httpLink);
+      if (response.status >= 200 && response.status <= 205) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log("error");
+      return false;
     }
   },
 };

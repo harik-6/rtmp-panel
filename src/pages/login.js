@@ -7,7 +7,7 @@ import {
   Button,
   CircularProgress,
 } from "@material-ui/core";
-import {Link} from "react-router-dom";
+// import {Link} from "react-router-dom";
 import AppConext from "../context/context";
 import service from "../service/user.service";
 
@@ -114,9 +114,9 @@ const Login = () => {
                 textDecoration: "underline",
               }}
             >
-              <Link to={`${process.env.PUBLIC_URL}/streamwell_pricing.pdf`} target="_blank" download>
+              {/* <Link to={`${process.env.PUBLIC_URL}/streamwell_pricing.pdf`} target="_blank" download>
                 Download Pricing
-              </Link>
+              </Link> */}
             </Button>
           </Grid>
         </Grid>

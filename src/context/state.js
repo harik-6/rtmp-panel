@@ -4,6 +4,7 @@ import AppContext from "./context";
 const initialState = {
   user: null,
   channels: [],
+  healthList : null
 };
 
 const AppState = (props) => {
@@ -29,6 +30,13 @@ const AppState = (props) => {
     });
   };
 
+  const setHealth = (hlist) => {
+    dispatch({
+      type: "sethealth",
+      payload : hlist
+    });
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -37,6 +45,7 @@ const AppState = (props) => {
           loginUser,
           setChannles,
           logout,
+          setHealth
         },
       }}
     >
