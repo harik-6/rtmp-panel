@@ -145,7 +145,6 @@ const ChannelService = {
   },
   getChannelDetailsByName: async (channelName) => {
     try {
-      console.log("Channel name",channelName);
       const db = firebase.firestore().collection("channels");
       const snapshot = await db.get();
       const filterted = snapshot.docs
@@ -158,7 +157,6 @@ const ChannelService = {
           };
         })
         .filter((channel) => channel.name === channelName);
-      console.log("filteredchannesl",filterted);
       if(filterted.length===0) return null;
       return filterted[0].httpLink;
     } catch (error) {
@@ -175,7 +173,7 @@ const ChannelService = {
         return false;
       }
     } catch (error) {
-      console.log("error");
+      // console.log("error");
       return false;
     }
   },

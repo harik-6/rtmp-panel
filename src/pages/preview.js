@@ -58,7 +58,6 @@ const Preview = () => {
       window.location.href = process.env.REACT_APP_APPURL;
     }
     const hlsLink = await channelService.getChannelDetailsByName(channelName);
-    console.log("hls link ", hlsLink);
     if (hlsLink === null) {
       window.location.href = process.env.REACT_APP_APPURL;
     }
@@ -76,7 +75,7 @@ const Preview = () => {
         {videoError ? (
           <div className={classes.viderrcnt}>
             <p className={classes.viderrormsg}>
-              Video is unavailabe right now.Try again.{" "}
+              {" "}
             </p>
             <IconButton
               color="primary"
