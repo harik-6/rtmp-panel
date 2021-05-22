@@ -1,6 +1,6 @@
 import firebase from "firebase";
 
-const UserService = {
+const ChannelService = {
   createChannel: async (user, channelname, key) => {
     try {
       const db = firebase.firestore().collection("channels");
@@ -143,7 +143,29 @@ const UserService = {
       return;
     }
   },
-
+  getChannelDetailsByName: async (channelName) => {
+    try {
+      console.log("Channel name",channelName);
+      const db = firebase.firestore().collection("channels");
+      const snapshot = await db.get();
+      const filterted = snapshot.docs
+        .map((doc) => {
+          const { name, key, httpLink } = doc.data();
+          return {
+            name,
+            key,
+            httpLink,
+          };
+        })
+        .filter((channel) => channel.name === channelName);
+      console.log("filteredchannesl",filterted);
+      if(filterted.length===0) return null;
+      return filterted[0].httpLink;
+    } catch (error) {
+      // console.log("Error in deleting channel", error.message);
+      return null;
+    }
+  },
   checkChannelHealth: async (channel) => {
     try {
       const response = await fetch(channel.httpLink);
@@ -159,4 +181,4 @@ const UserService = {
   },
 };
 
-export default UserService;
+export default ChannelService;

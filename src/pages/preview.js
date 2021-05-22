@@ -3,7 +3,7 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { IconButton } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import RefreshIcon from "@material-ui/icons/RefreshRounded";
-import CryptoJS from "crypto-js";
+import channelService from "../service/channel.service";
 
 const player_width = 640 * 1.75;
 const player_height = 360 * 1.75;
@@ -51,14 +51,22 @@ const Preview = () => {
     setVideoError(false);
   };
 
-  useEffect(() => {
+  const setHlsLink = async () => {
     const url = window.location.href;
-    const sanitized = url.split("?v=")[1];
-    // console.log(sanitized);
-    const dec = CryptoJS.DES.decrypt(sanitized,process.env.REACT_APP_ENCKEY);
-    const hls = dec.toString(CryptoJS.enc.Utf8);
-    // console.log(hls);
-    setHttpLink(hls);
+    const channelName = url.split("&channel=")[1];
+    if ((channelName || "").length === 0) {
+      window.location.href = process.env.REACT_APP_APPURL;
+    }
+    const hlsLink = await channelService.getChannelDetailsByName(channelName);
+    console.log("hls link ", hlsLink);
+    if (hlsLink === null) {
+      window.location.href = process.env.REACT_APP_APPURL;
+    }
+    setHttpLink(hlsLink);
+  };
+
+  useEffect(() => {
+    setHlsLink();
   }, []);
 
   const classes = useStyles();

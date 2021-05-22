@@ -23,12 +23,15 @@ if (firebase.apps.length === 0) {
 
 function App() {
   const [prev, setPreview] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const url = window.location.href;
-    if(url.includes("play")) {
+    if (url.includes("play")) {
       setPreview(true);
     }
-  },[]);
+    setLoading(false);
+  }, []);
+  if (loading) return <></>;
   return prev ? (
     <Preview />
   ) : (

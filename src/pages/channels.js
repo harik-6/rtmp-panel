@@ -23,7 +23,6 @@ import HealthIcon from "@material-ui/icons/FiberManualRecordRounded";
 import CreateNewChannel from "../components/createchannel";
 import EditChannel from "../components/editchannel";
 import DeleteConfirmationDialog from "../components/deletechannel";
-import CryptoJS from "crypto-js";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -197,13 +196,8 @@ const Channels = () => {
 
   const openPreview = () => {
     closeMenu();
-    const enc = CryptoJS.DES.encrypt(
-      chnl.httpLink,
-      process.env.REACT_APP_ENCKEY
-    ).toString();
-    window.open(`https://streamwell.in/play?v=${enc}`);
+    window.open(`${process.env.REACT_APP_APPURL}?page=play&channel=${chnl.name}`);
   };
-
   const updateActiveCount = (hlthList) => {
     const act = hlthList.filter((value) => value === true);
     setActiveChannelCount(act.length);
