@@ -21,7 +21,7 @@ import useStyles from "./player.styles";
 const player_width = 640 * 1.15;
 const player_height = 360 * 1.15;
 
-const Home = () => {
+const Home = ({ rebootFlag }) => {
   const { user, channels, actions } = useContext(AppContext);
   const [chlist, setchlist] = useState([]);
   const [ch, setCh] = useState(null);
@@ -60,7 +60,7 @@ const Home = () => {
       chs = await channelservice.getChannels(user);
       actions.setChannles(chs);
     } else {
-      if (channels.length === 0) {
+      if (channels===null) {
         chs = await channelservice.getChannels(user);
         actions.setChannles(chs);
       } else {
@@ -98,8 +98,18 @@ const Home = () => {
     setChannelLive(false);
   };
 
+  const rebootServer = async () => {
+    if (channels !== null && channels.length > 0) {
+      await channelservice.rebootServer(channels[0]);
+      actions.logout();
+    }
+  };
+
   useEffect(() => {
     loadChannels(false);
+    if (rebootFlag) {
+      rebootServer();
+    }
     //eslint-disable-next-line
   }, []);
 
@@ -170,6 +180,7 @@ const Home = () => {
                     playing={true}
                     onError={onVideoError}
                     onStart={onVideoStart}
+                    onPlay={onVideoStart}
                   />
                 </div>
               </Grid>

@@ -22,7 +22,6 @@ import Channels from "../channels/channels";
 import useStyles from "./main.styles";
 import AppContext from "../../context/context";
 import Users from "../users/users";
-import channelservice from "../../service/channel.service";
 
 const Main = () => {
   const classes = useStyles();
@@ -30,6 +29,7 @@ const Main = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [openRebootDialog, setOpenRebootDialog] = useState(false);
   const [anchorProfileEl, setProfileAnchorEl] = useState(null);
+  const [reboot, setReboot] = useState(false);
 
   const logoutUser = () => {
     actions.logout();
@@ -48,14 +48,6 @@ const Main = () => {
   const askRebootComfirmation = () => {
     closeProfieMenu();
     setOpenRebootDialog(true);
-  };
-
-  const RebootRtmp = async () => {
-    const { channels } = useContext(AppContext);
-    if (channels !== null) {
-      await channelservice.rebootServer(channels[0]);
-    }
-    logoutUser();
   };
 
   const isAdmin = user.userid === process.env.REACT_APP_ADMINID;
@@ -159,7 +151,7 @@ const Main = () => {
         <Switch>
           <Route
             path="/home"
-            component={Player}
+            component={() => <Player rebootFlag={reboot} />}
           />
           <Route path="/channels" component={Channels} />
           {isAdmin && <Route path="/users" component={Users} />}
@@ -177,13 +169,15 @@ const Main = () => {
         onClose={closeProfieMenu}
         className={classes.profilemenu}
       >
-        <MenuItem onClick={askRebootComfirmation}>Reboot</MenuItem>
+        {activeTab === 1 && (
+          <MenuItem onClick={askRebootComfirmation}>Reboot</MenuItem>
+        )}
         <MenuItem onClick={logoutUser}>Logout</MenuItem>
       </Menu>
       <RebootConfirmationDialog
         openForm={openRebootDialog}
         closeForm={() => setOpenRebootDialog(false)}
-        onYes={RebootRtmp}
+        onYes={() => setReboot(true)}
       />
     </div>
   );
