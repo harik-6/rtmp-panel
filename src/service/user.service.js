@@ -80,7 +80,6 @@ const UserService = {
       });
       return allusers;
     } catch (error) {
-      console.log("Error in getting all users", error.message);
       return [];
     }
   },

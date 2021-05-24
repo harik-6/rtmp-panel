@@ -112,7 +112,7 @@ const Channels = () => {
   };
 
   const loadChannels = async () => {
-    actions.setChannles([]);
+    actions.setChannles(null);
     setMsg("Loading channels...");
     setLoading(true);
     setTimeout(async () => {
@@ -158,10 +158,10 @@ const Channels = () => {
     setPageSize(event.target.value);
   };
   const offSet = page * pageSize;
-  const spliceddata = channels.slice(offSet, (page + 1) * pageSize);
+  const spliceddata = (channels||[]).slice(offSet, (page + 1) * pageSize);
 
   useEffect(() => {
-    if (
+    if (channels!==null &&
       channels.length > 0 &&
       (healthList === null || healthList === undefined)
     ) {
@@ -185,7 +185,7 @@ const Channels = () => {
       ) : (
         <Grid className={classes.chcardcnt} container>
           <Grid item lg={12}>
-            {channels.length <= 0 ? (
+            {(channels||[]).length <= 0 ? (
               <>
                 <div className={classes.preloadercnt}>
                   <p className={classes.preloadertxt}>

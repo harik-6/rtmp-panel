@@ -1,11 +1,13 @@
 const AppReducer = (state, action) => {
-  const { type,payload } = action;
+  const { type, payload } = action;
   switch (type) {
     case "logout":
       return {
         ...state,
         user: null,
-        channels: [],
+        channels: null,
+        healthList: null,
+        allUsers: [],
       };
     case "setlogin":
       return {
@@ -25,8 +27,8 @@ const AppReducer = (state, action) => {
     case "setallusers":
       return {
         ...state,
-        allUsers : payload,
-      }
+        allUsers: payload,
+      };
     default:
       return state;
   }

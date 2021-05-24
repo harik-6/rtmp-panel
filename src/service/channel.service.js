@@ -86,7 +86,7 @@ const ChannelService = {
       if (user.userid === process.env.REACT_APP_ADMINID) {
         return allchannles;
       }
-      return allchannles.filter((channel) => channel.ownerid === user.userid);
+      return allchannles.filter((channel) => channel.ownerid === user.userid)||[];
     } catch (error) {
       // console.log("Error in getting channel", error.message);
       return null;

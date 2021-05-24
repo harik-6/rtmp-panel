@@ -3,7 +3,7 @@ import AppReducer from "./reducer";
 import AppContext from "./context";
 const initialState = {
   user: null,
-  channels: [],
+  channels: null,
   healthList : null,
   allUsers : []
 };
