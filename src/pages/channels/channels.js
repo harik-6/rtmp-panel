@@ -31,7 +31,7 @@ const Channels = () => {
   const [chnl, setChannel] = useState(null);
   const [msg, setMsg] = useState("Loading channels...");
   const [healthStatus, setHealthStatus] = useState([]);
-  const [activeChannelCount, setActiveChannelCount] = useState(0);
+  const [activeChannelCount, setActiveChannelCount] = useState(-1);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   // loaders and errors
@@ -139,15 +139,15 @@ const Channels = () => {
   };
 
   const checkHealth = async (channelslist) => {
-    // let healthArr = new Array(channelslist.length);
-    // for (let i = 0; i < channelslist.length; i++) {
-    //   const health = await channelservice.checkChannelHealth(channelslist[i]);
-    //   healthArr[i] = health;
-    // }
-    // const arr = [...healthArr];
-    // setHealthStatus(arr);
-    // updateActiveCount(arr);
-    // actions.setHealth(arr);
+    let healthArr = new Array(channelslist.length);
+    for (let i = 0; i < channelslist.length; i++) {
+      const health = await channelservice.checkChannelHealth(channelslist[i]);
+      healthArr[i] = health;
+    }
+    const arr = [...healthArr];
+    setHealthStatus(arr);
+    updateActiveCount(arr);
+    actions.setHealth(arr);
   };
 
   const handleChangePage = (event, pagenumber) => {
@@ -203,7 +203,13 @@ const Channels = () => {
                     </Grid>
                     <Grid className={classes.countCnt} item lg={5}>
                       <p className={classes.countHeader}>Active channels</p>
-                      <p className={classes.countValue}>{activeChannelCount}</p>
+                      <p className={classes.countValue}>
+                        {activeChannelCount === -1 ? (
+                          <CircularProgress />
+                        ) : (
+                          activeChannelCount
+                        )}
+                      </p>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -235,7 +241,7 @@ const Channels = () => {
                           <TableCell
                             className={classes.tbcell}
                             align="left"
-                          >{`${offSet+index + 1}.`}</TableCell>
+                          >{`${offSet + index + 1}.`}</TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             {channel.name}
                           </TableCell>

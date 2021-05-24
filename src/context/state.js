@@ -4,7 +4,8 @@ import AppContext from "./context";
 const initialState = {
   user: null,
   channels: [],
-  healthList : null
+  healthList : null,
+  allUsers : []
 };
 
 const AppState = (props) => {
@@ -27,6 +28,7 @@ const AppState = (props) => {
   const logout = () => {
     dispatch({
       type: "logout",
+      payload : null
     });
   };
 
@@ -34,6 +36,13 @@ const AppState = (props) => {
     dispatch({
       type: "sethealth",
       payload : hlist
+    });
+  }
+
+  const setAllUsers = (uList) => {
+    dispatch({
+      type: "setallusers",
+      payload : uList
     });
   }
 
@@ -45,7 +54,8 @@ const AppState = (props) => {
           loginUser,
           setChannles,
           logout,
-          setHealth
+          setHealth,
+          setAllUsers
         },
       }}
     >

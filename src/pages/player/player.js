@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Grid,
   Paper,
@@ -9,7 +8,6 @@ import {
   MenuItem,
   Snackbar,
   IconButton,
-  Avatar,
 } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import AppContext from "../../context/context";
@@ -18,77 +16,12 @@ import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../../components/createchannel";
 import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
-import RebootConfirmationDialog from "../../components/rebootconfirm";
+import useStyles from './player.styles';
 
 const player_width = 640 * 1.15;
 const player_height = 360 * 1.15;
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    home: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
-    },
-    videoplayer: {
-      height: player_height + "px",
-      width: player_width + "px",
-      backgroundColor: "#000000",
-    },
-    rtmpinfo: {
-      marginTop: theme.spacing(3),
-    },
-    urls: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    urlheader: {
-      fontWeight: "bold",
-    },
-    urlvalue: {
-      padding: "8px",
-    },
-    paper: {
-      height: "auto",
-      padding: theme.spacing(1),
-    },
-    actioncnt: {
-      height: "48px",
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(1),
-    },
-    txtfield: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-    },
-    preloadercnt: {
-      height: "700px",
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    preloadertxt: { fontSize: "20px", marginTop: "16px" },
-    avatar: {
-      backgroundColor: "#121858",
-      width: theme.spacing(4.5),
-      height: theme.spacing(4.5),
-      cursor: "pointer",
-    },
-    profilemenu: {
-      marginTop: "32px",
-      marginLeft: "-48px",
-    },
-    iconlive: {
-      color: "#32CD32",
-      marginRight: "4px",
-    },
-    iconidle: {
-      color: "red",
-      marginRight: "4px",
-    },
-  })
-);
+
 
 const Home = () => {
   const { user, channels, actions } = useContext(AppContext);
@@ -96,9 +29,7 @@ const Home = () => {
   const [ch, setCh] = useState(null);
   // preloaders and errors
   const [anchorEl, setAnchorEl] = useState(null);
-  const [anchorProfileEl, setProfileAnchorEl] = useState(null);
   const [openForm, setOpenForm] = useState(false);
-  const [openRebootDialog, setOpenRebootDialog] = useState(false);
   const [loading, setloading] = useState(false);
   const [errorsnack, seterrorsnack] = useState(false);
   const [isLive, setChannelLive] = useState(false);
@@ -106,14 +37,6 @@ const Home = () => {
   const changeRtmp = (index) => {
     setCh(chlist[index]);
     closeMenu();
-  };
-
-  const openProfileMenu = (event) => {
-    setProfileAnchorEl(event.currentTarget);
-  };
-
-  const closeProfieMenu = () => {
-    setProfileAnchorEl(null);
   };
 
   const openMenu = (event) => {
@@ -132,9 +55,7 @@ const Home = () => {
     seterrorsnack(false);
   };
 
-  const logoutUser = () => {
-    actions.logout();
-  };
+
 
   const loadChannels = async (forceload) => {
     setloading(true);
@@ -181,15 +102,7 @@ const Home = () => {
     setChannelLive(false);
   };
 
-  const askRebootComfirmation = () => {
-    closeProfieMenu();
-    setOpenRebootDialog(true);
-  };
-
-  const rebootRtmp = async () => {
-    await channelservice.rebootServer(ch);
-    logoutUser();
-  };
+ 
 
   useEffect(() => {
     loadChannels(false);
@@ -226,8 +139,8 @@ const Home = () => {
               )}
             </Grid>
             {chlist.length > 0 && (
-              <Grid item container justify="flex-end" lg={4}>
-                <Grid lg={6}>
+              <Grid item container lg={5}>
+                <Grid lg={4}>
                   <Button
                     aria-controls="change-channel-menu"
                     aria-haspopup="true"
@@ -240,11 +153,6 @@ const Home = () => {
                 </Grid>
               </Grid>
             )}
-            <Grid item lg={1}>
-              <Avatar onClick={openProfileMenu} className={classes.avatar}>
-                {(user.username || "S")[0].toUpperCase()}
-              </Avatar>
-            </Grid>
           </Grid>
           {ch === null ? (
             <React.Fragment>
@@ -298,17 +206,6 @@ const Home = () => {
                   </Paper>
                 </Grid>
               </Grid>
-              <Menu
-                id="profile-avatar-menu"
-                anchorEl={anchorProfileEl}
-                keepMounted
-                open={Boolean(anchorProfileEl)}
-                onClose={closeProfieMenu}
-                className={classes.profilemenu}
-              >
-                <MenuItem onClick={askRebootComfirmation}>Reboot</MenuItem>
-                <MenuItem onClick={logoutUser}>Logout</MenuItem>
-              </Menu>
             </>
           )}
         </Grid>
@@ -321,6 +218,7 @@ const Home = () => {
           loadChannels(true);
         }}
       />
+      
       <Menu
         id="switch-channel-menu"
         anchorEl={anchorEl}
@@ -353,11 +251,7 @@ const Home = () => {
       >
         <PlusIcon style={{ color: "white", fontSize: "32px" }} />
       </IconButton>
-      <RebootConfirmationDialog
-        openForm={openRebootDialog}
-        closeForm={() => setOpenRebootDialog(false)}
-        onYes={rebootRtmp}
-      />
+      
     </div>
   );
 };
