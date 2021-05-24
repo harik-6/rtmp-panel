@@ -15,7 +15,6 @@ import ReactPlayer from "react-player";
 import AppContext from "../context/context";
 import channelservice from "../service/channel.service";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
-import RefreshIcon from "@material-ui/icons/RefreshRounded";
 import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../components/createchannel";
 import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
