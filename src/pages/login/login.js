@@ -1,71 +1,18 @@
 import React, { useState, useContext } from "react";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Grid,
   Paper,
   TextField,
   Button,
   CircularProgress,
+  InputAdornment,
 } from "@material-ui/core";
 // import {Link} from "react-router-dom";
-import AppConext from "../context/context";
-import service from "../service/user.service";
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    login: {
-      height: "100%",
-      width: "100%",
-      backgroundImage: `url(${process.env.PUBLIC_URL}/bg2.jpg)`,
-      overflowX: "hidden",
-    },
-    loginform: {
-      height: "auto",
-      paddingLeft: theme.spacing(3),
-      paddingRight: theme.spacing(3),
-    },
-    txtfield: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-    },
-    welcomemsg: {
-      textAlign: "center",
-      fontSize: "20px",
-      fontWeight: "bold",
-      paddingTop: theme.spacing(3),
-    },
-    loginmessage: {
-      textAlign: "center",
-      fontSize: "14px",
-      paddingBottom: theme.spacing(4),
-    },
-    loginbtn: {
-      marginTop: theme.spacing(5),
-      marginBottom: theme.spacing(6),
-    },
-    maintxt: {
-      fontSize: "100px",
-      color: "#ffffff",
-      fontWeight: "bold",
-    },
-    subtxt: {
-      fontSize: "18px",
-      color: "#ffffff",
-    },
-    txtcnt: {
-      padding: theme.spacing(6),
-    },
-    preloadercnt: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-    },
-    preloader: {
-      marginTop: theme.spacing(5),
-      marginBottom: theme.spacing(6),
-    },
-  })
-);
+import EyeOn from "@material-ui/icons/Visibility";
+import EyeOff from "@material-ui/icons/VisibilityOff";
+import AppConext from "../../context/context";
+import service from "../../service/user.service";
+import useStyles from "./login.styles";
 
 const Login = () => {
   const classes = useStyles();
@@ -73,6 +20,7 @@ const Login = () => {
   const [password, setpassword] = useState("");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const { actions } = useContext(AppConext);
 
   const handleusername = (e) => {
@@ -82,6 +30,7 @@ const Login = () => {
   const handlepass = (e) => {
     setpassword(e.target.value);
   };
+
   const loginUser = async () => {
     setloginin(true);
     if (username.length > 0 && password.length > 0) {
@@ -94,6 +43,10 @@ const Login = () => {
         actions.loginUser(user);
       }
     }
+  };
+
+  const togglePassword = () => {
+    setShowPass(!showPass);
   };
   return (
     <div className={classes.login}>
@@ -160,9 +113,26 @@ const Login = () => {
                 variant="outlined"
                 id="password"
                 label="Password"
-                type="password"
+                type={showPass ? "text" : "password"}
                 value={password}
                 onChange={handlepass}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {!showPass ? (
+                        <EyeOff
+                          className={classes.eyeIcon}
+                          onClick={togglePassword}
+                        />
+                      ) : (
+                        <EyeOn
+                          className={classes.eyeIcon}
+                          onClick={togglePassword}
+                        />
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
               />
               {logingin ? (
                 <div className={classes.preloadercnt}>

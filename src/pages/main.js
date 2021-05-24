@@ -4,8 +4,8 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/HomeRounded";
 import ChannelIcon from "@material-ui/icons/VideocamRounded";
-import Player from "./player";
-import Channels from "./channels";
+import Player from "./player/player";
+import Channels from "./channels/channels";
 
 const useStyles = makeStyles((theme) =>
   createStyles({

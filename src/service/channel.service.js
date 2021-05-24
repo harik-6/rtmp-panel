@@ -53,38 +53,41 @@ const ChannelService = {
 
   getChannels: async (user) => {
     try {
+      console.log(user);
       const db = firebase.firestore().collection("channels");
       const snapshot = await db.get();
-      return snapshot.docs
-        .map((doc) => {
-          const {
-            server,
-            name,
-            key,
-            createdat,
-            owner,
-            ownerid,
-            rtmpLink,
-            httpLink,
-            token,
-            displayStreamLink,
-          } = doc.data();
-          return {
-            name,
-            key,
-            createdat,
-            owner,
-            ownerid,
-            server,
-            rtmpLink,
-            httpLink,
-            token,
-            displayStreamLink,
-            channelId: doc.id,
-          };
-        })
-        .filter((channel) => channel.ownerid === user.userid)
-        .sort((a, b) => new Date(a.createdat) - new Date(b.createdat));
+      let allchannles = snapshot.docs.map((doc) => {
+        const {
+          server,
+          name,
+          key,
+          createdat,
+          owner,
+          ownerid,
+          rtmpLink,
+          httpLink,
+          token,
+          displayStreamLink,
+        } = doc.data();
+        return {
+          name,
+          key,
+          createdat,
+          owner,
+          ownerid,
+          server,
+          rtmpLink,
+          httpLink,
+          token,
+          displayStreamLink,
+          channelId: doc.id,
+        };
+      });
+      allchannles.sort((a, b) => new Date(a.createdat) - new Date(b.createdat));
+      if (user.userid === process.env.REACT_APP_ADMINID) {
+        return allchannles;
+      }
+      return allchannles.filter((channel) => channel.ownerid === user.userid);
     } catch (error) {
       // console.log("Error in getting channel", error.message);
       return null;
@@ -157,7 +160,7 @@ const ChannelService = {
           };
         })
         .filter((channel) => channel.name === channelName);
-      if(filterted.length===0) return null;
+      if (filterted.length === 0) return null;
       return filterted[0].httpLink;
     } catch (error) {
       // console.log("Error in deleting channel", error.message);

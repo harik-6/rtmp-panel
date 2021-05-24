@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Grid,
   Table,
@@ -12,101 +11,35 @@ import {
   Snackbar,
   IconButton,
   Menu,
-  MenuItem
+  MenuItem,
+  TablePagination,
 } from "@material-ui/core";
-import channelservice from "../service/channel.service";
-import AppContext from "../context/context";
+import channelservice from "../../service/channel.service";
+import AppContext from "../../context/context";
 import PlusIcon from "@material-ui/icons/AddRounded";
 import EditIcon from "@material-ui/icons/EditRounded";
 import MoreIcon from "@material-ui/icons/MoreVertOutlined";
 import HealthIcon from "@material-ui/icons/FiberManualRecordRounded";
-import CreateNewChannel from "../components/createchannel";
-import EditChannel from "../components/editchannel";
-import DeleteConfirmationDialog from "../components/deletechannel";
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    channels: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
-    },
-    chcardcnt: {
-      marginTop: theme.spacing(5),
-    },
-    paper: {
-      height: "160px",
-      padding: theme.spacing(1),
-    },
-    tablecnt: {
-      marginTop: theme.spacing(3),
-      backgroundColor: "#FFFFFF",
-    },
-    paperhead: {
-      textAlign: "center",
-      fontSize: "18px",
-      fontWeight: "bold",
-      marginBottom: theme.spacing(3),
-    },
-    paperbody: {
-      textAlign: "center",
-      fontSize: "56px",
-    },
-    preloadercnt: {
-      height: "400px",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    preloadertxt: { fontSize: "20px", marginTop: "16px" },
-    preloadercntloader: {
-      height: "700px",
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    preloadertxtloader: { fontSize: "20px", marginTop: "16px" },
-    tbcell: {
-      paddingTop: "4px",
-      paddingBottom: "4px",
-    },
-    countCnt: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "#FFFFFF",
-      minHeight: "100px",
-      borderRadius: "8px",
-    },
-    countHeader: {
-      paddingBottom: "8px",
-      paddingTop: "8px",
-    },
-    countValue: {
-      fontSize: "48px",
-      paddingBottom: "16px",
-    },
-  })
-);
+import CreateNewChannel from "../../components/createchannel";
+import EditChannel from "../../components/editchannel";
+import DeleteConfirmationDialog from "../../components/deletechannel";
+import useStyles from "./channel.styles";
 
 const Channels = () => {
   const classes = useStyles();
-
   const { user, channels, actions, healthList } = useContext(AppContext);
   const [chnl, setChannel] = useState(null);
   const [msg, setMsg] = useState("Loading channels...");
   const [healthStatus, setHealthStatus] = useState([]);
   const [activeChannelCount, setActiveChannelCount] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(0);
   // loaders and errors
   const [loading, setLoading] = useState(false);
-  const [openEditForm, setOpenEditForm] = useState(false);
+  const [action, setAction] = useState(null);
   const [openDeleteConfirm, setDeleteConfirm] = useState(false);
-  const [openCreateForm, setOpenCreateForm] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [snack,setSnack] = useState({ open : false,message : "" });
+  const [snack, setSnack] = useState({ open: false, message: "" });
 
   const openMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -123,15 +56,15 @@ const Channels = () => {
 
   const openSnack = () => {
     setSnack({
-      open : true,
-      message : "Channel limit exceeded."
+      open: true,
+      message: "Channel limit exceeded.",
     });
   };
 
   const closeSnack = () => {
     setSnack({
-      open : false,
-      message : ""
+      open: false,
+      message: "",
     });
   };
 
@@ -140,16 +73,16 @@ const Channels = () => {
       openSnack();
       return;
     } else {
-      setOpenCreateForm(true);
+      openActionDialog("add");
     }
   };
 
-  const openEditChannelForm = () => {
-    setOpenEditForm(true);
+  const openActionDialog = (action) => {
+    setAction(action);
   };
 
-  const closeEditChannelForm = () => {
-    setOpenEditForm(false);
+  const closeActionDialog = () => {
+    setAction(null);
   };
 
   const askConfirmation = () => {
@@ -161,10 +94,10 @@ const Channels = () => {
     closeMenu();
     await checkHealth(channels);
     setSnack({
-      open : true,
-      message : "Chanel health recheked."
-    })
-  }
+      open: true,
+      message: "Chanel health recheked.",
+    });
+  };
 
   const deleteChannel = async () => {
     setDeleteConfirm(false);
@@ -172,8 +105,8 @@ const Channels = () => {
     setLoading(true);
     await channelservice.deleteChannel(chnl);
     setSnack({
-      open : true,
-      message : "Channel successfully deleted."
+      open: true,
+      message: "Channel successfully deleted.",
     });
     loadChannels();
   };
@@ -196,7 +129,9 @@ const Channels = () => {
 
   const openPreview = () => {
     closeMenu();
-    window.open(`${process.env.REACT_APP_APPURL}?page=play&channel=${chnl.name}`);
+    window.open(
+      `${process.env.REACT_APP_APPURL}?page=play&channel=${chnl.name}`
+    );
   };
   const updateActiveCount = (hlthList) => {
     const act = hlthList.filter((value) => value === true);
@@ -204,16 +139,26 @@ const Channels = () => {
   };
 
   const checkHealth = async (channelslist) => {
-    let healthArr = new Array(channelslist.length);
-    for (let i = 0; i < channelslist.length; i++) {
-      const health = await channelservice.checkChannelHealth(channelslist[i]);
-      healthArr[i] = health;
-    }
-    const arr = [...healthArr];
-    setHealthStatus(arr);
-    updateActiveCount(arr);
-    actions.setHealth(arr);
+    // let healthArr = new Array(channelslist.length);
+    // for (let i = 0; i < channelslist.length; i++) {
+    //   const health = await channelservice.checkChannelHealth(channelslist[i]);
+    //   healthArr[i] = health;
+    // }
+    // const arr = [...healthArr];
+    // setHealthStatus(arr);
+    // updateActiveCount(arr);
+    // actions.setHealth(arr);
   };
+
+  const handleChangePage = (event, pagenumber) => {
+    setPage(pagenumber);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(event.target.value);
+  };
+  const offSet = page * pageSize;
+  const spliceddata = channels.slice(offSet, (page + 1) * pageSize);
 
   useEffect(() => {
     if (
@@ -263,6 +208,15 @@ const Channels = () => {
                   </Grid>
                 </Grid>
                 <TableContainer className={classes.tablecnt}>
+                  <TablePagination
+                    rowsPerPageOptions={[10, 15, 25]}
+                    component="div"
+                    count={channels.length}
+                    rowsPerPage={pageSize}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                  />
                   <Table aria-label="channel-list">
                     <TableHead>
                       <TableRow>
@@ -276,12 +230,12 @@ const Channels = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {channels.map((channel, index) => (
+                      {spliceddata.map((channel, index) => (
                         <TableRow key={channel.key + " " + index}>
                           <TableCell
                             className={classes.tbcell}
                             align="left"
-                          >{`${index + 1}.`}</TableCell>
+                          >{`${offSet+index + 1}.`}</TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             {channel.name}
                           </TableCell>
@@ -308,7 +262,7 @@ const Channels = () => {
                               size="small"
                               onClick={() => {
                                 setActiveChanel(index);
-                                openEditChannelForm();
+                                openActionDialog("edit");
                               }}
                             >
                               <EditIcon />
@@ -350,17 +304,17 @@ const Channels = () => {
         </Grid>
       )}
       <CreateNewChannel
-        openForm={openCreateForm}
-        closeCreatepop={() => setOpenCreateForm(false)}
+        openForm={action === "add"}
+        closeCreatepop={closeActionDialog}
         successCallback={() => {
-          setOpenCreateForm(false);
+          closeActionDialog();
           loadChannels();
         }}
       />
       {chnl !== null && (
         <EditChannel
-          openForm={openEditForm}
-          closeForm={closeEditChannelForm}
+          openForm={action === "edit"}
+          closeForm={closeActionDialog}
           successCallback={loadChannels}
           channel={chnl}
         />

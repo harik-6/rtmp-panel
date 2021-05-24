@@ -12,13 +12,13 @@ import {
   Avatar,
 } from "@material-ui/core";
 import ReactPlayer from "react-player";
-import AppContext from "../context/context";
-import channelservice from "../service/channel.service";
+import AppContext from "../../context/context";
+import channelservice from "../../service/channel.service";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import PlusIcon from "@material-ui/icons/AddRounded";
-import CreateNewChannel from "../components/createchannel";
+import CreateNewChannel from "../../components/createchannel";
 import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
-import RebootConfirmationDialog from "../components/rebootconfirm";
+import RebootConfirmationDialog from "../../components/rebootconfirm";
 
 const player_width = 640 * 1.15;
 const player_height = 360 * 1.15;

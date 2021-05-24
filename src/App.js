@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import "./App.scss";
 import Main from "./pages/main";
 import firebase from "firebase";
-import Login from "./pages/login";
+import Login from "./pages/login/login";
 import AppState from "./context/state";
 import AppConext from "./context/context";
 import { BrowserRouter as Router } from "react-router-dom";
