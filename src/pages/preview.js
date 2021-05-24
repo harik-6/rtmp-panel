@@ -5,8 +5,8 @@ import ReactPlayer from "react-player";
 import RefreshIcon from "@material-ui/icons/RefreshRounded";
 import channelService from "../service/channel.service";
 
-const player_width = 640 * 1.75;
-const player_height = 360 * 1.75;
+const player_width = 400;
+const player_height = 300;
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -19,19 +19,6 @@ const useStyles = makeStyles((theme) =>
       alignItems: "center",
       backgroundColor: "black",
     },
-    videoplayer: {
-      height: player_height + "px",
-      width: player_width + "px",
-      backgroundColor: "#000000",
-    },
-    viderrcnt: {
-      display: "flex",
-      height: player_height + "px",
-      width: player_width + "px",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-    },
     viderrormsg: {
       paddingBottom: "8px",
       fontSize: "24px",
@@ -43,6 +30,10 @@ const useStyles = makeStyles((theme) =>
 const Preview = () => {
   const [videoError, setVideoError] = useState(false);
   const [httpLink, setHttpLink] = useState("http://errorurl.m3u8");
+  const [playerDimension, setPlayerDimension] = useState({
+    height: 360 * 1.75,
+    width: 640 * 1.75,
+  });
 
   const onVideoError = () => {
     setVideoError(true);
@@ -53,7 +44,16 @@ const Preview = () => {
 
   const setHlsLink = async () => {
     const url = window.location.href;
-    const channelName = url.split("&channel=")[1];
+    const splitted = url.split("&channel=");
+    const channelName = splitted[1];
+    const pageview = splitted[0].split("?page=")[1];
+    
+    if (pageview === "mplay") {
+      setPlayerDimension({
+        height: 300,
+        width: 400,
+      });
+    }
     if ((channelName || "").length === 0) {
       window.location.href = process.env.REACT_APP_APPURL;
     }
@@ -63,7 +63,6 @@ const Preview = () => {
     }
     setHttpLink(hlsLink);
   };
-
   useEffect(() => {
     setHlsLink();
   }, []);
@@ -71,12 +70,26 @@ const Preview = () => {
   const classes = useStyles();
   return (
     <div className={classes.preview}>
-      <div className={classes.videoplayer}>
+      <div
+        style={{
+          height: playerDimension.height + "px",
+          width: playerDimension.width + "px",
+          backgroundColor: "#000000",
+        }}
+      >
         {videoError ? (
-          <div className={classes.viderrcnt}>
-            <p className={classes.viderrormsg}>
-              {" "}
-            </p>
+          <div
+            className={classes.viderrcnt}
+            style={{
+              height: playerDimension.height + "px",
+              width: playerDimension.width + "px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <p className={classes.viderrormsg}> </p>
             <IconButton
               color="primary"
               aria-label="retry video"
@@ -88,8 +101,8 @@ const Preview = () => {
           </div>
         ) : (
           <ReactPlayer
-            width={player_width}
-            height={player_height}
+            width={playerDimension.width}
+            height={playerDimension.height}
             url={httpLink}
             controls={true}
             loop={true}
