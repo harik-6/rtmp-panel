@@ -53,7 +53,6 @@ const ChannelService = {
 
   getChannels: async (user) => {
     try {
-      console.log(user);
       const db = firebase.firestore().collection("channels");
       const snapshot = await db.get();
       let allchannles = snapshot.docs.map((doc) => {

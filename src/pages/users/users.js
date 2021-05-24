@@ -8,7 +8,6 @@ import {
   TableCell,
   TableContainer,
   CircularProgress,
-  Snackbar,
   IconButton,
   TablePagination,
 } from "@material-ui/core";
@@ -19,6 +18,8 @@ import EditIcon from "@material-ui/icons/EditRounded";
 import DeleteIcon from "@material-ui/icons/Delete";
 import useStyles from "./users.styles";
 import CreateNewUser from "../../components/createuser";
+import EditUser from "../../components/edituser";
+import DeleteConfirmationDialog from "../../components/deletechannel";
 
 const Users = () => {
   const classes = useStyles();
@@ -30,21 +31,6 @@ const Users = () => {
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
   const [openDeleteConfirm, setDeleteConfirm] = useState(false);
-  const [snack, setSnack] = useState({ open: false, message: "" });
-
-  const openSnack = () => {
-    setSnack({
-      open: true,
-      message: "Channel limit exceeded.",
-    });
-  };
-
-  const closeSnack = () => {
-    setSnack({
-      open: false,
-      message: "",
-    });
-  };
 
   const openActionDialog = (action) => {
     setAction(action);
@@ -52,6 +38,7 @@ const Users = () => {
 
   const closeActionDialog = () => {
     setAction(null);
+    setActiveUser(null);
   };
 
   const askConfirmation = () => {
@@ -74,6 +61,12 @@ const Users = () => {
       setLoading(false);
     }
   };
+
+  const deleteUser = async () => {
+    setDeleteConfirm(false);
+    await userservice.deleteUser(user,activeUser);
+    loadAllUsers(true);
+  }
 
   const offSet = page * pageSize;
   const spliceddata = allUsers.slice(offSet, (page + 1) * pageSize);
@@ -171,14 +164,6 @@ const Users = () => {
           </Grid>
         </Grid>
       )}
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={snack.open}
-        autoHideDuration={3000}
-        message={snack.message}
-        onClose={closeSnack}
-        key={"snack"}
-      />
       <IconButton
         style={{
           position: "fixed",
@@ -195,6 +180,24 @@ const Users = () => {
         closeCreatepop={closeActionDialog}
         successCallback={() => loadAllUsers(true)}
       />
+      {activeUser !== null && (
+        <EditUser
+          openForm={action === "edit"}
+          closeCreatepop={closeActionDialog}
+          successCallback={() => loadAllUsers(true)}
+          userToEdit={activeUser}
+        />
+      )}
+      {activeUser !== null && (
+        <DeleteConfirmationDialog
+          openForm={openDeleteConfirm}
+          closeForm={() => setDeleteConfirm(false)}
+          onDeleteYes={deleteUser}
+          channel={{
+            name: activeUser.username,
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -26,11 +26,9 @@ import channelservice from "../../service/channel.service";
 
 const Main = () => {
   const classes = useStyles();
-  const { user, actions, channels } = useContext(AppContext);
+  const { user, actions } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(1);
-  const [rebootActiveChannel, setRebootActiveChannel] = useState(null);
   const [openRebootDialog, setOpenRebootDialog] = useState(false);
-
   const [anchorProfileEl, setProfileAnchorEl] = useState(null);
 
   const logoutUser = () => {
@@ -51,8 +49,10 @@ const Main = () => {
     closeProfieMenu();
     setOpenRebootDialog(true);
   };
-  const rebootRtmp = async () => {
-    if (channels !== null && channels.length > 0) {
+
+  const RebootRtmp = async () => {
+    const { channels } = useContext(AppContext);
+    if (channels !== null) {
       await channelservice.rebootServer(channels[0]);
     }
     logoutUser();
@@ -157,7 +157,10 @@ const Main = () => {
           </Toolbar>
         </AppBar>
         <Switch>
-          <Route path="/home" component={() => <Player />} />
+          <Route
+            path="/home"
+            component={Player}
+          />
           <Route path="/channels" component={Channels} />
           {isAdmin && <Route path="/users" component={Users} />}
           <Route path="" exact>
@@ -180,7 +183,7 @@ const Main = () => {
       <RebootConfirmationDialog
         openForm={openRebootDialog}
         closeForm={() => setOpenRebootDialog(false)}
-        onYes={rebootRtmp}
+        onYes={RebootRtmp}
       />
     </div>
   );

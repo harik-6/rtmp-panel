@@ -16,12 +16,10 @@ import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../../components/createchannel";
 import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
-import useStyles from './player.styles';
+import useStyles from "./player.styles";
 
 const player_width = 640 * 1.15;
 const player_height = 360 * 1.15;
-
-
 
 const Home = () => {
   const { user, channels, actions } = useContext(AppContext);
@@ -54,8 +52,6 @@ const Home = () => {
   const closeSnack = () => {
     seterrorsnack(false);
   };
-
-
 
   const loadChannels = async (forceload) => {
     setloading(true);
@@ -102,8 +98,6 @@ const Home = () => {
     setChannelLive(false);
   };
 
- 
-
   useEffect(() => {
     loadChannels(false);
     //eslint-disable-next-line
@@ -119,41 +113,43 @@ const Home = () => {
         </div>
       ) : (
         <Grid container>
-          <Grid
-            item
-            lg={12}
-            container
-            direction="row"
-            justify="flex-end"
-            className={classes.actioncnt}
-          >
-            <Grid item container alignItems="center" lg={5}>
-              {isLive ? (
-                <React.Fragment>
-                  <RoundIcon className={classes.iconlive} /> Live
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <RoundIcon className={classes.iconidle} /> Idle
-                </React.Fragment>
+          {ch !== null && (
+            <Grid
+              item
+              lg={12}
+              container
+              direction="row"
+              justify="flex-end"
+              className={classes.actioncnt}
+            >
+              <Grid item container alignItems="center" lg={5}>
+                {isLive ? (
+                  <React.Fragment>
+                    <RoundIcon className={classes.iconlive} /> Live
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <RoundIcon className={classes.iconidle} /> Idle
+                  </React.Fragment>
+                )}
+              </Grid>
+              {chlist.length > 0 && (
+                <Grid item container lg={5}>
+                  <Grid lg={4}>
+                    <Button
+                      aria-controls="change-channel-menu"
+                      aria-haspopup="true"
+                      onClick={openMenu}
+                      disableElevation
+                    >
+                      {ch.name}
+                      <DownArrowIcon />
+                    </Button>
+                  </Grid>
+                </Grid>
               )}
             </Grid>
-            {chlist.length > 0 && (
-              <Grid item container lg={5}>
-                <Grid lg={4}>
-                  <Button
-                    aria-controls="change-channel-menu"
-                    aria-haspopup="true"
-                    onClick={openMenu}
-                    disableElevation
-                  >
-                    {ch.name}
-                    <DownArrowIcon />
-                  </Button>
-                </Grid>
-              </Grid>
-            )}
-          </Grid>
+          )}
           {ch === null ? (
             <React.Fragment>
               <div className={classes.preloadercnt}>
@@ -218,7 +214,7 @@ const Home = () => {
           loadChannels(true);
         }}
       />
-      
+
       <Menu
         id="switch-channel-menu"
         anchorEl={anchorEl}
@@ -251,7 +247,6 @@ const Home = () => {
       >
         <PlusIcon style={{ color: "white", fontSize: "32px" }} />
       </IconButton>
-      
     </div>
   );
 };

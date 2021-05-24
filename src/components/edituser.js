@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormControlLabel,
   RadioGroup,
-  Radio
+  Radio,
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 import AppContext from "../context/context";
@@ -31,22 +31,16 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
+const EditUser = ({
+  openForm,
+  closeCreatepop,
+  successCallback,
+  userToEdit,
+}) => {
   const { user, allUsers } = useContext(AppContext);
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
-  const [userObj, setUserObj] = useState({
-    username: "",
-    password: "",
-    channelLimit: 1,
-    userStub: "live",
-    userServer: "",
-    streamExt: "m3u8",
-    httpProtocol: "http",
-    httpPort: "8080",
-    rtmpProtocol: "rtmp",
-    rtmpPort: "1935",
-  });
+  const [userObj, setUserObj] = useState(userToEdit);
 
   const handleChange = (e) => {
     setUserObj({
@@ -55,12 +49,14 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     });
   };
 
-  const addNewUser= async () => {
+  const editExistingUser = async () => {
     setCreating(true);
     setErr(null);
-    const allnames = allUsers.map((user) => user.username);
+    const allnames = allUsers
+      .map((user) => user.username)
+      .filter((name) => name !== userObj.username);
     if (allnames.indexOf(userObj.username) === -1) {
-      await service.createUser(user, userObj);
+      await service.editUser(user, userObj);
       closePopup();
       successCallback();
     } else {
@@ -72,21 +68,8 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
   const closePopup = () => {
     setCreating(false);
     setErr(null);
-    setUserObj({
-      username: "",
-      password: "",
-      channelLimit: 1,
-      userStub: "live",
-      userServer: "",
-      streamExt: "m3u8",
-      httpProtocol: "http",
-      httpPort: "8080",
-      rtmpProtocol: "rtmp",
-      rtmpPort: "1935",
-    });
     closeCreatepop();
   };
-
   const classes = useStyles();
   return (
     <Dialog
@@ -97,7 +80,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
       aria-labelledby="create-user-form"
       fullWidth
     >
-      <DialogTitle id="create-user-form-title">{"Create new user"}</DialogTitle>
+      <DialogTitle id="create-user-form-title">{"Edit user"}</DialogTitle>
       <DialogContent>
         <DialogContentText id="create-user-form-title-description">
           <TextField
@@ -111,16 +94,6 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
             onChange={handleChange}
             error={err}
             helperText={err}
-          />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
-            id="password"
-            name="password"
-            label="Password"
-            value={userObj.password}
-            disabled={creating}
-            onChange={handleChange}
           />
           <TextField
             className={classes.txtfield}
@@ -153,7 +126,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
             disabled={creating}
             onChange={handleChange}
           />
-           <FormLabel component="legend">Security</FormLabel>
+          <FormLabel component="legend">Security</FormLabel>
           <RadioGroup
             aria-label="httpProtocol"
             name="httpProtocol"
@@ -184,12 +157,12 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
       <DialogActions>
         {!creating && (
           <Button
-            onClick={addNewUser}
+            onClick={editExistingUser}
             variant="contained"
             color="primary"
             disableElevation
           >
-            Create
+            Save changes
           </Button>
         )}
       </DialogActions>
@@ -197,4 +170,4 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
   );
 };
 
-export default CreateNewUser;
+export default EditUser;

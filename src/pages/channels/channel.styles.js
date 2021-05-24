@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) =>
       paddingRight: theme.spacing(2),
     },
     chcardcnt: {
-      marginTop: theme.spacing(5),
+      marginTop: theme.spacing(2),
     },
     paper: {
       height: "160px",

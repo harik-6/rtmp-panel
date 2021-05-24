@@ -21,7 +21,7 @@ const DeleteConfirmationDialog = ({
         fullWidth
       >
         <DialogTitle id="delete-channel-form-title">
-          {`Are you sure you want to delete ${channel.name}`}
+          {`Are you sure you want to delete ${channel.name}?`}
         </DialogTitle>
         <DialogActions>
           <Button
