@@ -70,19 +70,6 @@ const useStyles = makeStyles((theme) =>
       justifyContent: "center",
     },
     preloadertxt: { fontSize: "20px", marginTop: "16px" },
-    viderrcnt: {
-      display: "flex",
-      height: player_height + "px",
-      width: player_width + "px",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    viderrormsg: {
-      paddingBottom: "8px",
-      fontSize: "24px",
-      color: "#ffffff",
-    },
     avatar: {
       backgroundColor: "#121858",
       width: theme.spacing(4.5),
@@ -91,7 +78,7 @@ const useStyles = makeStyles((theme) =>
     },
     profilemenu: {
       marginTop: "32px",
-      marginLeft:"-48px"
+      marginLeft: "-48px",
     },
     iconlive: {
       color: "#32CD32",
@@ -115,7 +102,6 @@ const Home = () => {
   const [openRebootDialog, setOpenRebootDialog] = useState(false);
   const [loading, setloading] = useState(false);
   const [errorsnack, seterrorsnack] = useState(false);
-  const [videoError, setVideoError] = useState(false);
   const [isLive, setChannelLive] = useState(false);
 
   const changeRtmp = (index) => {
@@ -194,12 +180,6 @@ const Home = () => {
 
   const onVideoError = () => {
     setChannelLive(false);
-    setVideoError(true);
-  };
-
-  const playVideoAgain = () => {
-    setVideoError(false);
-    // setChannelLive(true);
   };
 
   const askRebootComfirmation = () => {
@@ -279,31 +259,15 @@ const Home = () => {
             <>
               <Grid item lg={12} container justify="center">
                 <div className={classes.videoplayer}>
-                  {videoError ? (
-                    <div className={classes.viderrcnt}>
-                      <IconButton
-                        color="primary"
-                        aria-label="retry video"
-                        component="span"
-                        onClick={playVideoAgain}
-                      >
-                        <RefreshIcon
-                          style={{ color: "white", fontSize: "48px" }}
-                        />
-                      </IconButton>
-                    </div>
-                  ) : (
-                    <ReactPlayer
-                      width={player_width}
-                      height={player_height}
-                      url={ch.httpLink}
-                      controls={true}
-                      // loop={true}
-                      playing={true}
-                      onError={onVideoError}
-                      onStart={onVideoStart}
-                    />
-                  )}
+                  <ReactPlayer
+                    width={player_width}
+                    height={player_height}
+                    url={ch.httpLink}
+                    controls={true}
+                    playing={true}
+                    onError={onVideoError}
+                    onStart={onVideoStart}
+                  />
                 </div>
               </Grid>
               <Grid
