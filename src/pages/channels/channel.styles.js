@@ -4,9 +4,16 @@ const useStyles = makeStyles((theme) =>
     channels: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
+      [theme.breakpoints.down("sm")]: {
+        paddingLeft: theme.spacing(0),
+        paddingRight: theme.spacing(0),
+      },
     },
     chcardcnt: {
       marginTop: theme.spacing(2),
+      [theme.breakpoints.down("sm")]: {
+        width: "300px",
+      },
     },
     paper: {
       height: "160px",
@@ -15,7 +22,10 @@ const useStyles = makeStyles((theme) =>
     tablecnt: {
       marginTop: theme.spacing(3),
       backgroundColor: "#FFFFFF",
-      marginBottom : theme.spacing(5)
+      marginBottom : theme.spacing(5),
+      [theme.breakpoints.down("sm")]: {
+        width:"350px"
+      }
     },
     paperhead: {
       textAlign: "center",

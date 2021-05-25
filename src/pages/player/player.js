@@ -18,9 +18,6 @@ import CreateNewChannel from "../../components/createchannel";
 import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
 import useStyles from "./player.styles";
 
-const player_width = 640 * 1.15;
-const player_height = 360 * 1.15;
-
 const Home = ({ rebootFlag }) => {
   const { user, channels, actions } = useContext(AppContext);
   const [chlist, setchlist] = useState([]);
@@ -60,7 +57,7 @@ const Home = ({ rebootFlag }) => {
       chs = await channelservice.getChannels(user);
       actions.setChannles(chs);
     } else {
-      if (channels===null) {
+      if (channels === null) {
         chs = await channelservice.getChannels(user);
         actions.setChannles(chs);
       } else {
@@ -132,7 +129,7 @@ const Home = ({ rebootFlag }) => {
               justify="flex-end"
               className={classes.actioncnt}
             >
-              <Grid item container alignItems="center" lg={5}>
+              <Grid item container alignItems="center" sm={12} xs={12} lg={5}>
                 {isLive ? (
                   <React.Fragment>
                     <RoundIcon className={classes.iconlive} /> Live
@@ -144,13 +141,14 @@ const Home = ({ rebootFlag }) => {
                 )}
               </Grid>
               {chlist.length > 0 && (
-                <Grid item container lg={5}>
-                  <Grid lg={4}>
+                <Grid item container sm={12} xs={12} lg={5}>
+                  <Grid sm={12} xs={12} lg={4}>
                     <Button
                       aria-controls="change-channel-menu"
                       aria-haspopup="true"
                       onClick={openMenu}
                       disableElevation
+                      style={{zIndex:"99"}}
                     >
                       {ch.name}
                       <DownArrowIcon />
@@ -170,11 +168,9 @@ const Home = ({ rebootFlag }) => {
             </React.Fragment>
           ) : (
             <>
-              <Grid item lg={12} container justify="center">
+              <Grid item lg={12} xs={12} sm={12} container justify="center">
                 <div className={classes.videoplayer}>
                   <ReactPlayer
-                    width={player_width}
-                    height={player_height}
                     url={ch.httpLink}
                     controls={true}
                     playing={true}

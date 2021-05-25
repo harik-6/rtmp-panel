@@ -81,9 +81,9 @@ const Login = () => {
           alignItems="center"
           container
           spacing={1}
-          style={{ marginTop: "32px" }}
+          className={classes.gridContainer}
         >
-          <Grid item xs={7} sm={6} lg={7}>
+          <Grid item xs={12}  sm={12} lg={7}>
             <div className={classes.txtcnt}>
               <p className={classes.maintxt}>{process.env.REACT_APP_NAME}</p>
               <p className={classes.subtxt}>

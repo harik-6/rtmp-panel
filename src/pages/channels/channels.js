@@ -158,10 +158,11 @@ const Channels = () => {
     setPageSize(event.target.value);
   };
   const offSet = page * pageSize;
-  const spliceddata = (channels||[]).slice(offSet, (page + 1) * pageSize);
+  const spliceddata = (channels || []).slice(offSet, (page + 1) * pageSize);
 
   useEffect(() => {
-    if (channels!==null &&
+    if (
+      channels !== null &&
       channels.length > 0 &&
       (healthList === null || healthList === undefined)
     ) {
@@ -185,7 +186,7 @@ const Channels = () => {
       ) : (
         <Grid className={classes.chcardcnt} container>
           <Grid item lg={12}>
-            {(channels||[]).length <= 0 ? (
+            {(channels || []).length <= 0 ? (
               <>
                 <div className={classes.preloadercnt}>
                   <p className={classes.preloadertxt}>
@@ -197,11 +198,23 @@ const Channels = () => {
               <React.Fragment>
                 <Grid container>
                   <Grid item container justify="space-around" lg={12}>
-                    <Grid className={classes.countCnt} item lg={5}>
+                    <Grid
+                      className={classes.countCnt}
+                      item
+                      sm={5}
+                      xs={5}
+                      lg={5}
+                    >
                       <p className={classes.countHeader}>Total channels</p>
                       <p className={classes.countValue}>{channels.length}</p>
                     </Grid>
-                    <Grid className={classes.countCnt} item lg={5}>
+                    <Grid
+                      className={classes.countCnt}
+                      item
+                      sm={5}
+                      xs={5}
+                      lg={5}
+                    >
                       <p className={classes.countHeader}>Active channels</p>
                       <p className={classes.countValue}>
                         {activeChannelCount === -1 ? (

@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme) =>
       height: "auto",
       paddingLeft: theme.spacing(3),
       paddingRight: theme.spacing(3),
+      [theme.breakpoints.down("xs")]: {
+        margin: "24px",
+      },
     },
     txtfield: {
       marginTop: theme.spacing(2),
@@ -35,10 +38,13 @@ const useStyles = makeStyles((theme) =>
       fontSize: "100px",
       color: "#ffffff",
       fontWeight: "bold",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "48px",
+      },
     },
     subtxt: {
       fontSize: "18px",
-      color: "#ffffff",
+      color: "#ffffff"
     },
     txtcnt: {
       padding: theme.spacing(6),
@@ -55,6 +61,14 @@ const useStyles = makeStyles((theme) =>
     eyeIcon: {
       color: "grey",
       cursor: "pointer",
+    },
+    gridContainer: {
+      marginTop: "72px",
+      marginLeft : "24px",
+      [theme.breakpoints.down("xs")]: {
+        marginTop: "-32px",
+        marginLeft : "0",
+      },
     },
   })
 );

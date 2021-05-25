@@ -13,12 +13,13 @@ const useStyles = makeStyles((theme) =>
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: "black",
-    },
-    viderrormsg: {
-      paddingBottom: "8px",
-      fontSize: "24px",
-      color: "#ffffff",
-    },
+      position:"fixed",
+      [theme.breakpoints.down("sm")]: {
+        width: "400px",
+        height: "400px",
+        display: "block",
+      },
+    }
   })
 );
 
@@ -36,7 +37,7 @@ const Preview = () => {
     const pageview = splitted[0].split("?page=")[1];
     if (pageview === "mplay") {
       setPlayerDimension({
-        height: 300,
+        height: 400,
         width: 400,
       });
     }

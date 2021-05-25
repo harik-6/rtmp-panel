@@ -1,17 +1,19 @@
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-
-const player_width = 640 * 1.15;
-const player_height = 360 * 1.15;
 const useStyles = makeStyles((theme) =>
   createStyles({
     home: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
+      [theme.breakpoints.down("sm")]: {
+        paddingLeft: theme.spacing(0),
+        paddingRight: theme.spacing(0),
+      },
     },
     videoplayer: {
-      height: player_height + "px",
-      width: player_width + "px",
       backgroundColor: "#000000",
+      [theme.breakpoints.down("sm")]: {
+        width: "300px",
+      },
     },
     rtmpinfo: {
       marginTop: theme.spacing(3),

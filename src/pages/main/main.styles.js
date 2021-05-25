@@ -11,10 +11,23 @@ const useStyles = makeStyles((theme) =>
     grow: {
       flexGrow: 1,
       maxHeight: "52px",
+      [theme.breakpoints.down("sm")]: {
+        display: "none",
+      },
     },
     appbar: {
       height: "52px",
-      justifyContent:"center"
+      justifyContent: "center",
+      [theme.breakpoints.down("sm")]: {
+        display: "flex",
+        flexDirection: "row",
+        width: "360px",
+      },
+    },
+    avatar: {
+      [theme.breakpoints.down("sm")]: {
+        marginLeft:"300px"
+      },
     },
     sidenav: {
       width: "200px",
@@ -23,16 +36,34 @@ const useStyles = makeStyles((theme) =>
       position: "fixed",
       top: "0",
       bottom: "0",
+      [theme.breakpoints.down("sm")]: {
+        transform: "translateX(0px)",
+        position: "absolute",
+        backgroundColor: "transparent",
+        zIndex : 1,
+        width: "220px",
+      },
     },
     routes: {
       marginLeft: "200px",
       flex: 1,
       overflow: "visible",
       scrollBehavior: "smooth",
+      [theme.breakpoints.down("sm")]: {
+        marginLeft: 0,
+        overflowX:"hidden",
+        overflowY:"visible !important"
+      },
     },
     navlist: {
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(1),
+      [theme.breakpoints.down("sm")]: {
+        display: "flex",
+        flexDirection: "row",
+        backgroundColor: "#ffffff",
+        maxHeight: "60px",
+      },
     },
     navtextactive: {
       color: theme.palette.secondary.main,
@@ -67,7 +98,12 @@ const useStyles = makeStyles((theme) =>
       color: "#000000",
       fontSize: "24px",
       marginTop: theme.spacing(2),
-      marginLeft:"-24px"
+      marginLeft: "16px",
+      display: "flex",
+      alignItems: "center",
+      [theme.breakpoints.down("sm")]: {
+        marginTop: "-52px",
+      },
     },
   })
 );
