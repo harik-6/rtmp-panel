@@ -6,28 +6,28 @@ import channelService from "../service/channel.service";
 const useStyles = makeStyles((theme) =>
   createStyles({
     preview: {
-      width: "100vw",
+      margin: 0,
+      padding: 0,
       height: "100vh",
+      width: "100vw",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: "black",
-      position:"fixed",
+      position: "fixed",
       [theme.breakpoints.down("sm")]: {
-        width: "400px",
-        height: "400px",
         display: "block",
       },
-    }
+    },
   })
 );
 
 const Preview = () => {
   const [httpLink, setHttpLink] = useState("http://errorurl.m3u8");
   const [playerDimension, setPlayerDimension] = useState({
-    height: 260 * 1.75,
-    width: 540 * 1.75,
+    height: 390 * 1.75,
+    width: 400,
   });
 
   const setHlsLink = async () => {

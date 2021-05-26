@@ -2,11 +2,10 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) =>
   createStyles({
     home: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
+      padding: theme.spacing(2),
       [theme.breakpoints.down("sm")]: {
-        paddingLeft: theme.spacing(0),
-        paddingRight: theme.spacing(0),
+        padding: theme.spacing(2),
+        marginTop: "48px",
       },
     },
     videoplayer: {
@@ -31,6 +30,7 @@ const useStyles = makeStyles((theme) =>
     paper: {
       height: "auto",
       padding: theme.spacing(1),
+      textOverflow: "wrap",
     },
     actioncnt: {
       height: "48px",

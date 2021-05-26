@@ -96,7 +96,7 @@ const EditChannel = ({
       fullWidth
     >
       <DialogTitle id="create-channel-form-title">
-        {"Create a new channel"}
+        {"Edit channel"}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="create-channel-form-title-description">

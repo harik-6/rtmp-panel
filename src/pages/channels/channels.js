@@ -10,16 +10,16 @@ import {
   CircularProgress,
   Snackbar,
   IconButton,
-  Menu,
-  MenuItem,
   TablePagination,
+  Button,
 } from "@material-ui/core";
 import channelservice from "../../service/channel.service";
 import AppContext from "../../context/context";
 import PlusIcon from "@material-ui/icons/AddRounded";
 import EditIcon from "@material-ui/icons/EditRounded";
-import MoreIcon from "@material-ui/icons/MoreVertOutlined";
 import HealthIcon from "@material-ui/icons/FiberManualRecordRounded";
+import DeleteIcon from "@material-ui/icons/Delete";
+import PreviewIcon from "@material-ui/icons/PlayArrow";
 import CreateNewChannel from "../../components/createchannel";
 import EditChannel from "../../components/editchannel";
 import DeleteConfirmationDialog from "../../components/deletechannel";
@@ -38,16 +38,7 @@ const Channels = () => {
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
   const [openDeleteConfirm, setDeleteConfirm] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [snack, setSnack] = useState({ open: false, message: "" });
-
-  const openMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const closeMenu = () => {
-    setAnchorEl(null);
-  };
 
   const setActiveChanel = (index) => {
     const actchannel = channels[index];
@@ -82,16 +73,15 @@ const Channels = () => {
   };
 
   const closeActionDialog = () => {
+    setChannel(null);
     setAction(null);
   };
 
   const askConfirmation = () => {
-    closeMenu();
     setDeleteConfirm(true);
   };
 
   const recheckChannelHealth = async () => {
-    closeMenu();
     await checkHealth(channels);
     setSnack({
       open: true,
@@ -127,10 +117,9 @@ const Channels = () => {
     }, 1000);
   };
 
-  const openPreview = () => {
-    closeMenu();
+  const openPreview = (chnllll) => {
     window.open(
-      `${process.env.REACT_APP_APPURL}?page=play&channel=${chnl.name}`
+      `${process.env.REACT_APP_APPURL}?page=play&channel=${chnllll.name}`
     );
   };
   const updateActiveCount = (hlthList) => {
@@ -185,6 +174,23 @@ const Channels = () => {
         </div>
       ) : (
         <Grid className={classes.chcardcnt} container>
+          <Grid
+            style={{ marginBottom: "24px" }}
+            item
+            container
+            justify="flex-end"
+            lg={12}
+          >
+            <Grid item lg={2}>
+              <Button
+                onClick={recheckChannelHealth}
+                variant="contained"
+                color="primary"
+              >
+                Health check
+              </Button>
+            </Grid>
+          </Grid>
           <Grid item lg={12}>
             {(channels || []).length <= 0 ? (
               <>
@@ -246,6 +252,7 @@ const Channels = () => {
                         <TableCell align="left">{""}</TableCell>
                         <TableCell align="left">{""}</TableCell>
                         <TableCell align="left">{""}</TableCell>
+                        <TableCell align="left">{""}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -278,7 +285,6 @@ const Channels = () => {
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
-                              size="small"
                               onClick={() => {
                                 setActiveChanel(index);
                                 openActionDialog("edit");
@@ -289,12 +295,29 @@ const Channels = () => {
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
-                              onClick={(event) => {
+                              onClick={() => {
                                 setActiveChanel(index);
-                                openMenu(event);
+                                askConfirmation();
                               }}
                             >
-                              <MoreIcon />
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </TableCell>
+                          <TableCell className={classes.tbcell} align="left">
+                            <IconButton
+                              disabled={!healthStatus[index]}
+                              onClick={() => {
+                                openPreview(channel);
+                              }}
+                            >
+                              <PreviewIcon
+                                style={{
+                                  color: healthStatus[index]
+                                    ? "#32CD32"
+                                    : "grey",
+                                }}
+                                fontSize="small"
+                              />
                             </IconButton>
                           </TableCell>
                         </TableRow>
@@ -305,21 +328,6 @@ const Channels = () => {
               </React.Fragment>
             )}
           </Grid>
-          <Menu
-            id="option-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={closeMenu}
-            style={{
-              marginTop: "32px",
-              marginLeft: "-32px",
-            }}
-          >
-            <MenuItem onClick={openPreview}>Preview channel</MenuItem>
-            <MenuItem onClick={askConfirmation}>Delete channel</MenuItem>
-            <MenuItem onClick={recheckChannelHealth}>Recheck health</MenuItem>
-          </Menu>
         </Grid>
       )}
       <CreateNewChannel

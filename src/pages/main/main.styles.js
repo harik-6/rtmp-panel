@@ -15,20 +15,6 @@ const useStyles = makeStyles((theme) =>
         display: "none",
       },
     },
-    appbar: {
-      height: "52px",
-      justifyContent: "center",
-      [theme.breakpoints.down("sm")]: {
-        display: "flex",
-        flexDirection: "row",
-        width: "360px",
-      },
-    },
-    avatar: {
-      [theme.breakpoints.down("sm")]: {
-        marginLeft:"300px"
-      },
-    },
     sidenav: {
       width: "200px",
       backgroundColor: "#FFFFFF",
@@ -40,8 +26,8 @@ const useStyles = makeStyles((theme) =>
         transform: "translateX(0px)",
         position: "absolute",
         backgroundColor: "transparent",
-        zIndex : 1,
-        width: "220px",
+        zIndex: 1,
+        width: "100%",
       },
     },
     routes: {
@@ -51,18 +37,20 @@ const useStyles = makeStyles((theme) =>
       scrollBehavior: "smooth",
       [theme.breakpoints.down("sm")]: {
         marginLeft: 0,
-        overflowX:"hidden",
-        overflowY:"visible !important"
+        overflowX: "hidden",
+        overflowY: "visible !important",
       },
     },
     navlist: {
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(1),
       [theme.breakpoints.down("sm")]: {
+        marginLeft: theme.spacing(0),
         display: "flex",
         flexDirection: "row",
         backgroundColor: "#ffffff",
         maxHeight: "60px",
+        justiyContent:"space-between"
       },
     },
     navtextactive: {

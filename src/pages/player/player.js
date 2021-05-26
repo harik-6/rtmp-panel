@@ -17,8 +17,9 @@ import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../../components/createchannel";
 import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
 import useStyles from "./player.styles";
+import RebootConfirmationDialog from "../../components/rebootconfirm";
 
-const Home = ({ rebootFlag }) => {
+const Home = () => {
   const { user, channels, actions } = useContext(AppContext);
   const [chlist, setchlist] = useState([]);
   const [ch, setCh] = useState(null);
@@ -28,6 +29,7 @@ const Home = ({ rebootFlag }) => {
   const [loading, setloading] = useState(false);
   const [errorsnack, seterrorsnack] = useState(false);
   const [isLive, setChannelLive] = useState(false);
+  const [openRebootDialog, setOpenRebootDialog] = useState(false);
 
   const changeRtmp = (index) => {
     setCh(chlist[index]);
@@ -98,15 +100,13 @@ const Home = ({ rebootFlag }) => {
   const rebootServer = async () => {
     if (channels !== null && channels.length > 0) {
       await channelservice.rebootServer(channels[0]);
+      setOpenRebootDialog(false);
       actions.logout();
     }
   };
 
   useEffect(() => {
     loadChannels(false);
-    if (rebootFlag) {
-      rebootServer();
-    }
     //eslint-disable-next-line
   }, []);
 
@@ -121,42 +121,55 @@ const Home = ({ rebootFlag }) => {
       ) : (
         <Grid container>
           {ch !== null && (
-            <Grid
-              item
-              lg={12}
-              container
-              direction="row"
-              justify="flex-end"
-              className={classes.actioncnt}
-            >
-              <Grid item container alignItems="center" sm={12} xs={12} lg={5}>
-                {isLive ? (
-                  <React.Fragment>
-                    <RoundIcon className={classes.iconlive} /> Live
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    <RoundIcon className={classes.iconidle} /> Idle
-                  </React.Fragment>
+            <>
+              <Grid item container justify="flex-end" lg={12}>
+                <Grid item lg={1}>
+                  <Button
+                    onClick={() => setOpenRebootDialog(true)}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Reboot
+                  </Button>
+                </Grid>
+              </Grid>
+              <Grid
+                item
+                lg={12}
+                container
+                direction="row"
+                justify="flex-end"
+                className={classes.actioncnt}
+              >
+                <Grid item container alignItems="center" sm={12} xs={12} lg={5}>
+                  {isLive ? (
+                    <React.Fragment>
+                      <RoundIcon className={classes.iconlive} /> Live
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      <RoundIcon className={classes.iconidle} /> Idle
+                    </React.Fragment>
+                  )}
+                </Grid>
+                {chlist.length > 0 && (
+                  <Grid item container sm={12} xs={12} lg={5}>
+                    <Grid sm={12} xs={12} lg={4}>
+                      <Button
+                        aria-controls="change-channel-menu"
+                        aria-haspopup="true"
+                        onClick={openMenu}
+                        disableElevation
+                        style={{ zIndex: "99" }}
+                      >
+                        {ch.name}
+                        <DownArrowIcon />
+                      </Button>
+                    </Grid>
+                  </Grid>
                 )}
               </Grid>
-              {chlist.length > 0 && (
-                <Grid item container sm={12} xs={12} lg={5}>
-                  <Grid sm={12} xs={12} lg={4}>
-                    <Button
-                      aria-controls="change-channel-menu"
-                      aria-haspopup="true"
-                      onClick={openMenu}
-                      disableElevation
-                      style={{zIndex:"99"}}
-                    >
-                      {ch.name}
-                      <DownArrowIcon />
-                    </Button>
-                  </Grid>
-                </Grid>
-              )}
-            </Grid>
+            </>
           )}
           {ch === null ? (
             <React.Fragment>
@@ -254,6 +267,11 @@ const Home = ({ rebootFlag }) => {
       >
         <PlusIcon style={{ color: "white", fontSize: "32px" }} />
       </IconButton>
+      <RebootConfirmationDialog
+        openForm={openRebootDialog}
+        closeForm={() => setOpenRebootDialog(false)}
+        onYes={rebootServer}
+      />
     </div>
   );
 };
