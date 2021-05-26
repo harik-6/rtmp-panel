@@ -26,8 +26,8 @@ const useStyles = makeStyles((theme) =>
         transform: "translateX(0px)",
         position: "absolute",
         backgroundColor: "transparent",
-        zIndex: 1,
         width: "100%",
+        maxHeight:"60px"
       },
     },
     routes: {

@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) =>
       padding: theme.spacing(2),
       [theme.breakpoints.down("sm")]: {
         padding: theme.spacing(0.5),
-        marginTop: "48px"
+        marginTop: "48px",
       },
     },
     chcardcnt: {
@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) =>
       marginBottom: theme.spacing(5),
       [theme.breakpoints.down("sm")]: {
         width: "350px",
+        zIndex: 999,
       },
     },
     paperhead: {

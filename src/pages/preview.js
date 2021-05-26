@@ -27,7 +27,7 @@ const Preview = () => {
   const [httpLink, setHttpLink] = useState("http://errorurl.m3u8");
   const [playerDimension, setPlayerDimension] = useState({
     height: 390 * 1.75,
-    width: 400,
+    width: 375,
   });
 
   const setHlsLink = async () => {
@@ -35,10 +35,10 @@ const Preview = () => {
     const splitted = url.split("&channel=");
     const channelName = splitted[1];
     const pageview = splitted[0].split("?page=")[1];
-    if (pageview === "mplay") {
+    if (pageview === "webplay") {
       setPlayerDimension({
-        height: 400,
-        width: 400,
+        height: 400 * 1.75,
+        width: 800,
       });
     }
     if ((channelName || "").length === 0) {
