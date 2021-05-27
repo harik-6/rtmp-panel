@@ -2,11 +2,17 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) =>
   createStyles({
     users: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
+      padding: theme.spacing(2),
+      [theme.breakpoints.down("sm")]: {
+        padding: theme.spacing(0.5),
+        marginTop: "48px",
+      },
     },
     chcardcnt: {
-      marginTop: theme.spacing(1),
+      marginTop: theme.spacing(2),
+      [theme.breakpoints.down("sm")]: {
+        width: "350px",
+      },
     },
     paper: {
       height: "160px",
@@ -15,7 +21,11 @@ const useStyles = makeStyles((theme) =>
     tablecnt: {
       marginTop: theme.spacing(3),
       backgroundColor: "#FFFFFF",
-      marginBottom : theme.spacing(5)
+      marginBottom: theme.spacing(5),
+      [theme.breakpoints.down("sm")]: {
+        width: "350px",
+        zIndex: 999,
+      },
     },
     paperhead: {
       textAlign: "center",
