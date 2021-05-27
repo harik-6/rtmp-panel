@@ -29,6 +29,11 @@ const AppReducer = (state, action) => {
         ...state,
         allUsers: payload,
       };
+    case "setusagedata":
+      return {
+        ...state,
+        usageData : payload
+      }
     default:
       return state;
   }

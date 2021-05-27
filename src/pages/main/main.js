@@ -5,6 +5,8 @@ import HomeIcon from "@material-ui/icons/HomeRounded";
 import ChannelIcon from "@material-ui/icons/VideocamRounded";
 import UsersIcon from "@material-ui/icons/SupervisorAccount";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
+import UsageIcon from '@material-ui/icons/DataUsage';
+import Usage from "../usage/usage";
 import Player from "../player/player";
 import Channels from "../channels/channels";
 import useStyles from "./main.styles";
@@ -31,7 +33,7 @@ const Main = () => {
       <div className={classes.sidenav}>
         <p className={classes.appname}>{process.env.REACT_APP_NAME}</p>
         <List className={classes.navlist} aria-label="navigation-list">
-          <Link to="/home">
+        <Link to="/home">
             <ListItem
               className={classes.navbtn}
               disableGutters={true}
@@ -41,12 +43,33 @@ const Main = () => {
               <ListItemIcon
                 className={activeTab === 1 ? classes.iconactive : classes.icon}
               >
-                <HomeIcon />
+                <UsageIcon />
               </ListItemIcon>
               <ListItemText
                 disableTypography={true}
                 className={
                   activeTab === 1 ? classes.navtextactive : classes.navtext
+                }
+                primary="Usage"
+              />
+            </ListItem>
+          </Link>
+          <Link to="/player">
+            <ListItem
+              className={classes.navbtn}
+              disableGutters={true}
+              onClick={() => changePage(2)}
+              button
+            >
+              <ListItemIcon
+                className={activeTab === 2 ? classes.iconactive : classes.icon}
+              >
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText
+                disableTypography={true}
+                className={
+                  activeTab === 2 ? classes.navtextactive : classes.navtext
                 }
                 primary="Home"
               />
@@ -55,18 +78,18 @@ const Main = () => {
           <Link to="/channels">
             <ListItem
               disableGutters={true}
-              onClick={() => changePage(2)}
+              onClick={() => changePage(3)}
               button
             >
               <ListItemIcon
-                className={activeTab === 2 ? classes.iconactive : classes.icon}
+                className={activeTab === 3 ? classes.iconactive : classes.icon}
               >
                 <ChannelIcon />
               </ListItemIcon>
               <ListItemText
                 disableTypography={true}
                 className={
-                  activeTab === 2 ? classes.navtextactive : classes.navtext
+                  activeTab === 3 ? classes.navtextactive : classes.navtext
                 }
                 primary="Channels"
               />
@@ -76,12 +99,12 @@ const Main = () => {
             <Link to="/users">
               <ListItem
                 disableGutters={true}
-                onClick={() => changePage(3)}
+                onClick={() => changePage(4)}
                 button
               >
                 <ListItemIcon
                   className={
-                    activeTab === 3 ? classes.iconactive : classes.icon
+                    activeTab === 4 ? classes.iconactive : classes.icon
                   }
                 >
                   <UsersIcon />
@@ -89,7 +112,7 @@ const Main = () => {
                 <ListItemText
                   disableTypography={true}
                   className={
-                    activeTab === 3 ? classes.navtextactive : classes.navtext
+                    activeTab === 4 ? classes.navtextactive : classes.navtext
                   }
                   primary="Users"
                 />
@@ -110,7 +133,8 @@ const Main = () => {
       </div>
       <div className={classes.routes}>
         <Switch>
-          <Route path="/home" component={Player} />
+          <Route path="/home" component={Usage} />
+          <Route path="/player" component={Player} />
           <Route path="/channels" component={Channels} />
           {isAdmin && <Route path="/users" component={Users} />}
           <Route path="" exact>

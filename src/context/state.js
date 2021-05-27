@@ -5,7 +5,8 @@ const initialState = {
   user: null,
   channels: null,
   healthList : null,
-  allUsers : []
+  allUsers : [],
+  usageData : null
 };
 
 const AppState = (props) => {
@@ -46,6 +47,13 @@ const AppState = (props) => {
     });
   }
 
+  const setUsageData = (usage) => {
+    dispatch({
+      type: "setusagedata",
+      payload : usage
+    });
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -55,7 +63,8 @@ const AppState = (props) => {
           setChannles,
           logout,
           setHealth,
-          setAllUsers
+          setAllUsers,
+          setUsageData
         },
       }}
     >
