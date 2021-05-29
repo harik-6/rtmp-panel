@@ -82,7 +82,6 @@ const ChannelService = {
           channelId: doc.id,
         };
       });
-      console.log(allchannles[0]);
       allchannles.sort((a, b) => b.createat - a.createat);
       if (user.userid === process.env.REACT_APP_ADMINID) {
         return allchannles;
@@ -91,7 +90,7 @@ const ChannelService = {
         allchannles.filter((channel) => channel.ownerid === user.userid) || []
       );
     } catch (error) {
-      console.log("Error in getting channel", error.message);
+      // console.log("Error in getting channel", error.message);
       return null;
     }
   },
@@ -133,7 +132,6 @@ const ChannelService = {
       const db = firebase.firestore().collection("channels");
       const id = channel.channelId;
       delete channel.channelId;
-      console.log(id, channel);
       await db.doc(id).update(channel);
       return id;
     } catch (error) {

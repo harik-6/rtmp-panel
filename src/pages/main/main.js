@@ -1,11 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Switch, Route, Redirect, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/HomeRounded";
 import ChannelIcon from "@material-ui/icons/VideocamRounded";
 import UsersIcon from "@material-ui/icons/SupervisorAccount";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
-import UsageIcon from '@material-ui/icons/DataUsage';
+import UsageIcon from "@material-ui/icons/DataUsage";
 import Usage from "../usage/usage";
 import Player from "../player/player";
 import Channels from "../channels/channels";
@@ -15,8 +16,10 @@ import Users from "../users/users";
 
 const Main = () => {
   const classes = useStyles();
+  const history = useHistory();
   const { user, actions } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(1);
+  const [isAdmin, setAdmin] = useState(false);
 
   const changePage = (page) => {
     setActiveTab(page);
@@ -26,14 +29,21 @@ const Main = () => {
     actions.logout();
   };
 
-  const isAdmin = user.userid === process.env.REACT_APP_ADMINID;
+  useEffect(() => {
+    if (user === null) {
+      history.replace("/login");
+    } else {
+      setAdmin(user.userid === process.env.REACT_APP_ADMINID);
+    }
+    // eslint-disable-next-line
+  }, [user]);
 
   return (
     <div className={classes.appmain}>
       <div className={classes.sidenav}>
         <p className={classes.appname}>{process.env.REACT_APP_NAME}</p>
         <List className={classes.navlist} aria-label="navigation-list">
-        <Link to="/home">
+          <Link to="/home">
             <ListItem
               className={classes.navbtn}
               disableGutters={true}

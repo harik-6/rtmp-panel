@@ -187,7 +187,6 @@ const Usage = () => {
     setLoading(true);
     if (usageData === null) {
       const usage = await userservice.getUsageData(user);
-      console.log(usage);
       if (usage === null) {
         setNoData(true);
       }

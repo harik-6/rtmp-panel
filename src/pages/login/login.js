@@ -8,6 +8,7 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 // import {Link} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import EyeOn from "@material-ui/icons/Visibility";
 import EyeOff from "@material-ui/icons/VisibilityOff";
 import AppConext from "../../context/context";
@@ -16,6 +17,7 @@ import useStyles from "./login.styles";
 
 const Login = () => {
   const classes = useStyles();
+  const history = useHistory();
   const [username, setusername] = useState("");
   const [password, setpassword] = useState("");
   const [logingin, setloginin] = useState(false);
@@ -41,6 +43,7 @@ const Login = () => {
         return;
       } else {
         actions.loginUser(user);
+        history.push("/");
       }
     }
   };

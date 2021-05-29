@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.scss";
 import Main from "./pages/main/main";
 import firebase from "firebase";
 import Login from "./pages/login/login";
 import AppState from "./context/state";
-import AppConext from "./context/context";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Preview from "./pages/preview";
 
 var firebaseConfig = {
@@ -36,16 +35,22 @@ function App() {
     <Preview />
   ) : (
     <AppState>
-      <Router>
-        <Auth />
-      </Router>
+      <Auth />
     </AppState>
   );
 }
 
 const Auth = () => {
-  const { user } = useContext(AppConext);
-  return <div className="app-main">{user === null ? <Login /> : <Main />}</div>;
+  return (
+    <div className="app-main">
+      <Router>
+        <Switch>
+          <Route exact path="/login" component={Login} />
+          <Route path="" component={Main} />
+        </Switch>
+      </Router>
+    </div>
+  );
 };
 
 export default App;
