@@ -221,6 +221,14 @@ const Home = () => {
                     <p className={classes.urlvalue}>{ch.httpLink}</p>
                   </Paper>
                 </Grid>
+                <Grid item lg={12} xs={12} className={classes.urls}>
+                  <Paper elevation={0} square className={classes.paper}>
+                    <p className={classes.urlheader}>Player URL</p>
+                    <p
+                      className={classes.urlvalue}
+                    >{`${process.env.REACT_APP_APPURL}?page=play&channel=${ch.name}`}</p>
+                  </Paper>
+                </Grid>
               </Grid>
             </>
           )}
