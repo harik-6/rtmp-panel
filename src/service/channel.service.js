@@ -60,7 +60,7 @@ const ChannelService = {
           server,
           name,
           key,
-          createdat,
+          createat,
           owner,
           ownerid,
           rtmpLink,
@@ -71,7 +71,7 @@ const ChannelService = {
         return {
           name,
           key,
-          createdat,
+          createat : new Date(createat.toDate()),
           owner,
           ownerid,
           server,
@@ -82,13 +82,16 @@ const ChannelService = {
           channelId: doc.id,
         };
       });
-      allchannles.sort((a, b) => new Date(a.createdat) - new Date(b.createdat));
+      console.log(allchannles[0]);
+      allchannles.sort((a, b) => b.createat - a.createat);
       if (user.userid === process.env.REACT_APP_ADMINID) {
         return allchannles;
       }
-      return allchannles.filter((channel) => channel.ownerid === user.userid)||[];
+      return (
+        allchannles.filter((channel) => channel.ownerid === user.userid) || []
+      );
     } catch (error) {
-      // console.log("Error in getting channel", error.message);
+      console.log("Error in getting channel", error.message);
       return null;
     }
   },
@@ -119,6 +122,20 @@ const ChannelService = {
         token: `${key}?psk=${channelname}&token=${channelname}`,
       });
       return channel.id;
+    } catch (error) {
+      // console.log("Error in editing channel", error.message);
+      return null;
+    }
+  },
+
+  editchannelAdmin: async (channel) => {
+    try {
+      const db = firebase.firestore().collection("channels");
+      const id = channel.channelId;
+      delete channel.channelId;
+      console.log(id, channel);
+      await db.doc(id).update(channel);
+      return id;
     } catch (error) {
       // console.log("Error in editing channel", error.message);
       return null;

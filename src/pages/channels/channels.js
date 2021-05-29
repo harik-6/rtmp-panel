@@ -24,6 +24,7 @@ import CreateNewChannel from "../../components/createchannel";
 import EditChannel from "../../components/editchannel";
 import DeleteConfirmationDialog from "../../components/deletechannel";
 import useStyles from "./channels.styles";
+import EditChannelAdmin from "../../components/editchanneladmin";
 
 const Channels = () => {
   const classes = useStyles();
@@ -293,7 +294,7 @@ const Channels = () => {
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
                               onClick={() => {
-                                setActiveChanel(index);
+                                setActiveChanel(offSet + index);
                                 openActionDialog("edit");
                               }}
                             >
@@ -347,9 +348,27 @@ const Channels = () => {
       />
       {chnl !== null && (
         <EditChannel
-          openForm={action === "edit"}
+          openForm={
+            action === "edit" && user.userid !== process.env.REACT_APP_ADMINID
+          }
           closeForm={closeActionDialog}
-          successCallback={loadChannels}
+          successCallback={() => {
+            closeActionDialog();
+            loadChannels();
+          }}
+          channel={chnl}
+        />
+      )}
+      {chnl !== null && (
+        <EditChannelAdmin
+          openForm={
+            action === "edit" && user.userid === process.env.REACT_APP_ADMINID
+          }
+          closeForm={closeActionDialog}
+          successCallback={() => {
+            closeActionDialog();
+            loadChannels();
+          }}
           channel={chnl}
         />
       )}
