@@ -110,9 +110,29 @@ const Usage = () => {
     return total;
   };
 
+  const xaxisFormat = (dateid) => {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const m = parseInt(dateid.substring(4, 6));
+    const d = dateid.substring(6);
+    return months[m] + " " + d;
+  };
+
   const formatVizData = (map) => {
     let bw = 0;
-    let bwunit  = "GB";
+    let bwunit = "GB";
     let inb = 0;
     let outb = 0;
     let len = 0;
@@ -121,16 +141,16 @@ const Usage = () => {
     for (const key in map) {
       len += 1;
       const upd = getFormattedData(map[key], "ttl", "total");
-      dateids.push(key);
+      dateids.push(xaxisFormat(key));
       usageperdate.push(upd);
       bw += upd;
-      inb += Math.max(getFormattedData(map[key], "avg", "in"),0.83);
-      outb += Math.max(getFormattedData(map[key], "avg", "out"),0.61);
+      inb += Math.max(getFormattedData(map[key], "avg", "in"), 0.83);
+      outb += Math.max(getFormattedData(map[key], "avg", "out"), 0.61);
     }
-    usageperdate = usageperdate.map(val => parseFloat(val.toFixed(2)));
+    usageperdate = usageperdate.map((val) => parseFloat(val.toFixed(2)));
     inb /= len;
     outb /= len;
-    if(bw > 1000) {
+    if (bw > 1000) {
       bw /= 1000;
       bwunit = "TB";
     }
