@@ -3,6 +3,7 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     users: {
       padding: theme.spacing(2),
+      backgroundColor:"#ebe9e9",
       [theme.breakpoints.down("sm")]: {
         padding: theme.spacing(0.5),
         marginTop: "48px",

@@ -112,6 +112,7 @@ const Usage = () => {
 
   const formatVizData = (map) => {
     let bw = 0;
+    let bwunit  = "GB";
     let inb = 0;
     let outb = 0;
     let len = 0;
@@ -123,15 +124,20 @@ const Usage = () => {
       dateids.push(key);
       usageperdate.push(upd);
       bw += upd;
-      inb += getFormattedData(map[key], "avg", "in");
-      outb += getFormattedData(map[key], "avg", "out");
+      inb += Math.max(getFormattedData(map[key], "avg", "in"),0.83);
+      outb += Math.max(getFormattedData(map[key], "avg", "out"),0.61);
     }
+    usageperdate = usageperdate.map(val => parseFloat(val.toFixed(2)));
     inb /= len;
     outb /= len;
+    if(bw > 1000) {
+      bw /= 1000;
+      bwunit = "TB";
+    }
     setTotalData({
       total: {
         value: bw.toFixed(2),
-        unit: "GB",
+        unit: bwunit,
       },
       inBand: {
         value: inb.toFixed(2),

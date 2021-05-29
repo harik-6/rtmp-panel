@@ -23,7 +23,7 @@ import PreviewIcon from "@material-ui/icons/PlayArrow";
 import CreateNewChannel from "../../components/createchannel";
 import EditChannel from "../../components/editchannel";
 import DeleteConfirmationDialog from "../../components/deletechannel";
-import useStyles from "./channel.styles";
+import useStyles from "./channels.styles";
 
 const Channels = () => {
   const classes = useStyles();
