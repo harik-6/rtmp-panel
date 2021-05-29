@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) =>
       flex: 1,
       overflow: "visible",
       scrollBehavior: "smooth",
+      backgroundColor:"#ebe9e9",
       [theme.breakpoints.down("sm")]: {
         marginLeft: 0,
         overflowX: "hidden",

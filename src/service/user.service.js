@@ -46,6 +46,40 @@ const UserService = {
       return null;
     }
   },
+  getUsageData: async (user) => {
+    try {
+      const db = firebase.firestore().collection("usage");
+      const snapshot = await db.get();
+      const filtered = snapshot.docs
+        .map((doc) => {
+          const { ownwerId, updatedAt, usage } = doc.data();
+          return {
+            ownwerId,
+            date: new Date(updatedAt),
+            usage,
+          };
+        })
+        .filter((usagedata) => usagedata.ownwerId === user.userid)
+        .sort((a, b) => a.date - b.date);
+      if (filtered.length === 0) {
+        return null;
+      }
+      let mapped = {};
+      filtered.forEach((obj) => {
+        const date = obj.date;
+        const key =
+          date.getFullYear() +
+          "" +
+          String(date.getMonth()).padStart(2, "0") +
+          "" +
+          date.getDate();
+        mapped[key] = obj;
+      });
+      return mapped;
+    } catch (error) {
+      return null;
+    }
+  },
   getAllUsers: async (user) => {
     if (!isAdmin(user.userid)) {
       return [];

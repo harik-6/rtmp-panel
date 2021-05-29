@@ -48,9 +48,19 @@ const useStyles = makeStyles((theme) =>
       paddingBottom: "8px",
       paddingTop: "8px",
     },
+    countValueUnit: {
+      display: "flex",
+      alignItems: "flex-end",
+      paddingBottom: "16px",
+    },
     countValue: {
       fontSize: "48px",
-      paddingBottom: "16px",
+    },
+    countUnit: {
+      fontSize: "24px",
+      opacity:"0.7",
+      marginBottom:"8px",
+      marginLeft:"8px"
     },
   })
 );
