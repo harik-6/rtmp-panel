@@ -97,9 +97,6 @@ const Home = () => {
     setChannelLive(false);
   };
 
-  const onVideoChange = (e) => {
-    console.log(e.target);
-  }
 
   const rebootServer = async () => {
     if (channels !== null && channels.length > 0) {
