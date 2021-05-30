@@ -8,6 +8,7 @@ const AppReducer = (state, action) => {
         channels: null,
         healthList: null,
         allUsers: [],
+        usageData: null,
       };
     case "setlogin":
       return {
@@ -32,8 +33,8 @@ const AppReducer = (state, action) => {
     case "setusagedata":
       return {
         ...state,
-        usageData : payload
-      }
+        usageData: payload,
+      };
     default:
       return state;
   }

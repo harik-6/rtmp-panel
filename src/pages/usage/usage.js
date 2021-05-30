@@ -7,7 +7,7 @@ import useStyles from "./usage.styles";
 
 const defaultConfiguration = {
   title: {
-    text: "Usage over time",
+    text: "Incremental Usage over time",
   },
   subtitle: {
     text: "",
@@ -130,6 +130,23 @@ const Usage = () => {
     return months[m] + " " + d;
   };
 
+  const caclculateTotalBandWidthConsumed = (arr) => {
+    let total = 0;
+    let subtotal = 0;
+    let changed = false;
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] > arr[i - 1]) {
+        subtotal = arr[i];
+      } else {
+        changed = true;
+        total += subtotal;
+        subtotal = 0;
+      }
+    }
+    if(changed) return total;
+    return subtotal;
+  };
+
   const formatVizData = (map) => {
     let bw = 0;
     let bwunit = "GB";
@@ -143,13 +160,13 @@ const Usage = () => {
       const upd = getFormattedData(map[key], "ttl", "total");
       dateids.push(xaxisFormat(key));
       usageperdate.push(upd);
-      bw += upd;
       inb += Math.max(getFormattedData(map[key], "avg", "in"), 0.83);
       outb += Math.max(getFormattedData(map[key], "avg", "out"), 0.61);
     }
-    usageperdate = usageperdate.map((val) => parseFloat(val.toFixed(2)));
+    usageperdate = usageperdate.map((val) => parseFloat((val+30).toFixed(2)));
     inb /= len;
     outb /= len;
+    bw = caclculateTotalBandWidthConsumed(usageperdate);
     if (bw > 1000) {
       bw /= 1000;
       bwunit = "TB";

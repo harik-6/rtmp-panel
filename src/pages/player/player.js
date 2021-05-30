@@ -89,13 +89,17 @@ const Home = () => {
     }
   };
 
-  const onVideoStart = () => {
+  const onVideoStart = (e) => {
     setChannelLive(true);
   };
 
   const onVideoError = () => {
     setChannelLive(false);
   };
+
+  const onVideoChange = (e) => {
+    console.log(e.target);
+  }
 
   const rebootServer = async () => {
     if (channels !== null && channels.length > 0) {

@@ -43,7 +43,7 @@ const Main = () => {
       <div className={classes.sidenav}>
         <p className={classes.appname}>{process.env.REACT_APP_NAME}</p>
         <List className={classes.navlist} aria-label="navigation-list">
-          <Link to="/home">
+          <Link to="/player">
             <ListItem
               className={classes.navbtn}
               disableGutters={true}
@@ -53,33 +53,12 @@ const Main = () => {
               <ListItemIcon
                 className={activeTab === 1 ? classes.iconactive : classes.icon}
               >
-                <UsageIcon />
-              </ListItemIcon>
-              <ListItemText
-                disableTypography={true}
-                className={
-                  activeTab === 1 ? classes.navtextactive : classes.navtext
-                }
-                primary="Usage"
-              />
-            </ListItem>
-          </Link>
-          <Link to="/player">
-            <ListItem
-              className={classes.navbtn}
-              disableGutters={true}
-              onClick={() => changePage(2)}
-              button
-            >
-              <ListItemIcon
-                className={activeTab === 2 ? classes.iconactive : classes.icon}
-              >
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText
                 disableTypography={true}
                 className={
-                  activeTab === 2 ? classes.navtextactive : classes.navtext
+                  activeTab === 1 ? classes.navtextactive : classes.navtext
                 }
                 primary="Home"
               />
@@ -88,20 +67,41 @@ const Main = () => {
           <Link to="/channels">
             <ListItem
               disableGutters={true}
-              onClick={() => changePage(3)}
+              onClick={() => changePage(2)}
               button
             >
               <ListItemIcon
-                className={activeTab === 3 ? classes.iconactive : classes.icon}
+                className={activeTab === 2 ? classes.iconactive : classes.icon}
               >
                 <ChannelIcon />
               </ListItemIcon>
               <ListItemText
                 disableTypography={true}
                 className={
-                  activeTab === 3 ? classes.navtextactive : classes.navtext
+                  activeTab === 2 ? classes.navtextactive : classes.navtext
                 }
                 primary="Channels"
+              />
+            </ListItem>
+          </Link>
+          <Link to="/usage">
+            <ListItem
+              className={classes.navbtn}
+              disableGutters={true}
+              onClick={() => changePage(3)}
+              button
+            >
+              <ListItemIcon
+                className={activeTab === 3 ? classes.iconactive : classes.icon}
+              >
+                <UsageIcon />
+              </ListItemIcon>
+              <ListItemText
+                disableTypography={true}
+                className={
+                  activeTab === 3 ? classes.navtextactive : classes.navtext
+                }
+                primary="Usage"
               />
             </ListItem>
           </Link>
@@ -143,13 +143,13 @@ const Main = () => {
       </div>
       <div className={classes.routes}>
         <Switch>
-          <Route path="/home" component={Usage} />
+          <Route path="/usage" component={Usage} />
           <Route path="/player" component={Player} />
           <Route path="/channels" component={Channels} />
           {isAdmin && <Route path="/users" component={Users} />}
           <Route path="" exact>
             {" "}
-            <Redirect to="/home" />{" "}
+            <Redirect to="/player" />{" "}
           </Route>
         </Switch>
       </div>
