@@ -8,7 +8,6 @@ const ChannelService = {
       channelname = channelname.toLowerCase().replace(" ", "");
       const {
         userServer,
-        rtmpProtocol,
         httpProtocol,
         httpPort,
         userStub,
@@ -25,8 +24,8 @@ const ChannelService = {
         owner: user.username,
         ownerid: user.userid,
         server: userServer,
-        displayStreamLink: `${rtmpProtocol}://${userServer}/${userStub}`,
-        rtmpLink: `${rtmpProtocol}://${userServer}/${userStub}/${key}`,
+        displayStreamLink: `rtmp://${userServer}/${userStub}`,
+        rtmpLink: `rtmp://${userServer}/${userStub}/${key}`,
         httpLink,
         token: `${key}?psk=${channelname}&token=${channelname}`,
       };
@@ -102,7 +101,6 @@ const ChannelService = {
       const key = channel.name.toLowerCase().replace(" ", "");
       const {
         userServer,
-        rtmpProtocol,
         httpProtocol,
         httpPort,
         userStub,
@@ -115,8 +113,8 @@ const ChannelService = {
       await db.doc(channel.channelId).update({
         name: key,
         key: channelname,
-        displayStreamLink: `${rtmpProtocol}://${userServer}/${userStub}`,
-        rtmpLink: `${rtmpProtocol}://${userServer}/${userStub}/${key}`,
+        displayStreamLink: `rtmp://${userServer}/${userStub}`,
+        rtmpLink: `rtmp://${userServer}/${userStub}/${key}`,
         httpLink,
         token: `${key}?psk=${channelname}&token=${channelname}`,
       });

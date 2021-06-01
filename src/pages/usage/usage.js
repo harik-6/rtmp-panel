@@ -132,19 +132,18 @@ const Usage = () => {
 
   const caclculateTotalBandWidthConsumed = (arr) => {
     let total = 0;
-    let subtotal = 0;
-    let changed = false;
+    let subtotal = arr[0];
+    const temp = [...arr];
+    temp.push(0);
     for (let i = 1; i < arr.length; i++) {
       if (arr[i] > arr[i - 1]) {
         subtotal = arr[i];
       } else {
-        changed = true;
         total += subtotal;
-        subtotal = 0;
+        subtotal = arr[i];
       }
     }
-    if(changed) return total;
-    return subtotal;
+    return subtotal+total;
   };
 
   const formatVizData = (map) => {

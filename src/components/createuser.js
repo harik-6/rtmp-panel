@@ -43,9 +43,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     userServer: "",
     streamExt: "m3u8",
     httpProtocol: "http",
-    httpPort: "8080",
-    rtmpProtocol: "rtmp",
-    rtmpPort: "1935",
+    httpPort: "8080"
   });
 
   const handleChange = (e) => {
@@ -81,8 +79,6 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
       streamExt: "m3u8",
       httpProtocol: "http",
       httpPort: "8080",
-      rtmpProtocol: "rtmp",
-      rtmpPort: "1935",
     });
     closeCreatepop();
   };
