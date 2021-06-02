@@ -126,6 +126,17 @@ const EditUser = ({
             disabled={creating}
             onChange={handleChange}
           />
+          <TextField
+            className={classes.txtfield}
+            fullWidth
+            id="billinDate"
+            name="billinDate"
+            label="Billing Date"
+            value={userObj.billinDate}
+            type="number"
+            disabled={creating}
+            onChange={handleChange}
+          />
           <FormLabel component="legend">Security</FormLabel>
           <RadioGroup
             aria-label="httpProtocol"
@@ -144,6 +155,29 @@ const EditUser = ({
               value="https"
               control={<Radio />}
               label="HTTPS"
+              disabled={creating}
+            />
+          </RadioGroup>
+          <FormLabel style={{ marginTop: "8px" }} component="legend">
+            Usage
+          </FormLabel>
+          <RadioGroup
+            aria-label="showUsage"
+            name="showUsage"
+            value={userObj.showUsage}
+            onChange={handleChange}
+            style={{ display: "flex", flexDirection: "row" }}
+          >
+            <FormControlLabel
+              value={true}
+              control={<Radio />}
+              label="Show"
+              disabled={creating}
+            />
+            <FormControlLabel
+              value={false}
+              control={<Radio />}
+              label="Hide"
               disabled={creating}
             />
           </RadioGroup>

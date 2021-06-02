@@ -20,6 +20,8 @@ const UserService = {
             httpPort,
             userStub,
             streamExt,
+            showUsage,
+            billinDate,
           } = doc.data();
           return {
             userid: doc.id,
@@ -31,6 +33,8 @@ const UserService = {
             httpPort,
             userStub,
             streamExt,
+            showUsage,
+            billinDate,
           };
         })
         .filter((user) => user.username === username)[0];
@@ -95,6 +99,8 @@ const UserService = {
           httpPort,
           userStub,
           streamExt,
+          billinDate,
+          showUsage
         } = doc.data();
         return {
           userid: doc.id,
@@ -106,6 +112,8 @@ const UserService = {
           httpPort,
           userStub,
           streamExt,
+          billinDate,
+          showUsage
         };
       });
       return allusers;

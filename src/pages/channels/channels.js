@@ -12,6 +12,7 @@ import {
   IconButton,
   TablePagination,
   Button,
+  Switch,
 } from "@material-ui/core";
 import channelservice from "../../service/channel.service";
 import AppContext from "../../context/context";
@@ -25,6 +26,7 @@ import EditChannel from "../../components/editchannel";
 import DeleteConfirmationDialog from "../../components/deletechannel";
 import useStyles from "./channels.styles";
 import EditChannelAdmin from "../../components/editchanneladmin";
+import RtmpStatusConfirmationDialog from "../../components/rtmpstatusconfirm";
 
 const Channels = () => {
   const classes = useStyles();
@@ -40,6 +42,7 @@ const Channels = () => {
   const [action, setAction] = useState(null);
   const [openDeleteConfirm, setDeleteConfirm] = useState(false);
   const [snack, setSnack] = useState({ open: false, message: "" });
+  const [openStatusDialog, setOpenStatusDialog] = useState(false);
 
   const setActiveChanel = (index) => {
     const actchannel = channels[index];
@@ -150,7 +153,13 @@ const Channels = () => {
     actions.setHealth(arr);
   };
 
-  const handleChangePage = (event, pagenumber) => {
+  const changeRtmpStatus = async () => {
+    setOpenStatusDialog(false);
+    await channelservice.changeRtmpStatus(chnl);
+    await channelservice.rebootServer(chnl);
+  };
+
+  const handleChangePage = (_, pagenumber) => {
     setPage(pagenumber);
   };
 
@@ -264,6 +273,7 @@ const Channels = () => {
                         <TableCell align="left">{""}</TableCell>
                         <TableCell align="left">{""}</TableCell>
                         <TableCell align="left">{""}</TableCell>
+                        <TableCell align="left">{""}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -331,6 +341,17 @@ const Channels = () => {
                               />
                             </IconButton>
                           </TableCell>
+                          <TableCell align="left">
+                            <Switch
+                              size="small"
+                              checked={channel.status}
+                              onChange={() => {
+                                setActiveChanel(index);
+                                setOpenStatusDialog(true);
+                              }}
+                              name="Channel on-off"
+                            />
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -381,6 +402,14 @@ const Channels = () => {
           closeForm={() => setDeleteConfirm(false)}
           onDeleteYes={deleteChannel}
           channel={chnl}
+        />
+      )}
+      {chnl !== null && (
+        <RtmpStatusConfirmationDialog
+          openForm={openStatusDialog}
+          onYes={changeRtmpStatus}
+          closeForm={() => setOpenStatusDialog(false)}
+          status={chnl.status}
         />
       )}
       <Snackbar

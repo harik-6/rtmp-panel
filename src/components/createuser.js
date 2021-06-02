@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormControlLabel,
   RadioGroup,
-  Radio
+  Radio,
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 import AppContext from "../context/context";
@@ -39,11 +39,13 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     username: "",
     password: "",
     channelLimit: 1,
+    billinDate: 15,
+    showUsage: true,
     userStub: "live",
     userServer: "",
     streamExt: "m3u8",
     httpProtocol: "http",
-    httpPort: "8080"
+    httpPort: "8080",
   });
 
   const handleChange = (e) => {
@@ -53,7 +55,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     });
   };
 
-  const addNewUser= async () => {
+  const addNewUser = async () => {
     setCreating(true);
     setErr(null);
     const allnames = allUsers.map((user) => user.username);
@@ -79,6 +81,8 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
       streamExt: "m3u8",
       httpProtocol: "http",
       httpPort: "8080",
+      billinDate: 15,
+      showUsage: true,
     });
     closeCreatepop();
   };
@@ -149,7 +153,18 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
             disabled={creating}
             onChange={handleChange}
           />
-           <FormLabel component="legend">Security</FormLabel>
+          <TextField
+            className={classes.txtfield}
+            fullWidth
+            id="billinDate"
+            name="billinDate"
+            label="Billing Date"
+            value={userObj.billinDate}
+            type="number"
+            disabled={creating}
+            onChange={handleChange}
+          />
+          <FormLabel component="legend">Security</FormLabel>
           <RadioGroup
             aria-label="httpProtocol"
             name="httpProtocol"
@@ -167,6 +182,27 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
               value="https"
               control={<Radio />}
               label="HTTPS"
+              disabled={creating}
+            />
+          </RadioGroup>
+          <FormLabel style={{marginTop : "8px"}} component="legend">Usage</FormLabel>
+          <RadioGroup
+            aria-label="showUsage"
+            name="showUsage"
+            value={userObj.showUsage}
+            onChange={handleChange}
+            style={{ display: "flex", flexDirection: "row" }}
+          >
+            <FormControlLabel
+              value={true}
+              control={<Radio />}
+              label="Show"
+              disabled={creating}
+            />
+            <FormControlLabel
+              value={false}
+              control={<Radio />}
+              label="Hide"
               disabled={creating}
             />
           </RadioGroup>

@@ -6,13 +6,7 @@ const ChannelService = {
       const db = firebase.firestore().collection("channels");
       key = key.toLowerCase().replace(" ", "");
       channelname = channelname.toLowerCase().replace(" ", "");
-      const {
-        userServer,
-        httpProtocol,
-        httpPort,
-        userStub,
-        streamExt,
-      } = user;
+      const { userServer, httpProtocol, httpPort, userStub, streamExt } = user;
       let httpLink = `${httpProtocol}://${userServer}/hls/${key}.${streamExt}`;
       if (httpPort === "8080") {
         httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`;
@@ -28,6 +22,7 @@ const ChannelService = {
         rtmpLink: `rtmp://${userServer}/${userStub}/${key}`,
         httpLink,
         token: `${key}?psk=${channelname}&token=${channelname}`,
+        status: true,
       };
       const savedchannel = await db.add(newchannel);
       return savedchannel.id;
@@ -66,11 +61,12 @@ const ChannelService = {
           httpLink,
           token,
           displayStreamLink,
+          status,
         } = doc.data();
         return {
           name,
           key,
-          createat : new Date(createat.toDate()),
+          createat: new Date(createat.toDate()),
           owner,
           ownerid,
           server,
@@ -79,6 +75,7 @@ const ChannelService = {
           token,
           displayStreamLink,
           channelId: doc.id,
+          status,
         };
       });
       allchannles.sort((a, b) => b.createat - a.createat);
@@ -99,13 +96,7 @@ const ChannelService = {
       const db = firebase.firestore().collection("channels");
       const channelname = channel.key.toLowerCase().replace(" ", "");
       const key = channel.name.toLowerCase().replace(" ", "");
-      const {
-        userServer,
-        httpProtocol,
-        httpPort,
-        userStub,
-        streamExt,
-      } = user;
+      const { userServer, httpProtocol, httpPort, userStub, streamExt } = user;
       let httpLink = `${httpProtocol}://${userServer}/hls/${key}.${streamExt}`;
       if (httpPort === "8080") {
         httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`;
@@ -158,6 +149,7 @@ const ChannelService = {
       return;
     }
   },
+
   getChannelDetailsByName: async (channelName) => {
     try {
       const db = firebase.firestore().collection("channels");
@@ -179,6 +171,7 @@ const ChannelService = {
       return null;
     }
   },
+
   checkChannelHealth: async (channel) => {
     try {
       const response = await fetch(channel.httpLink);
@@ -187,6 +180,18 @@ const ChannelService = {
       } else {
         return false;
       }
+    } catch (error) {
+      // console.log("error");
+      return false;
+    }
+  },
+
+  changeRtmpStatus: async (channel) => {
+    try {
+      const db = firebase.firestore().collection("channels");
+      await db.doc(channel.channelId).update({
+        status: !channel.status,
+      });
     } catch (error) {
       // console.log("error");
       return false;
