@@ -26,10 +26,10 @@ const Home = () => {
   const [metadata, setMetadata] = useState({
     audioType: "mp3",
     audioRate: "96 KB/s",
-    videoType: "h364",
-    videoRate: "0.8 MB/s",
+    videoType: "h264",
+    videoRate: "0.83 MB/s",
     fps: "30 fps",
-    resolution: "1x1",
+    resolution: "4:3",
   });
   // preloaders and errors
   const [anchorEl, setAnchorEl] = useState(null);
