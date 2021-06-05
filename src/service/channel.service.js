@@ -80,7 +80,7 @@ const ChannelService = {
       });
       allchannles.sort((a, b) => b.createat - a.createat);
       if (user.userid === process.env.REACT_APP_ADMINID) {
-        return allchannles;
+        return allchannles.sort((a, b) => a.server.localeCompare(b.server));
       }
       return (
         allchannles.filter((channel) => channel.ownerid === user.userid) || []

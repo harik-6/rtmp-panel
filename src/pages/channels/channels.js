@@ -157,6 +157,7 @@ const Channels = () => {
     setOpenStatusDialog(false);
     await channelservice.changeRtmpStatus(chnl);
     await channelservice.rebootServer(chnl);
+    actions.logout();
   };
 
   const handleChangePage = (_, pagenumber) => {
@@ -265,7 +266,7 @@ const Channels = () => {
                   <Table aria-label="channel-list">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="left">S.No</TableCell>
+                        {/* <TableCell align="left">S.No</TableCell> */}
                         <TableCell align="left">Name</TableCell>
                         <TableCell align="left">Key</TableCell>
                         <TableCell align="left">Hls</TableCell>
@@ -279,10 +280,10 @@ const Channels = () => {
                     <TableBody>
                       {spliceddata.map((channel, index) => (
                         <TableRow key={channel.key + " " + index}>
-                          <TableCell
+                          {/* <TableCell
                             className={classes.tbcell}
                             align="left"
-                          >{`${offSet + index + 1}.`}</TableCell>
+                          >{`${offSet + index + 1}.`}</TableCell> */}
                           <TableCell className={classes.tbcell} align="left">
                             {channel.name}
                           </TableCell>

@@ -86,7 +86,7 @@ const Login = () => {
           spacing={1}
           className={classes.gridContainer}
         >
-          <Grid item xs={12}  sm={12} lg={7}>
+          <Grid item xs={12} sm={12} lg={7}>
             <div className={classes.txtcnt}>
               <p className={classes.maintxt}>{process.env.REACT_APP_NAME}</p>
               <p className={classes.subtxt}>
@@ -95,65 +95,73 @@ const Login = () => {
             </div>
           </Grid>
           <Grid item xs={12} sm={6} lg={3}>
-            <Paper className={classes.loginform}>
-              <p className={classes.welcomemsg}>Welcome back</p>
-              <p className={classes.loginmessage}>Login to continue</p>
-              {error && (
-                <p style={{ color: "red" }}>Username or Password incorrect.</p>
-              )}
-              <TextField
-                className={classes.txtfield}
-                fullWidth
-                variant="outlined"
-                id="username"
-                label="Username"
-                value={username}
-                onChange={handleusername}
-              />
-              <TextField
-                className={classes.txtfield}
-                fullWidth
-                variant="outlined"
-                id="password"
-                label="Password"
-                type={showPass ? "text" : "password"}
-                value={password}
-                onChange={handlepass}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      {!showPass ? (
-                        <EyeOff
-                          className={classes.eyeIcon}
-                          onClick={togglePassword}
-                        />
-                      ) : (
-                        <EyeOn
-                          className={classes.eyeIcon}
-                          onClick={togglePassword}
-                        />
-                      )}
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              {logingin ? (
-                <div className={classes.preloadercnt}>
-                  <CircularProgress className={classes.preloader} />
-                </div>
-              ) : (
-                <Button
-                  onClick={loginUser}
-                  variant="contained"
-                  color="primary"
-                  disableElevation
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <Paper className={classes.loginform}>
+                <p className={classes.welcomemsg}>Welcome back</p>
+                <p className={classes.loginmessage}>Login to continue</p>
+                {error && (
+                  <p style={{ color: "red" }}>
+                    Username or Password incorrect.
+                  </p>
+                )}
+                <TextField
+                  className={classes.txtfield}
                   fullWidth
-                  className={classes.loginbtn}
-                >
-                  Login
-                </Button>
-              )}
-            </Paper>
+                  variant="outlined"
+                  id="username"
+                  label="Username"
+                  value={username}
+                  onChange={handleusername}
+                />
+                <TextField
+                  className={classes.txtfield}
+                  fullWidth
+                  variant="outlined"
+                  id="password"
+                  label="Password"
+                  type={showPass ? "text" : "password"}
+                  value={password}
+                  onChange={handlepass}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {!showPass ? (
+                          <EyeOff
+                            className={classes.eyeIcon}
+                            onClick={togglePassword}
+                          />
+                        ) : (
+                          <EyeOn
+                            className={classes.eyeIcon}
+                            onClick={togglePassword}
+                          />
+                        )}
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                {logingin ? (
+                  <div className={classes.preloadercnt}>
+                    <CircularProgress className={classes.preloader} />
+                  </div>
+                ) : (
+                  <Button
+                    onClick={loginUser}
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    fullWidth
+                    className={classes.loginbtn}
+                  >
+                    Login
+                  </Button>
+                )}
+              </Paper>
+            </form>
           </Grid>
         </Grid>
       </Grid>

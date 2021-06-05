@@ -147,6 +147,20 @@ const Usage = () => {
   };
 
   const formatVizData = (map) => {
+    const reverseMap = {
+      "Jan" : 0,
+      "Feb" : 1,
+      "Mar" : 2,
+      "Apr" : 3,
+      "May" : 4,
+      "Jun" : 5,
+      "Jul" : 6,
+      "Aug" : 7,
+      "Sep" : 8,
+      "Oct" : 9,
+      "Nov" : 10,
+      "Dec" : 11
+    }
     let bw = 0;
     let bwunit = "GB";
     let inb = 0;
@@ -161,7 +175,14 @@ const Usage = () => {
       usageperdate.push(upd);
       inb += Math.max(getFormattedData(map[key], "avg", "in"), 0.83);
       outb += Math.max(getFormattedData(map[key], "avg", "out"), 0.61);
-    }
+    };
+    dateids.sort((a,b) => {
+      const asplitted = a.split(" ");
+      const bsplitted = b.split(" ");
+      const adate = new Date(2021,reverseMap[asplitted[0]],parseInt(asplitted[1]));
+      const bdate = new Date(2021,reverseMap[bsplitted[0]],parseInt(bsplitted[1]));
+      return adate-bdate;
+    })
     usageperdate = usageperdate.map((val) => parseFloat((val+30).toFixed(2)));
     inb /= len;
     outb /= len;

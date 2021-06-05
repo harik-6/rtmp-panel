@@ -38,6 +38,8 @@ const Main = () => {
     // eslint-disable-next-line
   }, [user]);
 
+  const { showUsage } = user || { showUsage : false };
+
   return (
     <div className={classes.appmain}>
       <div className={classes.sidenav}>
@@ -84,27 +86,31 @@ const Main = () => {
               />
             </ListItem>
           </Link>
-          <Link to="/usage">
-            <ListItem
-              className={classes.navbtn}
-              disableGutters={true}
-              onClick={() => changePage(3)}
-              button
-            >
-              <ListItemIcon
-                className={activeTab === 3 ? classes.iconactive : classes.icon}
+          {showUsage && (
+            <Link to="/usage">
+              <ListItem
+                className={classes.navbtn}
+                disableGutters={true}
+                onClick={() => changePage(3)}
+                button
               >
-                <UsageIcon />
-              </ListItemIcon>
-              <ListItemText
-                disableTypography={true}
-                className={
-                  activeTab === 3 ? classes.navtextactive : classes.navtext
-                }
-                primary="Usage"
-              />
-            </ListItem>
-          </Link>
+                <ListItemIcon
+                  className={
+                    activeTab === 3 ? classes.iconactive : classes.icon
+                  }
+                >
+                  <UsageIcon />
+                </ListItemIcon>
+                <ListItemText
+                  disableTypography={true}
+                  className={
+                    activeTab === 3 ? classes.navtextactive : classes.navtext
+                  }
+                  primary="Usage"
+                />
+              </ListItem>
+            </Link>
+          )}
           {isAdmin && (
             <Link to="/users">
               <ListItem
@@ -143,9 +149,9 @@ const Main = () => {
       </div>
       <div className={classes.routes}>
         <Switch>
-          <Route path="/usage" component={Usage} />
           <Route path="/player" component={Player} />
           <Route path="/channels" component={Channels} />
+          {showUsage && <Route path="/usage" component={Usage} />}
           {isAdmin && <Route path="/users" component={Users} />}
           <Route path="" exact>
             {" "}

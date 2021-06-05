@@ -185,22 +185,31 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
               disabled={creating}
             />
           </RadioGroup>
-          <FormLabel style={{marginTop : "8px"}} component="legend">Usage</FormLabel>
+          <FormLabel style={{ marginTop: "8px" }} component="legend">
+            Usage
+          </FormLabel>
           <RadioGroup
             aria-label="showUsage"
             name="showUsage"
-            value={userObj.showUsage}
-            onChange={handleChange}
+            value={userObj.showUsage ? "show" : "false"}
+            onChange={(e) => {
+              handleChange({
+                target: {
+                  name: "showUsage",
+                  value: e.target.value === "show" ? true : false,
+                },
+              });
+            }}
             style={{ display: "flex", flexDirection: "row" }}
           >
             <FormControlLabel
-              value={true}
+              value={"show"}
               control={<Radio />}
               label="Show"
               disabled={creating}
             />
             <FormControlLabel
-              value={false}
+              value={"hide"}
               control={<Radio />}
               label="Hide"
               disabled={creating}

@@ -61,8 +61,7 @@ const UserService = {
             usage,
           };
         })
-        .filter((usagedata) => usagedata.ownwerId === user.userid)
-        .sort((a, b) => a.date - b.date);
+        .filter((usagedata) => usagedata.ownwerId === user.userid);
       if (filtered.length === 0) {
         return null;
       }
@@ -79,6 +78,7 @@ const UserService = {
       });
       return mapped;
     } catch (error) {
+      console.log(error)
       return null;
     }
   },
