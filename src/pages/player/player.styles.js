@@ -3,7 +3,7 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     home: {
       padding: theme.spacing(2),
-      backgroundColor:"#ebe9e9",
+      backgroundColor: "#ebe9e9",
       [theme.breakpoints.down("sm")]: {
         padding: theme.spacing(2),
         marginTop: "48px",
@@ -11,8 +11,11 @@ const useStyles = makeStyles((theme) =>
     },
     videoplayer: {
       backgroundColor: "#000000",
+      display: "flex",
+      flexDirection: "row",
       [theme.breakpoints.down("sm")]: {
         width: "300px",
+        flexDirection: "column",
       },
     },
     rtmpinfo: {
@@ -68,6 +71,21 @@ const useStyles = makeStyles((theme) =>
     iconidle: {
       color: "red",
       marginRight: "4px",
+    },
+    metadatacontainer: {
+      flex: 1,
+      padding: "16px",
+      background: "#ffffff",
+      marginLeft: "26px",
+      marginRight: "26px",
+      borderRadius: "8px",
+    },
+    innermetadatacontainer: {
+      background: "#ffffff",
+      height: "350px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-evenly",
     },
   })
 );

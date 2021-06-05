@@ -10,9 +10,11 @@ import {
   CircularProgress,
   Snackbar,
   IconButton,
-  TablePagination,
+  // TablePagination,
   Button,
   Switch,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
 import channelservice from "../../service/channel.service";
 import AppContext from "../../context/context";
@@ -27,16 +29,20 @@ import DeleteConfirmationDialog from "../../components/deletechannel";
 import useStyles from "./channels.styles";
 import EditChannelAdmin from "../../components/editchanneladmin";
 import RtmpStatusConfirmationDialog from "../../components/rtmpstatusconfirm";
+import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 
 const Channels = () => {
   const classes = useStyles();
   const { user, channels, actions, healthList } = useContext(AppContext);
   const [chnl, setChannel] = useState(null);
   const [msg, setMsg] = useState("Loading channels...");
-  const [healthStatus, setHealthStatus] = useState([]);
+  const [healthStatus, setHealthStatus] = useState({});
   const [activeChannelCount, setActiveChannelCount] = useState(-1);
-  const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(0);
+  // const [pageSize, setPageSize] = useState(10);
+  // const [page, setPage] = useState(0);
+  const [isAdmin, setAdmin] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [activeOwnerId, setActiveOwnerId] = useState("stream.gxiglobal.com");
   // loaders and errors
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
@@ -44,9 +50,8 @@ const Channels = () => {
   const [snack, setSnack] = useState({ open: false, message: "" });
   const [openStatusDialog, setOpenStatusDialog] = useState(false);
 
-  const setActiveChanel = (index) => {
-    const actchannel = channels[index];
-    setChannel(actchannel);
+  const setActiveChanel = (channneeelll) => {
+    setChannel(channneeelll);
   };
 
   const openSnack = () => {
@@ -137,17 +142,22 @@ const Channels = () => {
     // }
   };
   const updateActiveCount = (hlthList) => {
-    const act = hlthList.filter((value) => value === true);
-    setActiveChannelCount(act.length);
+    let count = 0;
+    Object.keys(hlthList).forEach((key) => {
+      if (hlthList[key]) {
+        count += 1;
+      }
+    });
+    setActiveChannelCount(count);
   };
 
   const checkHealth = async (channelslist) => {
     let healthArr = new Array(channelslist.length);
     for (let i = 0; i < channelslist.length; i++) {
       const health = await channelservice.checkChannelHealth(channelslist[i]);
-      healthArr[i] = health;
+      healthArr[channelslist[i].name] = health;
     }
-    const arr = [...healthArr];
+    const arr = { ...healthArr };
     setHealthStatus(arr);
     updateActiveCount(arr);
     actions.setHealth(arr);
@@ -157,18 +167,29 @@ const Channels = () => {
     setOpenStatusDialog(false);
     await channelservice.changeRtmpStatus(chnl);
     await channelservice.rebootServer(chnl);
-    actions.logout();
+    setMsg("Loading channels...");
+    setLoading(true);
+    setTimeout(() => loadChannels(), 2000);
   };
 
-  const handleChangePage = (_, pagenumber) => {
-    setPage(pagenumber);
+  // const handleChangePage = (_, pagenumber) => {
+  //   setPage(pagenumber);
+  // };
+
+  // const handleChangeRowsPerPage = (event) => {
+  //   setPageSize(event.target.value);
+  // };
+
+  const filterChannel_Admin = (ownerinfo) => {
+    setAnchorEl(null);
+    setActiveOwnerId(ownerinfo);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setPageSize(event.target.value);
-  };
-  const offSet = page * pageSize;
-  const spliceddata = (channels || []).slice(offSet, (page + 1) * pageSize);
+  // const offSet = page * pageSize;
+  let spliceddata = channels || [];
+  if (isAdmin) {
+    spliceddata = (channels || []).filter((ch) => ch.server === activeOwnerId);
+  }
 
   useEffect(() => {
     if (
@@ -178,10 +199,13 @@ const Channels = () => {
     ) {
       checkHealth(channels);
     } else {
-      if ((healthList || []).length > 0) {
-        setHealthStatus([...healthList]);
+      if (Object.keys(healthList).length > 0) {
+        setHealthStatus({ ...healthList });
         updateActiveCount(healthList);
       }
+    }
+    if (user !== null) {
+      setAdmin(user.userid === process.env.REACT_APP_ADMINID);
     }
     //eslint-disable-next-line
   }, [channels]);
@@ -223,38 +247,28 @@ const Channels = () => {
               </>
             ) : (
               <React.Fragment>
-                <Grid container>
-                  <Grid item container justify="space-around" lg={12}>
-                    <Grid
-                      className={classes.countCnt}
-                      item
-                      sm={5}
-                      xs={5}
-                      lg={5}
-                    >
-                      <p className={classes.countHeader}>Total channels</p>
-                      <p className={classes.countValue}>{channels.length}</p>
-                    </Grid>
-                    <Grid
-                      className={classes.countCnt}
-                      item
-                      sm={5}
-                      xs={5}
-                      lg={5}
-                    >
-                      <p className={classes.countHeader}>Active channels</p>
-                      <p className={classes.countValue}>
-                        {activeChannelCount === -1 ? (
-                          <CircularProgress />
-                        ) : (
-                          activeChannelCount
-                        )}
-                      </p>
+                <Insights
+                  channels={channels}
+                  activeChannelCount={activeChannelCount}
+                />
+                {isAdmin && (
+                  <Grid container justify="flex-end">
+                    <Grid sm={12} xs={12} lg={3}>
+                      <Button
+                        aria-controls="change-ownwer-menu"
+                        aria-haspopup="true"
+                        onClick={(event) => setAnchorEl(event.currentTarget)}
+                        disableElevation
+                        style={{ marginTop: "16px", marginBottom: "-16px" }}
+                      >
+                        {activeOwnerId}
+                        <DownArrowIcon />
+                      </Button>
                     </Grid>
                   </Grid>
-                </Grid>
+                )}
                 <TableContainer className={classes.tablecnt}>
-                  <TablePagination
+                  {/* <TablePagination
                     rowsPerPageOptions={[10, 15, 25]}
                     component="div"
                     count={channels.length}
@@ -262,21 +276,9 @@ const Channels = () => {
                     page={page}
                     onChangePage={handleChangePage}
                     onChangeRowsPerPage={handleChangeRowsPerPage}
-                  />
+                  /> */}
                   <Table aria-label="channel-list">
-                    <TableHead>
-                      <TableRow>
-                        {/* <TableCell align="left">S.No</TableCell> */}
-                        <TableCell align="left">Name</TableCell>
-                        <TableCell align="left">Key</TableCell>
-                        <TableCell align="left">Hls</TableCell>
-                        <TableCell align="left">{""}</TableCell>
-                        <TableCell align="left">{""}</TableCell>
-                        <TableCell align="left">{""}</TableCell>
-                        <TableCell align="left">{""}</TableCell>
-                        <TableCell align="left">{""}</TableCell>
-                      </TableRow>
-                    </TableHead>
+                    <TableHeader />
                     <TableBody>
                       {spliceddata.map((channel, index) => (
                         <TableRow key={channel.key + " " + index}>
@@ -298,7 +300,7 @@ const Channels = () => {
                               <HealthIcon
                                 fontSize="small"
                                 style={{
-                                  color: healthStatus[index]
+                                  color: healthStatus[channel.name]
                                     ? "#32CD32"
                                     : "red",
                                 }}
@@ -308,7 +310,7 @@ const Channels = () => {
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
                               onClick={() => {
-                                setActiveChanel(offSet + index);
+                                setActiveChanel(channel);
                                 openActionDialog("edit");
                               }}
                             >
@@ -318,7 +320,7 @@ const Channels = () => {
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
                               onClick={() => {
-                                setActiveChanel(index);
+                                setActiveChanel(channel);
                                 askConfirmation();
                               }}
                             >
@@ -327,14 +329,14 @@ const Channels = () => {
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
-                              disabled={!healthStatus[index]}
+                              disabled={!healthStatus[channel.name]}
                               onClick={() => {
                                 openPreview(channel);
                               }}
                             >
                               <PreviewIcon
                                 style={{
-                                  color: healthStatus[index]
+                                  color: healthStatus[channel.name]
                                     ? "#32CD32"
                                     : "grey",
                                 }}
@@ -347,7 +349,7 @@ const Channels = () => {
                               size="small"
                               checked={channel.status}
                               onChange={() => {
-                                setActiveChanel(index);
+                                setActiveChanel(channel);
                                 setOpenStatusDialog(true);
                               }}
                               name="Channel on-off"
@@ -432,7 +434,69 @@ const Channels = () => {
       >
         <PlusIcon style={{ color: "white", fontSize: "32px" }} />
       </IconButton>
+      {(isAdmin && channels!==null ) && (
+        <Menu
+          id="switch-channel-admin-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+        >
+          {[...new Set([...channels.map((ch) => ch.server)])].map(
+            (servername) => (
+              <MenuItem
+                key={servername}
+                onClick={() => filterChannel_Admin(servername)}
+              >
+                {servername}
+              </MenuItem>
+            )
+          )}
+        </Menu>
+      )}
     </div>
+  );
+};
+
+const Insights = ({ channels, activeChannelCount }) => {
+  const classes = useStyles();
+  return (
+    <Grid container>
+      <Grid item container justify="space-around" lg={12}>
+        <Grid className={classes.countCnt} item sm={5} xs={5} lg={5}>
+          <p className={classes.countHeader}>Total channels</p>
+          <p className={classes.countValue}>{channels.length}</p>
+        </Grid>
+        <Grid className={classes.countCnt} item sm={5} xs={5} lg={5}>
+          <p className={classes.countHeader}>Active channels</p>
+          <p className={classes.countValue}>
+            {activeChannelCount === -1 ? (
+              <CircularProgress />
+            ) : (
+              activeChannelCount
+            )}
+          </p>
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+};
+
+const TableHeader = () => {
+  return (
+    <TableHead>
+      <TableRow>
+        {/* <TableCell align="left">S.No</TableCell> */}
+        <TableCell align="left">Name</TableCell>
+        <TableCell align="left">Key</TableCell>
+        <TableCell align="left">Hls</TableCell>
+        <TableCell align="left">{""}</TableCell>
+        <TableCell align="left">{""}</TableCell>
+        <TableCell align="left">{""}</TableCell>
+        <TableCell align="left">{""}</TableCell>
+        <TableCell align="left">{""}</TableCell>
+      </TableRow>
+    </TableHead>
   );
 };
 

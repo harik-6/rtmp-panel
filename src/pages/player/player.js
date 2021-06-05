@@ -23,6 +23,14 @@ const Home = () => {
   const { user, channels, actions } = useContext(AppContext);
   const [chlist, setchlist] = useState([]);
   const [ch, setCh] = useState(null);
+  const [metadata, setMetadata] = useState({
+    audioType: "mp3",
+    audioRate: "96 KB/s",
+    videoType: "h364",
+    videoRate: "0.8 MB/s",
+    fps: "30 fps",
+    resolution: "1x1",
+  });
   // preloaders and errors
   const [anchorEl, setAnchorEl] = useState(null);
   const [openForm, setOpenForm] = useState(false);
@@ -89,14 +97,52 @@ const Home = () => {
     }
   };
 
-  const onVideoStart = (e) => {
+  const getMetadata = () => {
+    try {
+      const url = `https://${user.userServer}/src_meta?surl=${ch.httpLink}`;
+      fetch(url)
+        .then((resp) => resp.json())
+        .then((data) => {
+          const videodata = data.metadata.streams[0];
+          const audiodata = data.metadata.streams[1];
+          const audioType = audiodata["codec_name"];
+          const videoType = videodata["codec_name"];
+          let audioRate = 0;
+          if (audioType === "mp3") {
+            audioRate = parseInt(audiodata["bit_rate"]);
+          } else {
+            audioRate = parseInt(audiodata["time_base"].split("/")[1]);
+          }
+          audioRate = audioRate / 1000 + " kB/s";
+          const bitspersample = parseInt(videodata["bits_per_raw_sample"]);
+          const samperate = parseInt(audiodata["sample_rate"]);
+          const videoRate = (bitspersample * samperate * 2) / 800000 + " MB/s";
+          const fps = videodata["r_frame_rate"].split("/")[0] + " fps";
+          setMetadata({
+            audioType,
+            audioRate,
+            videoType,
+            videoRate,
+            fps,
+            resolution:
+              videodata["coded_height"] + "x" + videodata["coded_width"],
+          });
+        });
+    } catch (error) {}
+  };
+
+  const onVideoStart = () => {
+    setChannelLive(true);
+    getMetadata();
+  };
+
+  const onVideoPlay = () => {
     setChannelLive(true);
   };
 
   const onVideoError = () => {
     setChannelLive(false);
   };
-
 
   const rebootServer = async () => {
     if (channels !== null && channels.length > 0) {
@@ -136,23 +182,14 @@ const Home = () => {
               </Grid>
               <Grid
                 item
-                lg={12}
+                lg={9}
                 container
                 direction="row"
-                justify="flex-end"
+                justify="space-between"
+                alignItems="center"
                 className={classes.actioncnt}
               >
-                <Grid item container alignItems="center" sm={12} xs={12} lg={5}>
-                  {isLive ? (
-                    <React.Fragment>
-                      <RoundIcon className={classes.iconlive} /> Live
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
-                      <RoundIcon className={classes.iconidle} /> Idle
-                    </React.Fragment>
-                  )}
-                </Grid>
+                <LiveDotIcon isLive={isLive} />
                 {chlist.length > 0 && (
                   <Grid item container sm={12} xs={12} lg={5}>
                     <Grid sm={12} xs={12} lg={4}>
@@ -182,55 +219,21 @@ const Home = () => {
             </React.Fragment>
           ) : (
             <>
-              <Grid item lg={12} xs={12} sm={12} container justify="center">
+              <Grid item lg={12} xs={12} sm={12} container>
                 <div className={classes.videoplayer}>
                   <ReactPlayer
+                    id="player-video-player-id"
                     url={ch.httpLink}
                     controls={true}
                     playing={true}
                     onError={onVideoError}
                     onStart={onVideoStart}
-                    onPlay={onVideoStart}
+                    onPlay={onVideoPlay}
                   />
                 </div>
+                <StreamMetadata isLive={isLive} metadata={metadata} />
               </Grid>
-              <Grid
-                className={classes.rtmpinfo}
-                item
-                container
-                justify="space-between"
-                lg={12}
-                spacing={2}
-              >
-                <Grid item lg={12} xs={12} className={classes.urls}>
-                  <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>Stream URL</p>
-                    <p className={classes.urlvalue}>{ch.displayStreamLink}</p>
-                    <p className={classes.urlheader}>Key</p>
-                    <p className={classes.urlvalue}>{ch.token}</p>
-                  </Paper>
-                </Grid>
-                <Grid item lg={12} xs={12} className={classes.urls}>
-                  <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>RTMP Play URL</p>
-                    <p className={classes.urlvalue}>{ch.rtmpLink}</p>
-                  </Paper>
-                </Grid>
-                <Grid item lg={12} xs={12} className={classes.urls}>
-                  <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>HLS</p>
-                    <p className={classes.urlvalue}>{ch.httpLink}</p>
-                  </Paper>
-                </Grid>
-                <Grid item lg={12} xs={12} className={classes.urls}>
-                  <Paper elevation={0} square className={classes.paper}>
-                    <p className={classes.urlheader}>Player URL</p>
-                    <p
-                      className={classes.urlvalue}
-                    >{`${process.env.REACT_APP_APPURL}?page=play&channel=${ch.name}`}</p>
-                  </Paper>
-                </Grid>
-              </Grid>
+              <StreamUserInfo ch={ch} />
             </>
           )}
         </Grid>
@@ -281,6 +284,139 @@ const Home = () => {
         closeForm={() => setOpenRebootDialog(false)}
         onYes={rebootServer}
       />
+    </div>
+  );
+};
+
+const StreamUserInfo = ({ ch }) => {
+  const classes = useStyles();
+  return (
+    <Grid
+      className={classes.rtmpinfo}
+      item
+      container
+      justify="space-between"
+      lg={12}
+      spacing={2}
+    >
+      <Grid item lg={12} xs={12} className={classes.urls}>
+        <Paper elevation={0} square className={classes.paper}>
+          <p className={classes.urlheader}>Stream URL</p>
+          <p className={classes.urlvalue}>{ch.displayStreamLink}</p>
+          <p className={classes.urlheader}>Key</p>
+          <p className={classes.urlvalue}>{ch.token}</p>
+        </Paper>
+      </Grid>
+      <Grid item lg={12} xs={12} className={classes.urls}>
+        <Paper elevation={0} square className={classes.paper}>
+          <p className={classes.urlheader}>RTMP Play URL</p>
+          <p className={classes.urlvalue}>{ch.rtmpLink}</p>
+        </Paper>
+      </Grid>
+      <Grid item lg={12} xs={12} className={classes.urls}>
+        <Paper elevation={0} square className={classes.paper}>
+          <p className={classes.urlheader}>HLS</p>
+          <p className={classes.urlvalue}>{ch.httpLink}</p>
+        </Paper>
+      </Grid>
+      <Grid item lg={12} xs={12} className={classes.urls}>
+        <Paper elevation={0} square className={classes.paper}>
+          <p className={classes.urlheader}>Player URL</p>
+          <p
+            className={classes.urlvalue}
+          >{`${process.env.REACT_APP_APPURL}?page=play&channel=${ch.name}`}</p>
+        </Paper>
+      </Grid>
+    </Grid>
+  );
+};
+
+const LiveDotIcon = ({ isLive }) => {
+  const classes = useStyles();
+  return (
+    <Grid item container alignItems="center" sm={12} xs={12} lg={5}>
+      {isLive ? (
+        <React.Fragment>
+          <RoundIcon className={classes.iconlive} /> Live
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <RoundIcon className={classes.iconidle} /> Idle
+        </React.Fragment>
+      )}
+    </Grid>
+  );
+};
+
+const StreamMetadata = ({ metadata, isLive }) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.metadatacontainer}>
+      {isLive ? (
+        <div className={classes.innermetadatacontainer}>
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Video Bitrate</p>
+            <p className={classes.urlvalue}>{metadata.videoRate}</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Video Type</p>
+            <p className={classes.urlvalue}>{metadata.videoType}</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Audio Bitrate</p>
+            <p className={classes.urlvalue}>{metadata.audioRate}</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Audio Type</p>
+            <p className={classes.urlvalue}>{metadata.audioType}</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Frames Per Second</p>
+            <p className={classes.urlvalue}>{metadata.fps}</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Resolution</p>
+            <p className={classes.urlvalue}>{metadata.resolution}</p>
+          </div>
+        </div>
+      ) : (
+        <div className={classes.innermetadatacontainer}>
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Video Bitrate</p>
+            <p className={classes.urlvalue}>N/A</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Video Type</p>
+            <p className={classes.urlvalue}>N/A</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Audio Bitrate</p>
+            <p className={classes.urlvalue}>N/A</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Audio Type</p>
+            <p className={classes.urlvalue}>N/A</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Frames Per Second</p>
+            <p className={classes.urlvalue}>N/A</p>
+          </div>
+
+          <div className={classes.metawrapper}>
+            <p className={classes.urlheader}>Resolution</p>
+            <p className={classes.urlvalue}>N/A</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
