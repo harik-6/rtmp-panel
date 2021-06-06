@@ -42,7 +42,7 @@ const Channels = () => {
   // const [page, setPage] = useState(0);
   const [isAdmin, setAdmin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [activeOwnerId, setActiveOwnerId] = useState("stream.gxiglobal.com");
+  const [activeOwnerId, setActiveOwnerId] = useState(process.env.REACT_APP_ADMINSERVER);
   // loaders and errors
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
@@ -199,7 +199,7 @@ const Channels = () => {
     ) {
       checkHealth(channels);
     } else {
-      if (Object.keys(healthList).length > 0) {
+      if (Object.keys(healthList||[]).length > 0) {
         setHealthStatus({ ...healthList });
         updateActiveCount(healthList);
       }
