@@ -94,7 +94,7 @@ const Channels = () => {
     await checkHealth(channels);
     setSnack({
       open: true,
-      message: "Chanel health recheked.",
+      message: "Channel health recheked.",
     });
   };
 
@@ -344,7 +344,7 @@ const Channels = () => {
                               />
                             </IconButton>
                           </TableCell>
-                          <TableCell align="left">
+                          <TableCell className={classes.tbcell} align="left">
                             <Switch
                               size="small"
                               checked={channel.status}

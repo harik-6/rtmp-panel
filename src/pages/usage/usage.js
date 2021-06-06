@@ -143,24 +143,24 @@ const Usage = () => {
         subtotal = arr[i];
       }
     }
-    return subtotal+total;
+    return subtotal + total;
   };
 
   const formatVizData = (map) => {
     const reverseMap = {
-      "Jan" : 0,
-      "Feb" : 1,
-      "Mar" : 2,
-      "Apr" : 3,
-      "May" : 4,
-      "Jun" : 5,
-      "Jul" : 6,
-      "Aug" : 7,
-      "Sep" : 8,
-      "Oct" : 9,
-      "Nov" : 10,
-      "Dec" : 11
-    }
+      Jan: 0,
+      Feb: 1,
+      Mar: 2,
+      Apr: 3,
+      May: 4,
+      Jun: 5,
+      Jul: 6,
+      Aug: 7,
+      Sep: 8,
+      Oct: 9,
+      Nov: 10,
+      Dec: 11,
+    };
     let bw = 0;
     let bwunit = "GB";
     let inb = 0;
@@ -175,15 +175,23 @@ const Usage = () => {
       usageperdate.push(upd);
       inb += Math.max(getFormattedData(map[key], "avg", "in"), 0.83);
       outb += Math.max(getFormattedData(map[key], "avg", "out"), 0.61);
-    };
-    dateids.sort((a,b) => {
+    }
+    dateids.sort((a, b) => {
       const asplitted = a.split(" ");
       const bsplitted = b.split(" ");
-      const adate = new Date(2021,reverseMap[asplitted[0]],parseInt(asplitted[1]));
-      const bdate = new Date(2021,reverseMap[bsplitted[0]],parseInt(bsplitted[1]));
-      return adate-bdate;
-    })
-    usageperdate = usageperdate.map((val) => parseFloat((val+30).toFixed(2)));
+      const adate = new Date(
+        2021,
+        reverseMap[asplitted[0]],
+        parseInt(asplitted[1])
+      );
+      const bdate = new Date(
+        2021,
+        reverseMap[bsplitted[0]],
+        parseInt(bsplitted[1])
+      );
+      return adate - bdate;
+    });
+    usageperdate = usageperdate.map((val) => parseFloat((val + 30).toFixed(2)));
     inb /= len;
     outb /= len;
     bw = caclculateTotalBandWidthConsumed(usageperdate);
@@ -212,6 +220,7 @@ const Usage = () => {
       },
       series: [
         {
+          type: "area",
           showInLegend: false,
           name: "Usage",
           data: usageperdate,
@@ -261,12 +270,19 @@ const Usage = () => {
             ) : (
               <React.Fragment>
                 <Grid container>
-                  <Grid item container justify="space-around" lg={12}>
+                  <Grid
+                    item
+                    container
+                    justify="space-around"
+                    sm={12}
+                    xs={12}
+                    lg={12}
+                  >
                     <Grid
                       className={classes.countCnt}
                       item
-                      sm={5}
-                      xs={5}
+                      sm={12}
+                      xs={12}
                       lg={3}
                     >
                       <p className={classes.countHeader}>
@@ -284,8 +300,8 @@ const Usage = () => {
                     <Grid
                       className={classes.countCnt}
                       item
-                      sm={5}
-                      xs={5}
+                      sm={12}
+                      xs={12}
                       lg={3}
                     >
                       <p className={classes.countHeader}>Inbound Bandwidth</p>
@@ -301,8 +317,8 @@ const Usage = () => {
                     <Grid
                       className={classes.countCnt}
                       item
-                      sm={5}
-                      xs={5}
+                      sm={12}
+                      xs={12}
                       lg={3}
                     >
                       <p className={classes.countHeader}>Outband Bandwidth</p>
@@ -316,7 +332,7 @@ const Usage = () => {
                       </div>
                     </Grid>
                   </Grid>
-                  <Grid style={{ marginTop: "48px" }} lg={12}>
+                  <Grid className={classes.graphSpace} style={{ marginTop: "48px" }} lg={12}>
                     <ReactHighcharts config={graphData} />
                   </Grid>
                 </Grid>

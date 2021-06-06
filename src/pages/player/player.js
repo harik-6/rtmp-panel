@@ -24,12 +24,12 @@ const Home = () => {
   const [chlist, setchlist] = useState([]);
   const [ch, setCh] = useState(null);
   const [metadata, setMetadata] = useState({
-    audioType: "mp3",
-    audioRate: "96 KB/s",
-    videoType: "h264",
-    videoRate: "0.83 MB/s",
-    fps: "30 fps",
-    resolution: "4:3",
+    audioType: "N/A",
+    audioRate: "0 kbps",
+    videoType: "N/A",
+    videoRate: "0 kbps",
+    fps: "0 FPS",
+    resolution: "N/A",
   });
   // preloaders and errors
   const [anchorEl, setAnchorEl] = useState(null);
@@ -42,6 +42,7 @@ const Home = () => {
   const changeRtmp = (index) => {
     setCh(chlist[index]);
     closeMenu();
+    getMetadata();
   };
 
   const openMenu = (event) => {
@@ -105,19 +106,19 @@ const Home = () => {
         .then((data) => {
           const videodata = data.metadata.streams[0];
           const audiodata = data.metadata.streams[1];
-          const audioType = audiodata["codec_name"];
-          const videoType = videodata["codec_name"];
+          const audioType = audiodata["codec_name"].toUpperCase();
+          const videoType = videodata["codec_name"].toUpperCase();
           let audioRate = 0;
-          if (audioType === "mp3") {
+          if (audioType === "MP3") {
             audioRate = parseInt(audiodata["bit_rate"]);
           } else {
-            audioRate = parseInt(audiodata["time_base"].split("/")[1]);
+            audioRate = parseInt(audiodata["time_base"].split("/")[1]) || 0;
           }
-          audioRate = audioRate / 1000 + " kB/s";
+          audioRate = audioRate / 1000 + " kbps";
           const bitspersample = parseInt(videodata["bits_per_raw_sample"]);
           const samperate = parseInt(audiodata["sample_rate"]);
-          const videoRate = (bitspersample * samperate * 2) / 800000 + " MB/s";
-          const fps = videodata["r_frame_rate"].split("/")[0] + " fps";
+          const videoRate = (bitspersample * samperate * 2) / 1000 + " kbps";
+          const fps = videodata["r_frame_rate"].split("/")[0] + " FPS";
           setMetadata({
             audioType,
             audioRate,
@@ -125,7 +126,7 @@ const Home = () => {
             videoRate,
             fps,
             resolution:
-              videodata["coded_height"] + "x" + videodata["coded_width"],
+              videodata["coded_width"] + "x" + videodata["coded_height"],
           });
         });
     } catch (error) {}
@@ -138,10 +139,19 @@ const Home = () => {
 
   const onVideoPlay = () => {
     setChannelLive(true);
+    getMetadata();
   };
 
   const onVideoError = () => {
     setChannelLive(false);
+    setMetadata({
+      audioType: "N/A",
+      audioRate: "0 kbps",
+      videoType: "N/A",
+      videoRate: "0 kbps",
+      fps: "0 FPS",
+      resolution: "N/A",
+    });
   };
 
   const rebootServer = async () => {
@@ -163,7 +173,7 @@ const Home = () => {
       {loading ? (
         <div className={classes.preloadercnt}>
           <CircularProgress />
-          <p className={classes.preloadertxt}>Loading profile...</p>
+          <p className={classes.preloadertxt}>Loading channels...</p>
         </div>
       ) : (
         <Grid container>
@@ -182,28 +192,27 @@ const Home = () => {
               </Grid>
               <Grid
                 item
-                lg={9}
+                lg={12}
                 container
                 direction="row"
-                justify="space-between"
                 alignItems="center"
                 className={classes.actioncnt}
               >
+                <Grid item lg={3} />
                 <LiveDotIcon isLive={isLive} />
+                <Grid item lg={2} />
                 {chlist.length > 0 && (
-                  <Grid item container sm={12} xs={12} lg={5}>
-                    <Grid sm={12} xs={12} lg={4}>
-                      <Button
-                        aria-controls="change-channel-menu"
-                        aria-haspopup="true"
-                        onClick={openMenu}
-                        disableElevation
-                        style={{ zIndex: "99" }}
-                      >
-                        {ch.name}
-                        <DownArrowIcon />
-                      </Button>
-                    </Grid>
+                  <Grid itemlg={4}>
+                    <Button
+                      aria-controls="change-channel-menu"
+                      aria-haspopup="true"
+                      onClick={openMenu}
+                      disableElevation
+                      style={{ zIndex: "99" }}
+                    >
+                      {ch.name}
+                      <DownArrowIcon />
+                    </Button>
                   </Grid>
                 )}
               </Grid>
@@ -219,7 +228,7 @@ const Home = () => {
             </React.Fragment>
           ) : (
             <>
-              <Grid item lg={12} xs={12} sm={12} container>
+              <Grid item lg={12} xs={12} sm={12} container justify="center">
                 <div className={classes.videoplayer}>
                   <ReactPlayer
                     id="player-video-player-id"
@@ -231,8 +240,8 @@ const Home = () => {
                     onPlay={onVideoPlay}
                   />
                 </div>
-                <StreamMetadata isLive={isLive} metadata={metadata} />
               </Grid>
+              <StreamMetadata metadata={metadata} />
               <StreamUserInfo ch={ch} />
             </>
           )}
@@ -334,7 +343,7 @@ const StreamUserInfo = ({ ch }) => {
 const LiveDotIcon = ({ isLive }) => {
   const classes = useStyles();
   return (
-    <Grid item container alignItems="center" sm={12} xs={12} lg={5}>
+    <Grid item container alignItems="center" sm={12} xs={12} lg={3}>
       {isLive ? (
         <React.Fragment>
           <RoundIcon className={classes.iconlive} /> Live
@@ -348,76 +357,40 @@ const LiveDotIcon = ({ isLive }) => {
   );
 };
 
-const StreamMetadata = ({ metadata, isLive }) => {
+const StreamMetadata = ({ metadata }) => {
   const classes = useStyles();
   return (
-    <div className={classes.metadatacontainer}>
-      {isLive ? (
-        <div className={classes.innermetadatacontainer}>
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Video Bitrate</p>
-            <p className={classes.urlvalue}>{metadata.videoRate}</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Video Type</p>
-            <p className={classes.urlvalue}>{metadata.videoType}</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Audio Bitrate</p>
-            <p className={classes.urlvalue}>{metadata.audioRate}</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Audio Type</p>
-            <p className={classes.urlvalue}>{metadata.audioType}</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Frames Per Second</p>
-            <p className={classes.urlvalue}>{metadata.fps}</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Resolution</p>
-            <p className={classes.urlvalue}>{metadata.resolution}</p>
-          </div>
-        </div>
-      ) : (
-        <div className={classes.innermetadatacontainer}>
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Video Bitrate</p>
-            <p className={classes.urlvalue}>N/A</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Video Type</p>
-            <p className={classes.urlvalue}>N/A</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Audio Bitrate</p>
-            <p className={classes.urlvalue}>N/A</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Audio Type</p>
-            <p className={classes.urlvalue}>N/A</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Frames Per Second</p>
-            <p className={classes.urlvalue}>N/A</p>
-          </div>
-
-          <div className={classes.metawrapper}>
-            <p className={classes.urlheader}>Resolution</p>
-            <p className={classes.urlvalue}>N/A</p>
-          </div>
-        </div>
-      )}
-    </div>
+    <Grid
+      container
+      style={{ paddingRight: "16px" }}
+      className={classes.rtmpinfo}
+      spacing={2}
+    >
+      <Grid item xs={12} sm={12} lg={4} className={classes.urls}>
+        <Paper elevation={0} square className={classes.paper}>
+          <p className={classes.urlheader}>Video Bitrate</p>
+          <p className={classes.urlvalue}>{metadata.videoRate}</p>
+          <p className={classes.urlheader}>Video Type</p>
+          <p className={classes.urlvalue}>{metadata.videoType}</p>
+        </Paper>
+      </Grid>
+      <Grid item xs={12} sm={12} lg={4} className={classes.urls}>
+        <Paper elevation={0} square className={classes.paper}>
+          <p className={classes.urlheader}>Audio Bitrate</p>
+          <p className={classes.urlvalue}>{metadata.audioRate}</p>
+          <p className={classes.urlheader}>Audio Type</p>
+          <p className={classes.urlvalue}>{metadata.audioType}</p>
+        </Paper>
+      </Grid>
+      <Grid item xs={12} sm={12} lg={4} className={classes.urls}>
+        <Paper elevation={0} square className={classes.paper}>
+          <p className={classes.urlheader}>Frames Per Second</p>
+          <p className={classes.urlvalue}>{metadata.fps}</p>
+          <p className={classes.urlheader}>Resolution</p>
+          <p className={classes.urlvalue}>{metadata.resolution}</p>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 

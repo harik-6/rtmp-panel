@@ -3,7 +3,7 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     usage: {
       padding: theme.spacing(5),
-      backgroundColor:"#ebe9e9",
+      backgroundColor: "#ebe9e9",
       [theme.breakpoints.down("sm")]: {
         padding: theme.spacing(0.5),
         marginTop: "48px",
@@ -11,6 +11,11 @@ const useStyles = makeStyles((theme) =>
     },
     chcardcnt: {
       marginTop: "48px",
+      [theme.breakpoints.down("sm")]: {
+        width: "350px",
+      },
+    },
+    graphSpace: {
       [theme.breakpoints.down("sm")]: {
         width: "350px",
       },
@@ -44,6 +49,9 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: "#FFFFFF",
       minHeight: "100px",
       borderRadius: "8px",
+      [theme.breakpoints.down("sm")]: {
+        margin: "8px 16px",
+      },
     },
     countHeader: {
       paddingBottom: "8px",
@@ -59,9 +67,9 @@ const useStyles = makeStyles((theme) =>
     },
     countUnit: {
       fontSize: "24px",
-      opacity:"0.7",
-      marginBottom:"8px",
-      marginLeft:"8px"
+      opacity: "0.7",
+      marginBottom: "8px",
+      marginLeft: "8px",
     },
   })
 );
