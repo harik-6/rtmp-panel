@@ -86,6 +86,9 @@ const Usage = () => {
       case "GBit":
         value /= 8;
         break;
+      case "MByte":
+        value /= 1024;
+        break;
       default:
     }
     return {
