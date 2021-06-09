@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
   Grid,
-  Paper,
   Button,
   CircularProgress,
   Menu,
@@ -9,15 +8,19 @@ import {
   Snackbar,
   IconButton,
 } from "@material-ui/core";
-import ReactPlayer from "react-player";
 import AppContext from "../../context/context";
 import channelservice from "../../service/channel.service";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../../components/createchannel";
-import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
 import useStyles from "./player.styles";
 import RebootConfirmationDialog from "../../components/rebootconfirm";
+import {
+  StreamUserInfo,
+  LiveDotIcon,
+  StreamMetadata,
+  StreamPlayer,
+} from "./playercomponents";
 
 const Home = () => {
   const { user, channels, actions } = useContext(AppContext);
@@ -45,20 +48,8 @@ const Home = () => {
     getMetadata();
   };
 
-  const openMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const closeMenu = () => {
     setAnchorEl(null);
-  };
-
-  const openSnack = () => {
-    seterrorsnack(true);
-  };
-
-  const closeSnack = () => {
-    seterrorsnack(false);
   };
 
   const loadChannels = async (forceload) => {
@@ -91,7 +82,7 @@ const Home = () => {
 
   const openCreateChannelForm = () => {
     if (user.channelLimit === channels.length) {
-      openSnack();
+      seterrorsnack(true);
       return;
     } else {
       setOpenForm(true);
@@ -206,7 +197,7 @@ const Home = () => {
                     <Button
                       aria-controls="change-channel-menu"
                       aria-haspopup="true"
-                      onClick={openMenu}
+                      onClick={(event) => setAnchorEl(event.currentTarget)}
                       disableElevation
                       style={{ zIndex: "99" }}
                     >
@@ -219,28 +210,19 @@ const Home = () => {
             </>
           )}
           {ch === null ? (
-            <React.Fragment>
-              <div className={classes.preloadercnt}>
-                <p className={classes.preloadertxt}>
-                  You don't have any channel.Create one
-                </p>
-              </div>
-            </React.Fragment>
+            <div className={classes.preloadercnt}>
+              <p className={classes.preloadertxt}>
+                You don't have any channel.Create one
+              </p>
+            </div>
           ) : (
             <>
-              <Grid item lg={12} xs={12} sm={12} container justify="center">
-                <div className={classes.videoplayer}>
-                  <ReactPlayer
-                    id="player-video-player-id"
-                    url={ch.httpLink}
-                    controls={true}
-                    playing={true}
-                    onError={onVideoError}
-                    onStart={onVideoStart}
-                    onPlay={onVideoPlay}
-                  />
-                </div>
-              </Grid>
+              <StreamPlayer
+                ch={ch}
+                onVideoError={onVideoError}
+                onVideoStart={onVideoStart}
+                onVideoPlay={onVideoPlay}
+              />
               <StreamMetadata metadata={metadata} />
               <StreamUserInfo ch={ch} />
             </>
@@ -255,7 +237,6 @@ const Home = () => {
           loadChannels(true);
         }}
       />
-
       <Menu
         id="switch-channel-menu"
         anchorEl={anchorEl}
@@ -272,7 +253,7 @@ const Home = () => {
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={errorsnack}
-        onClose={closeSnack}
+        onClose={() => seterrorsnack(false)}
         autoHideDuration={5000}
         message="Channel limit exceeded"
         key={"err-snack"}
@@ -294,103 +275,6 @@ const Home = () => {
         onYes={rebootServer}
       />
     </div>
-  );
-};
-
-const StreamUserInfo = ({ ch }) => {
-  const classes = useStyles();
-  return (
-    <Grid
-      className={classes.rtmpinfo}
-      item
-      container
-      justify="space-between"
-      lg={12}
-      spacing={2}
-    >
-      <Grid item lg={12} xs={12} className={classes.urls}>
-        <Paper elevation={0} square className={classes.paper}>
-          <p className={classes.urlheader}>Stream URL</p>
-          <p className={classes.urlvalue}>{ch.displayStreamLink}</p>
-          <p className={classes.urlheader}>Key</p>
-          <p className={classes.urlvalue}>{ch.token}</p>
-        </Paper>
-      </Grid>
-      <Grid item lg={12} xs={12} className={classes.urls}>
-        <Paper elevation={0} square className={classes.paper}>
-          <p className={classes.urlheader}>RTMP Play URL</p>
-          <p className={classes.urlvalue}>{ch.rtmpLink}</p>
-        </Paper>
-      </Grid>
-      <Grid item lg={12} xs={12} className={classes.urls}>
-        <Paper elevation={0} square className={classes.paper}>
-          <p className={classes.urlheader}>HLS</p>
-          <p className={classes.urlvalue}>{ch.httpLink}</p>
-        </Paper>
-      </Grid>
-      <Grid item lg={12} xs={12} className={classes.urls}>
-        <Paper elevation={0} square className={classes.paper}>
-          <p className={classes.urlheader}>Player URL</p>
-          <p
-            className={classes.urlvalue}
-          >{`${process.env.REACT_APP_APPURL}?page=play&channel=${ch.name}`}</p>
-        </Paper>
-      </Grid>
-    </Grid>
-  );
-};
-
-const LiveDotIcon = ({ isLive }) => {
-  const classes = useStyles();
-  return (
-    <Grid item container alignItems="center" sm={12} xs={12} lg={3}>
-      {isLive ? (
-        <React.Fragment>
-          <RoundIcon className={classes.iconlive} /> Live
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          <RoundIcon className={classes.iconidle} /> Idle
-        </React.Fragment>
-      )}
-    </Grid>
-  );
-};
-
-const StreamMetadata = ({ metadata }) => {
-  const classes = useStyles();
-  return (
-    <Grid
-      container
-      style={{ paddingRight: "16px" }}
-      className={classes.rtmpinfo}
-      spacing={2}
-    >
-      <Grid item xs={12} sm={12} lg={4} className={classes.urls}>
-        <Paper elevation={0} square className={classes.paper}>
-          <p className={classes.urlheader}>Video Bitrate</p>
-          <p className={classes.urlvalue}>{metadata.videoRate}</p>
-          <p className={classes.urlheader}>Video Type</p>
-          <p className={classes.urlvalue}>{metadata.videoType}</p>
-        </Paper>
-      </Grid>
-      <Grid item xs={12} sm={12} lg={4} className={classes.urls}>
-        <Paper elevation={0} square className={classes.paper}>
-          <p className={classes.urlheader}>Audio Bitrate</p>
-          <p className={classes.urlvalue}>{metadata.audioRate}</p>
-          <p className={classes.urlheader}>Audio Type</p>
-          <p className={classes.urlvalue}>{metadata.audioType}</p>
-        </Paper>
-      </Grid>
-      <Grid item xs={12} sm={12} lg={4} className={classes.urls}>
-        <Paper elevation={0} square className={classes.paper}>
-          <p className={classes.urlheader}>Frames Per Second</p>
-          <p className={classes.urlvalue}>{metadata.fps}</p>
-          <p className={classes.urlheader}>Resolution</p>
-          <p className={classes.urlvalue}>{metadata.resolution}</p>
-        </Paper>
-      </Grid>
-    </Grid>
   );
 };
 
