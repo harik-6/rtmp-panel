@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import sha1 from "sha1";
+import axios from "axios";
 
 const isAdmin = (id) => id === process.env.REACT_APP_ADMINID;
 
@@ -7,44 +8,15 @@ const UserService = {
   getUser: async (username, password) => {
     password = sha1(password);
     try {
-      const db = firebase.firestore().collection("users");
-      const snapshot = await db.get();
-      const loggedUser = snapshot.docs
-        .map((doc) => {
-          const {
-            username,
-            password,
-            channelLimit,
-            userServer,
-            httpProtocol,
-            httpPort,
-            userStub,
-            streamExt,
-            showUsage,
-            billinDate,
-          } = doc.data();
-          return {
-            userid: doc.id,
-            username,
-            password,
-            channelLimit,
-            userServer,
-            httpProtocol,
-            httpPort,
-            userStub,
-            streamExt,
-            showUsage,
-            billinDate,
-          };
-        })
-        .filter((user) => user.username === username)[0];
-      if (password === loggedUser.password) {
-        delete loggedUser.password;
-        return loggedUser;
-      }
-      return null;
+      const response = await axios.post("http://localhost:9000/user/get", {
+        username,
+        password,
+      });
+      const data = response.data;
+      if (data.payload.status === "failed") return null;
+      return data.payload;
     } catch (error) {
-      // console.log("Error in getting user", error.message);
+      console.log("Error in getting user", error);
       return null;
     }
   },
@@ -78,7 +50,7 @@ const UserService = {
       });
       return mapped;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return null;
     }
   },
@@ -100,7 +72,7 @@ const UserService = {
           userStub,
           streamExt,
           billinDate,
-          showUsage
+          showUsage,
         } = doc.data();
         return {
           userid: doc.id,
@@ -113,7 +85,7 @@ const UserService = {
           userStub,
           streamExt,
           billinDate,
-          showUsage
+          showUsage,
         };
       });
       return allusers;

@@ -13,7 +13,8 @@ const AppReducer = (state, action) => {
     case "setlogin":
       return {
         ...state,
-        user: payload,
+        user: payload.user,
+        settings : payload.settings
       };
     case "setchannels":
       return {

@@ -17,7 +17,7 @@ import Users from "../users/users";
 const Main = () => {
   const classes = useStyles();
   const history = useHistory();
-  const { user, actions } = useContext(AppContext);
+  const { user, actions, settings } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(1);
   const [isAdmin, setAdmin] = useState(false);
 
@@ -37,8 +37,6 @@ const Main = () => {
     }
     // eslint-disable-next-line
   }, [user]);
-
-  const { showUsage } = user || { showUsage : false };
 
   return (
     <div className={classes.appmain}>
@@ -86,7 +84,7 @@ const Main = () => {
               />
             </ListItem>
           </Link>
-          {showUsage && (
+          {settings.usage && (
             <Link to="/usage">
               <ListItem
                 className={classes.navbtn}
@@ -151,7 +149,7 @@ const Main = () => {
         <Switch>
           <Route path="/player" component={Player} />
           <Route path="/channels" component={Channels} />
-          {showUsage && <Route path="/usage" component={Usage} />}
+          {settings.usage && <Route path="/usage" component={Usage} />}
           {isAdmin && <Route path="/users" component={Users} />}
           <Route path="" exact>
             {" "}

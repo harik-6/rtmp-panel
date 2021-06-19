@@ -4,9 +4,10 @@ import AppContext from "./context";
 const initialState = {
   user: null,
   channels: null,
-  healthList : null,
-  allUsers : [],
-  usageData : null
+  settings: null,
+  healthList: null,
+  allUsers: [],
+  usageData: null,
 };
 
 const AppState = (props) => {
@@ -29,30 +30,30 @@ const AppState = (props) => {
   const logout = () => {
     dispatch({
       type: "logout",
-      payload : null
+      payload: null,
     });
   };
 
   const setHealth = (hlist) => {
     dispatch({
       type: "sethealth",
-      payload : hlist
+      payload: hlist,
     });
-  }
+  };
 
   const setAllUsers = (uList) => {
     dispatch({
       type: "setallusers",
-      payload : uList
+      payload: uList,
     });
-  }
+  };
 
   const setUsageData = (usage) => {
     dispatch({
       type: "setusagedata",
-      payload : usage
+      payload: usage,
     });
-  }
+  };
 
   return (
     <AppContext.Provider
@@ -64,7 +65,7 @@ const AppState = (props) => {
           logout,
           setHealth,
           setAllUsers,
-          setUsageData
+          setUsageData,
         },
       }}
     >

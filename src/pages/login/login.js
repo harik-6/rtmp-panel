@@ -36,13 +36,13 @@ const Login = () => {
   const loginUser = async () => {
     setloginin(true);
     if (username.length > 0 && password.length > 0) {
-      const user = await service.getUser(username, password);
-      if (user == null) {
+      const userAndSettings = await service.getUser(username, password);
+      if (userAndSettings == null) {
         setloginin(false);
         seterror(true);
         return;
       } else {
-        actions.loginUser(user);
+        actions.loginUser(userAndSettings);
         history.push("/");
       }
     }

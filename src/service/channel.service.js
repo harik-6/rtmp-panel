@@ -1,31 +1,34 @@
 import firebase from "firebase";
+import axios from "axios";
 
 const ChannelService = {
-  createChannel: async (user, channelname, key) => {
+  createChannel: async (user, channelname) => {
     try {
-      const db = firebase.firestore().collection("channels");
-      key = key.toLowerCase().replace(" ", "");
       channelname = channelname.toLowerCase().replace(" ", "");
-      const { userServer, httpProtocol, httpPort, userStub, streamExt } = user;
-      let httpLink = `${httpProtocol}://${userServer}/hls/${key}.${streamExt}`;
-      if (httpPort === "8080") {
-        httpLink = `${httpProtocol}://${userServer}:${httpPort}/hls/${key}.${streamExt}`;
+      const { server, port, stub } = user;
+      let httpLink = `https://${server}/hls/${channelname}.m3u8`;
+      if (port !== 443) {
+        httpLink = `http://${server}:8080/hls/${channelname}.m3u8`;
       }
       const newchannel = {
-        name: key,
+        name: channelname,
         key: channelname,
-        createat: new Date(),
         owner: user.username,
-        ownerid: user.userid,
-        server: userServer,
-        displayStreamLink: `rtmp://${userServer}/${userStub}`,
-        rtmpLink: `rtmp://${userServer}/${userStub}/${key}`,
+        ownerid: user["_id"],
+        server,
+        displayStreamLink: `rtmp://${server}/${stub}`,
+        rtmpLink: `rtmp://${server}/${stub}/${channelname}`,
         httpLink,
-        token: `${key}?psk=${channelname}&token=${channelname}`,
+        token: `${channelname}?psk=${channelname}&token=${channelname}`,
         status: true,
       };
-      const savedchannel = await db.add(newchannel);
-      return savedchannel.id;
+      const response = await axios.post("http://localhost:9000/channel/create",{
+        channel : newchannel
+      })
+      if(response.data.status === "success") {
+        return response.data.payload["_id"];
+      }
+      return null;
     } catch (error) {
       // console.log("Error in creating channel", error.message);
       return null;
@@ -47,44 +50,11 @@ const ChannelService = {
 
   getChannels: async (user) => {
     try {
-      const db = firebase.firestore().collection("channels");
-      const snapshot = await db.get();
-      let allchannles = snapshot.docs.map((doc) => {
-        const {
-          server,
-          name,
-          key,
-          createat,
-          owner,
-          ownerid,
-          rtmpLink,
-          httpLink,
-          token,
-          displayStreamLink,
-          status,
-        } = doc.data();
-        return {
-          name,
-          key,
-          createat: new Date(createat.toDate()),
-          owner,
-          ownerid,
-          server,
-          rtmpLink,
-          httpLink,
-          token,
-          displayStreamLink,
-          channelId: doc.id,
-          status,
-        };
+      const response = await axios.post("http://localhost:9000/channel/get", {
+        ownerid: user["_id"],
       });
-      allchannles.sort((a, b) => b.createat - a.createat);
-      if (user.userid === process.env.REACT_APP_ADMINID) {
-        return allchannles.sort((a, b) => a.server.localeCompare(b.server));
-      }
-      return (
-        allchannles.filter((channel) => channel.ownerid === user.userid) || []
-      );
+      const data = response.data;
+      return data.payload || [];
     } catch (error) {
       // console.log("Error in getting channel", error.message);
       return null;
