@@ -27,17 +27,14 @@ const ChannelService = {
   createChannel: async (user, channelname, settings) => {
     try {
       const newchannel = _constructChannel(user, channelname, settings);
-      console.log("channel to create", newchannel);
       const response = await axios.post(`${API}/create`, {
         channel: newchannel,
       });
-      console.log("payload from api", response.data.payload);
       if (response.data.status === "success") {
         return response.data.payload["_id"];
       }
       return null;
     } catch (error) {
-      // console.log("Error in creating channel", error.message);
       return null;
     }
   },
@@ -48,7 +45,6 @@ const ChannelService = {
         ...chconstructed,
         _id: channel["_id"],
       };
-      console.log("Channel to edit", channeltoedit);
       const response = await axios.post(`${API}/edit`, {
         channel: channeltoedit,
       });
@@ -56,7 +52,6 @@ const ChannelService = {
       if (data.payload.status === "failed") return null;
       return channeltoedit["_id"];
     } catch (error) {
-      // console.log("Error in editing channel", error.message);
       return null;
     }
   },
@@ -64,11 +59,9 @@ const ChannelService = {
   getAllTokens: async () => {
     try {
       const response = await axios.post(`${API}/keys`);
-      console.log("list of all keys", response.data);
       if (response.data.status === "success") return response.data.payload;
       return null;
     } catch (error) {
-      // console.log("Error in getting tokens", error.message);
       return null;
     }
   },
@@ -81,7 +74,6 @@ const ChannelService = {
       const data = response.data;
       return data.payload || [];
     } catch (error) {
-      // console.log("Error in getting channel", error.message);
       return null;
     }
   },
@@ -94,7 +86,6 @@ const ChannelService = {
       if (response.data.status === "success") return true;
       return false;
     } catch (error) {
-      // console.log("Error in deleting channel", error.message);
       return false;
     }
   },
@@ -113,11 +104,9 @@ const ChannelService = {
     try {
       const response = await axios.get(`${API}/detail?name=${channelName}`);
       const data = response.data;
-      console.log(data);
       if(data.status === "success") return data.payload;
       return null;
     } catch (error) {
-      // console.log("Error in deleting channel", error.message);
       return null;
     }
   },
@@ -131,7 +120,6 @@ const ChannelService = {
         return false;
       }
     } catch (error) {
-      // console.log("error");
       return false;
     }
   },
@@ -145,7 +133,6 @@ const ChannelService = {
       if (data.payload.status === "failed") return null;
       return channel["_id"];
     } catch (error) {
-      // console.log("Error in editing channel", error.message);
       return null;
     }
   },
@@ -162,7 +149,6 @@ const ChannelService = {
       if (data.payload.status === "failed") return false;
       return true;
     } catch (error) {
-      // console.log("error");
       return false;
     }
   },

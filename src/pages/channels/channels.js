@@ -172,8 +172,6 @@ const Channels = () => {
     spliceddata = (channels || []).filter((ch) => ch.server === activeOwnerId);
   }
 
-  console.log(isAdmin);
-
   useEffect(() => {
     if (
       channels !== null &&

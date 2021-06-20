@@ -17,7 +17,6 @@ const UserService = {
       if (data.payload.status === "failed") return null;
       return data.payload;
     } catch (error) {
-      console.log("Error in getting user", error);
       return null;
     }
   },
@@ -35,10 +34,8 @@ const UserService = {
       );
       const data = response.data;
       if (data.payload.status === "failed") return [];
-      console.log(data);
       return data.payload;
     } catch (error) {
-      console.log("Error in getting user", error);
       return [];
     }
   },
@@ -90,7 +87,6 @@ const UserService = {
           usage,
           billingDate,
         } = editeduserandsettings;
-        console.log(editeduserandsettings);
         const response = await axios.post(
           `${API}/edit`,
           {
@@ -139,7 +135,6 @@ const UserService = {
         );
         return true;
       } catch (error) {
-        // console.log("Error in deleting channel", error.message);
         return false;
       }
     }
@@ -174,7 +169,6 @@ const UserService = {
       });
       return mapped;
     } catch (error) {
-      console.log(error);
       return null;
     }
   },

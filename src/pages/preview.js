@@ -7,18 +7,6 @@ import channelService from "../service/channel.service";
 const Preview = () => {
   const [httpLink, setHttpLink] = useState("http://errorurl.m3u8");
   const previewPlayer = useRef();
-  // const [playerDimension, setPlayerDimension] = useState({
-  //   height: 390 * 1.75,
-  //   width: 375,
-  // });
-
-  // const goFullScreen = async () => {
-  //   try {
-  //     await screenfull.request(ReactDOM.findDOMNode(previewPlayer.current));
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // };
 
   const setHlsLink = async () => {
     const url = window.location.href;
@@ -27,13 +15,6 @@ const Preview = () => {
     if ((channelName || "").length === 0) {
       window.location.href = process.env.REACT_APP_APPURL;
     }
-    // const pageview = splitted[0].split("?page=")[1];
-    // if (pageview === "webplay") {
-    //   setPlayerDimension({
-    //     height: 400 * 1.75,
-    //     width: 800,
-    //   });
-    // }
     const hlsLink = await channelService.getChannelDetailsByName(channelName);
     if (hlsLink === null) {
       window.location.href = process.env.REACT_APP_APPURL;
