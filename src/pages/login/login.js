@@ -18,8 +18,8 @@ import useStyles from "./login.styles";
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [username, setusername] = useState("");
-  const [password, setpassword] = useState("");
+  const [username, setusername] = useState("admin@streamwell");
+  const [password, setpassword] = useState("@dm1n@$tream248well");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);

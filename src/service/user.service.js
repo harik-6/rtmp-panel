@@ -55,55 +55,27 @@ const UserService = {
     }
   },
   getAllUsers: async (user) => {
-    if (!isAdmin(user["_id"])) {
-      return [];
-    }
+    if(!isAdmin(user["_id"])) return [];
     try {
-      const db = firebase.firestore().collection("users");
-      const snapshot = await db.get();
-      const allusers = snapshot.docs.map((doc) => {
-        const {
-          username,
-          password,
-          channelLimit,
-          userServer,
-          httpProtocol,
-          httpPort,
-          userStub,
-          streamExt,
-          billinDate,
-          showUsage,
-        } = doc.data();
-        return {
-          userid: doc.id,
-          username,
-          password,
-          channelLimit,
-          userServer,
-          httpProtocol,
-          httpPort,
-          userStub,
-          streamExt,
-          billinDate,
-          showUsage,
-        };
+      const response = await axios.post("http://localhost:9000/user/get",{},{
+        headers : {
+          "x-auth-id" : user["_id"]
+        }
       });
-      return allusers;
+      const data = response.data;
+      if (data.payload.status === "failed") return [];
+      return data.payload;
     } catch (error) {
+      console.log("Error in getting user", error);
       return [];
     }
   },
   createUser: async (adminUser, newuser) => {
     if (isAdmin(adminUser["_id"])) {
       try {
-        const db = firebase.firestore().collection("users");
         const password = newuser["password"];
         newuser["password"] = sha1(password);
-        if (newuser["httpProtocol"] === "https") {
-          newuser["httpPort"] = "443";
-        }
-        await db.add(newuser);
-        return newuser;
+        console.log("new user",newuser);
       } catch (error) {
         return null;
       }

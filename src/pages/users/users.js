@@ -56,8 +56,9 @@ const Users = () => {
   const loadAllUsers = async (forceLoad) => {
     if (forceLoad || allUsers.length === 0) {
       setLoading(true);
-      const all = await userservice.getAllUsers(user);
-      actions.setAllUsers(all);
+      const userandsett = await userservice.getAllUsers(user);
+      console.log(userandsett);
+      actions.setAllUsers(userandsett.map(uands => uands.user));
       setLoading(false);
     }
   };
@@ -128,10 +129,10 @@ const Users = () => {
                             {user.username}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
-                            {user.userServer}
+                            {user.server}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
-                            {user.channelLimit}
+                            {user.limit}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
