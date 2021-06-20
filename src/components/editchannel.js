@@ -27,13 +27,8 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const EditChannel = ({
-  openForm,
-  closeForm,
-  successCallback,
-  channel
-}) => {
-  const { user, actions } = useContext(AppContext);
+const EditChannel = ({ openForm, closeForm, successCallback, channel }) => {
+  const { user, actions, settings } = useContext(AppContext);
   const [chname, setchname] = useState(channel.name);
   const [chkey, setchkey] = useState(channel.key);
   const [creating, setcreating] = useState(false);
@@ -52,22 +47,22 @@ const EditChannel = ({
   const editChannel = async () => {
     if (chname.length > 0 && chkey.length > 0) {
       const alltokens = channelservice.getAllTokens();
-      if(alltokens.length > 0) {
+      if (alltokens.length > 0) {
         if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
           setchnameerror(true);
           return;
         }
-        // if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-        //   setchkeyerror(true);
-        //   return;
-        // }
       }
       setcreating(true);
-      const editedchannel = await channelservice.editchannel({
-        ...channel,
-        name: chname.toLowerCase(),
-        key: chkey.toLowerCase(),
-      },user);
+      const editedchannel = await channelservice.editchannel(
+        {
+          ...channel,
+          name: chname.toLowerCase(),
+          key: chkey.toLowerCase(),
+        },
+        user,
+        settings
+      );
       if (editedchannel !== null) {
         actions.setChannles([]);
         successCallback();
@@ -83,7 +78,7 @@ const EditChannel = ({
     setchname("");
     setchkey("");
     closeForm();
-  }
+  };
 
   const classes = useStyles();
   return (
@@ -95,9 +90,7 @@ const EditChannel = ({
       aria-labelledby="create-channel-form"
       fullWidth
     >
-      <DialogTitle id="create-channel-form-title">
-        {"Edit channel"}
-      </DialogTitle>
+      <DialogTitle id="create-channel-form-title">{"Edit channel"}</DialogTitle>
       <DialogContent>
         <DialogContentText id="create-channel-form-title-description">
           <TextField

@@ -30,7 +30,7 @@ const Main = () => {
   };
 
   useEffect(() => {
-    if (user === null) {
+    if (user === null || settings === null) {
       history.replace("/login");
     } else {
       setAdmin(user.userid === process.env.REACT_APP_ADMINID);
@@ -84,7 +84,7 @@ const Main = () => {
               />
             </ListItem>
           </Link>
-          {settings.usage && (
+          {(settings || { usage: false }).usage && (
             <Link to="/usage">
               <ListItem
                 className={classes.navbtn}
@@ -149,7 +149,9 @@ const Main = () => {
         <Switch>
           <Route path="/player" component={Player} />
           <Route path="/channels" component={Channels} />
-          {settings.usage && <Route path="/usage" component={Usage} />}
+          {(settings || { usage: false }).usage && (
+            <Route path="/usage" component={Usage} />
+          )}
           {isAdmin && <Route path="/users" component={Users} />}
           <Route path="" exact>
             {" "}

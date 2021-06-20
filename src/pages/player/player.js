@@ -91,7 +91,7 @@ const Home = () => {
 
   const getMetadata = () => {
     try {
-      const url = `https://${user.userServer}/src_meta?surl=${ch.httpLink}`;
+      const url = `https://${user.server}/src_meta?surl=${ch.httpLink}`;
       fetch(url)
         .then((resp) => resp.json())
         .then((data) => {

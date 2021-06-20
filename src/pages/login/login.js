@@ -37,6 +37,7 @@ const Login = () => {
     setloginin(true);
     if (username.length > 0 && password.length > 0) {
       const userAndSettings = await service.getUser(username, password);
+      console.log(userAndSettings);
       if (userAndSettings == null) {
         setloginin(false);
         seterror(true);

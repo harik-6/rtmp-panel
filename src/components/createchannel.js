@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Button,
@@ -28,13 +28,12 @@ const useStyles = makeStyles((theme) =>
 );
 
 const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
-  const { user,actions } = useContext(AppContext);
+  const { user, actions, settings } = useContext(AppContext);
   const [chname, setchname] = useState("");
   const [chkey, setchkey] = useState("");
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
   // const [chkeyerror, setchkeyerror] = useState(false);
-
 
   const handleChName = (e) => {
     setchname(e.target.value);
@@ -47,35 +46,38 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
 
   const createNewChannel = async () => {
     if (chname.length > 0 && chkey.length > 0) {
-        const alltokens = await service.getAllTokens();
-        if(alltokens.length > 0) {
-          if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
-            setchnameerror(true);
-            return;
-          }
-          // if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-          //   setchkeyerror(true);
-          //   return;
-          // }
+      const alltokens = await service.getAllTokens();
+      if (alltokens.length > 0) {
+        if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
+          setchnameerror(true);
+          return;
         }
-        setcreating(true);
-        const channel = await service.createChannel(user, chname, chkey);
-        if (channel !== null) {
-          actions.setChannles([]);
-          setcreating(false);
-          successCallback();
-        }
+        // if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
+        //   setchkeyerror(true);
+        //   return;
+        // }
       }
+      setcreating(true);
+      const channel = await service.createChannel(
+        user,
+        chname,
+        settings
+      );
+      if (channel !== null) {
+        actions.setChannles([]);
+        setcreating(false);
+        successCallback();
+      }
+    }
   };
 
   const closePopup = () => {
-    setchname("");
     setchname("");
     // setchkeyerror(false);
     setchnameerror(false);
     setcreating(false);
     closeCreatepop();
-  }
+  };
 
   const classes = useStyles();
   return (
