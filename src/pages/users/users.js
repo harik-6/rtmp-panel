@@ -26,7 +26,7 @@ const Users = () => {
   const { user, actions, allUsers } = useContext(AppContext);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const [activeUser, setActiveUser] = useState(null);
+  const [userAndSettings, setuserAndSettings] = useState(null);
   // loaders and errors
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
@@ -38,7 +38,7 @@ const Users = () => {
 
   const closeActionDialog = () => {
     setAction(null);
-    setActiveUser(null);
+    setuserAndSettings(null);
   };
 
   const askConfirmation = () => {
@@ -57,17 +57,16 @@ const Users = () => {
     if (forceLoad || allUsers.length === 0) {
       setLoading(true);
       const userandsett = await userservice.getAllUsers(user);
-      console.log(userandsett);
-      actions.setAllUsers(userandsett.map(uands => uands.user));
+      actions.setAllUsers(userandsett);
       setLoading(false);
     }
   };
 
   const deleteUser = async () => {
     setDeleteConfirm(false);
-    await userservice.deleteUser(user,activeUser);
+    await userservice.deleteUser(user, userAndSettings.user);
     loadAllUsers(true);
-  }
+  };
 
   const offSet = page * pageSize;
   const spliceddata = allUsers.slice(offSet, (page + 1) * pageSize);
@@ -119,44 +118,47 @@ const Users = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {spliceddata.map((user, index) => (
-                        <TableRow key={user.username + " " + index}>
-                          <TableCell
-                            className={classes.tbcell}
-                            align="left"
-                          >{`${offSet + index + 1}.`}</TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            {user.username}
-                          </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            {user.server}
-                          </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            {user.limit}
-                          </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            <IconButton
-                              size="small"
-                              onClick={() => {
-                                setActiveUser(user);
-                                openActionDialog("edit");
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            <IconButton
-                              onClick={(event) => {
-                                setActiveUser(user);
-                                askConfirmation();
-                              }}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {spliceddata.map((us, index) => {
+                        const { user, settings } = us;
+                        return (
+                          <TableRow key={user.username + " " + index}>
+                            <TableCell
+                              className={classes.tbcell}
+                              align="left"
+                            >{`${offSet + index + 1}.`}</TableCell>
+                            <TableCell className={classes.tbcell} align="left">
+                              {user.username}
+                            </TableCell>
+                            <TableCell className={classes.tbcell} align="left">
+                              {user.server}
+                            </TableCell>
+                            <TableCell className={classes.tbcell} align="left">
+                              {settings.limit}
+                            </TableCell>
+                            <TableCell className={classes.tbcell} align="left">
+                              <IconButton
+                                size="small"
+                                onClick={() => {
+                                  setuserAndSettings(us);
+                                  openActionDialog("edit");
+                                }}
+                              >
+                                <EditIcon />
+                              </IconButton>
+                            </TableCell>
+                            <TableCell className={classes.tbcell} align="left">
+                              <IconButton
+                                onClick={(event) => {
+                                  setuserAndSettings(us);
+                                  askConfirmation();
+                                }}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -181,21 +183,21 @@ const Users = () => {
         closeCreatepop={closeActionDialog}
         successCallback={() => loadAllUsers(true)}
       />
-      {activeUser !== null && (
+      {userAndSettings !== null && (
         <EditUser
           openForm={action === "edit"}
           closeCreatepop={closeActionDialog}
           successCallback={() => loadAllUsers(true)}
-          userToEdit={activeUser}
+          userToEdit={userAndSettings}
         />
       )}
-      {activeUser !== null && (
+      {userAndSettings !== null && (
         <DeleteConfirmationDialog
           openForm={openDeleteConfirm}
           closeForm={() => setDeleteConfirm(false)}
           onDeleteYes={deleteUser}
           channel={{
-            name: activeUser.username,
+            name: userAndSettings.user.username,
           }}
         />
       )}

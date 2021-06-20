@@ -40,7 +40,11 @@ const EditUser = ({
   const { user, allUsers } = useContext(AppContext);
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
-  const [userObj, setUserObj] = useState(userToEdit);
+  const [userObj, setUserObj] = useState({
+    ...userToEdit.settings,
+    ...userToEdit.user,
+    port : userToEdit.user.port.toString()
+  });
 
   const handleChange = (e) => {
     setUserObj({
@@ -98,30 +102,30 @@ const EditUser = ({
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="userServer"
-            name="userServer"
+            id="server"
+            name="server"
             label="Server"
-            value={userObj.userServer}
+            value={userObj.server}
             disabled={creating}
             onChange={handleChange}
           />
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="userStub"
-            name="userStub"
+            id="stub"
+            name="stub"
             label="Stream sufffux"
-            value={userObj.userStub}
+            value={userObj.stub}
             disabled={creating}
             onChange={handleChange}
           />
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="channelLimit"
-            name="channelLimit"
+            id="limit"
+            name="limit"
             label="Limit"
-            value={userObj.channelLimit}
+            value={userObj.limit}
             type="number"
             disabled={creating}
             onChange={handleChange}
@@ -129,30 +133,30 @@ const EditUser = ({
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="billinDate"
-            name="billinDate"
+            id="billingDate"
+            name="billingDate"
             label="Billing Date"
-            value={userObj.billinDate}
+            value={userObj.billingDate}
             type="number"
             disabled={creating}
             onChange={handleChange}
           />
           <FormLabel component="legend">Security</FormLabel>
           <RadioGroup
-            aria-label="httpProtocol"
-            name="httpProtocol"
-            value={userObj.httpProtocol}
+            aria-label="port"
+            name="port"
+            value={userObj.port}
             onChange={handleChange}
             style={{ display: "flex", flexDirection: "row" }}
           >
             <FormControlLabel
-              value="http"
+              value="8080"
               control={<Radio />}
               label="HTTP"
               disabled={creating}
             />
             <FormControlLabel
-              value="https"
+              value="443"
               control={<Radio />}
               label="HTTPS"
               disabled={creating}
@@ -162,13 +166,13 @@ const EditUser = ({
             Usage
           </FormLabel>
           <RadioGroup
-            aria-label="showUsage"
-            name="showUsage"
-            value={userObj.showUsage === true ? "show" : "hide"}
+            aria-label="usage"
+            name="usage"
+            value={userObj.usage === true ? "show" : "hide"}
             onChange={(e) => {
               handleChange({
                 target: {
-                  name: "showUsage",
+                  name: "usage",
                   value: e.target.value === "show" ? true : false,
                 },
               });

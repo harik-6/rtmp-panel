@@ -38,14 +38,12 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
   const [userObj, setUserObj] = useState({
     username: "",
     password: "",
-    channelLimit: 1,
-    billinDate: 15,
-    showUsage: true,
-    userStub: "live",
-    userServer: "",
-    streamExt: "m3u8",
-    httpProtocol: "http",
-    httpPort: "8080",
+    limit: 1,
+    billingDate: 15,
+    usage: true,
+    stub: "live",
+    server: "",
+    port: "8080",
   });
 
   const handleChange = (e) => {
@@ -75,14 +73,12 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     setUserObj({
       username: "",
       password: "",
-      channelLimit: 1,
-      userStub: "live",
-      userServer: "",
-      streamExt: "m3u8",
-      httpProtocol: "http",
-      httpPort: "8080",
-      billinDate: 15,
-      showUsage: true,
+      limit: 1,
+      stub: "live",
+      server: "",
+      port: 8080,
+      billingDate: 15,
+      usage: true,
     });
     closeCreatepop();
   };
@@ -125,30 +121,30 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="userServer"
-            name="userServer"
+            id="server"
+            name="server"
             label="Server"
-            value={userObj.userServer}
+            value={userObj.server}
             disabled={creating}
             onChange={handleChange}
           />
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="userStub"
-            name="userStub"
+            id="stub"
+            name="stub"
             label="Stream sufffux"
-            value={userObj.userStub}
+            value={userObj.stub}
             disabled={creating}
             onChange={handleChange}
           />
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="channelLimit"
-            name="channelLimit"
+            id="limit"
+            name="limit"
             label="Limit"
-            value={userObj.channelLimit}
+            value={userObj.limit}
             type="number"
             disabled={creating}
             onChange={handleChange}
@@ -156,30 +152,30 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="billinDate"
-            name="billinDate"
+            id="billingDate"
+            name="billingDate"
             label="Billing Date"
-            value={userObj.billinDate}
+            value={userObj.billingDate}
             type="number"
             disabled={creating}
             onChange={handleChange}
           />
           <FormLabel component="legend">Security</FormLabel>
           <RadioGroup
-            aria-label="httpProtocol"
-            name="httpProtocol"
-            value={userObj.httpProtocol}
+            aria-label="port"
+            name="port"
+            value={userObj.port}
             onChange={handleChange}
             style={{ display: "flex", flexDirection: "row" }}
           >
             <FormControlLabel
-              value="http"
+              value="8080"
               control={<Radio />}
               label="HTTP"
               disabled={creating}
             />
             <FormControlLabel
-              value="https"
+              value="443"
               control={<Radio />}
               label="HTTPS"
               disabled={creating}
@@ -189,13 +185,13 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
             Usage
           </FormLabel>
           <RadioGroup
-            aria-label="showUsage"
-            name="showUsage"
-            value={userObj.showUsage ? "show" : "false"}
+            aria-label="usage"
+            name="usage"
+            value={userObj.usage ? "show" : "false"}
             onChange={(e) => {
               handleChange({
                 target: {
-                  name: "showUsage",
+                  name: "usage",
                   value: e.target.value === "show" ? true : false,
                 },
               });
@@ -215,6 +211,36 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
               disabled={creating}
             />
           </RadioGroup>
+          {/* <FormLabel style={{ marginTop: "8px" }} component="legend">
+            Bitrate
+          </FormLabel>
+          <RadioGroup
+            aria-label="bitrate"
+            name="bitrate"
+            value={userObj.bitrate ? "show" : "false"}
+            onChange={(e) => {
+              handleChange({
+                target: {
+                  name: "bitrate",
+                  value: e.target.value === "show" ? true : false,
+                },
+              });
+            }}
+            style={{ display: "flex", flexDirection: "row" }}
+          >
+            <FormControlLabel
+              value={"show"}
+              control={<Radio />}
+              label="Show"
+              disabled={creating}
+            />
+            <FormControlLabel
+              value={"hide"}
+              control={<Radio />}
+              label="Hide"
+              disabled={creating}
+            />
+          </RadioGroup> */}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

@@ -38,11 +38,11 @@ const Channels = () => {
   const [msg, setMsg] = useState("Loading channels...");
   const [healthStatus, setHealthStatus] = useState({});
   const [activeChannelCount, setActiveChannelCount] = useState(-1);
-  // const [pageSize, setPageSize] = useState(10);
-  // const [page, setPage] = useState(0);
   const [isAdmin, setAdmin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [activeOwnerId, setActiveOwnerId] = useState(process.env.REACT_APP_ADMINSERVER);
+  const [activeOwnerId, setActiveOwnerId] = useState(
+    process.env.REACT_APP_ADMINSERVER
+  );
   // loaders and errors
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
@@ -162,24 +162,17 @@ const Channels = () => {
     setTimeout(() => loadChannels(), 2000);
   };
 
-  // const handleChangePage = (_, pagenumber) => {
-  //   setPage(pagenumber);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //   setPageSize(event.target.value);
-  // };
-
   const filterChannel_Admin = (ownerinfo) => {
     setAnchorEl(null);
     setActiveOwnerId(ownerinfo);
   };
 
-  // const offSet = page * pageSize;
   let spliceddata = channels || [];
   if (isAdmin) {
     spliceddata = (channels || []).filter((ch) => ch.server === activeOwnerId);
   }
+
+  console.log(isAdmin);
 
   useEffect(() => {
     if (
@@ -189,7 +182,7 @@ const Channels = () => {
     ) {
       checkHealth(channels);
     } else {
-      if (Object.keys(healthList||[]).length > 0) {
+      if (Object.keys(healthList || []).length > 0) {
         setHealthStatus({ ...healthList });
         updateActiveCount(healthList);
       }
@@ -279,9 +272,9 @@ const Channels = () => {
                           <TableCell className={classes.tbcell} align="left">
                             {channel.name}
                           </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
+                          {/* <TableCell className={classes.tbcell} align="left">
                             {channel.key}
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell className={classes.tbcell} align="left">
                             {channel.httpLink}
                           </TableCell>
@@ -366,7 +359,7 @@ const Channels = () => {
       {chnl !== null && (
         <EditChannel
           openForm={
-            action === "edit" && user.userid !== process.env.REACT_APP_ADMINID
+            action === "edit" && user["_id"] !== process.env.REACT_APP_ADMINID
           }
           closeForm={closeActionDialog}
           successCallback={() => {
@@ -379,7 +372,7 @@ const Channels = () => {
       {chnl !== null && (
         <EditChannelAdmin
           openForm={
-            action === "edit" && user.userid === process.env.REACT_APP_ADMINID
+            action === "edit" && user["_id"] === process.env.REACT_APP_ADMINID
           }
           closeForm={closeActionDialog}
           successCallback={() => {
@@ -424,7 +417,7 @@ const Channels = () => {
       >
         <PlusIcon style={{ color: "white", fontSize: "32px" }} />
       </IconButton>
-      {(isAdmin && channels!==null ) && (
+      {isAdmin && channels !== null && (
         <Menu
           id="switch-channel-admin-menu"
           anchorEl={anchorEl}
@@ -478,7 +471,7 @@ const TableHeader = () => {
       <TableRow>
         {/* <TableCell align="left">S.No</TableCell> */}
         <TableCell align="left">Name</TableCell>
-        <TableCell align="left">Key</TableCell>
+        {/* <TableCell align="left">Key</TableCell> */}
         <TableCell align="left">Hls</TableCell>
         <TableCell align="left">{""}</TableCell>
         <TableCell align="left">{""}</TableCell>
