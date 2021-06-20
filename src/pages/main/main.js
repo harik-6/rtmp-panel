@@ -33,7 +33,7 @@ const Main = () => {
     if (user === null || settings === null) {
       history.replace("/login");
     } else {
-      setAdmin(user.userid === process.env.REACT_APP_ADMINID);
+      setAdmin(user["_id"] === process.env.REACT_APP_ADMINID);
     }
     // eslint-disable-next-line
   }, [user]);

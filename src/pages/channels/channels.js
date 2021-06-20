@@ -127,19 +127,9 @@ const Channels = () => {
   };
 
   const openPreview = (chnllll) => {
-    // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     window.open(
       `${process.env.REACT_APP_APPURL}?page=play&channel=${chnllll.name}`
     );
-    // if (isMobile) {
-    //   window.open(
-    //     `${process.env.REACT_APP_APPURL}?page=play&channel=${chnllll.name}`
-    //   );
-    // } else {
-    //   window.open(
-    //     `${process.env.REACT_APP_APPURL}?page=webplay&channel=${chnllll.name}`
-    //   );
-    // }
   };
   const updateActiveCount = (hlthList) => {
     let count = 0;
@@ -205,7 +195,7 @@ const Channels = () => {
       }
     }
     if (user !== null) {
-      setAdmin(user.userid === process.env.REACT_APP_ADMINID);
+      setAdmin(user["_id"] === process.env.REACT_APP_ADMINID);
     }
     //eslint-disable-next-line
   }, [channels]);

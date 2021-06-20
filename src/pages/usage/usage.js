@@ -68,7 +68,7 @@ const Usage = () => {
     //eslint-disable-next-line
   }, []);
   const classes = useStyles();
-  // const isAdmin = user.userid === process.env.REACT_APP_ADMINID;
+  // const isAdmin = user["_id"] === process.env.REACT_APP_ADMINID;
   return (
     <div className={classes.usage}>
       {loading ? (

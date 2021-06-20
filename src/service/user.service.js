@@ -55,7 +55,7 @@ const UserService = {
     }
   },
   getAllUsers: async (user) => {
-    if (!isAdmin(user.userid)) {
+    if (!isAdmin(user["_id"])) {
       return [];
     }
     try {
@@ -94,7 +94,7 @@ const UserService = {
     }
   },
   createUser: async (adminUser, newuser) => {
-    if (isAdmin(adminUser.userid)) {
+    if (isAdmin(adminUser["_id"])) {
       try {
         const db = firebase.firestore().collection("users");
         const password = newuser["password"];
@@ -111,7 +111,7 @@ const UserService = {
     return null;
   },
   editUser: async (adminUser, editeduser) => {
-    if (isAdmin(adminUser.userid)) {
+    if (isAdmin(adminUser["_id"])) {
       try {
         const db = firebase.firestore().collection("users");
         if (editeduser["httpProtocol"] === "https") {
@@ -128,7 +128,7 @@ const UserService = {
     return null;
   },
   deleteUser: async (adminUser, usertoDelete) => {
-    if (isAdmin(adminUser.userid)) {
+    if (isAdmin(adminUser["_id"])) {
       try {
         const db = firebase.firestore().collection("users");
         await db.doc(usertoDelete.userid).delete();

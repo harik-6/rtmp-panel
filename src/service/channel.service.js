@@ -1,28 +1,32 @@
-import firebase from "firebase";
 import axios from "axios";
 const API = "http://localhost:9000/channel";
+
+const _constructChannel = (user, channelname, settings) => {
+  channelname = channelname.toLowerCase().replace(" ", "");
+  const { server, port } = user;
+  let httpLink = `https://${server}/hls/${channelname}.m3u8`;
+  if (port !== 443) {
+    httpLink = `http://${server}:8080/hls/${channelname}.m3u8`;
+  }
+  const newchannel = {
+    name: channelname,
+    key: channelname,
+    owner: user.username,
+    ownerid: user["_id"],
+    server,
+    displayStreamLink: `rtmp://${server}/${settings.stub}`,
+    rtmpLink: `rtmp://${server}/${settings.stub}/${channelname}`,
+    httpLink,
+    token: `${channelname}?psk=${channelname}&token=${channelname}`,
+    status: true,
+  };
+  return newchannel;
+};
+
 const ChannelService = {
   createChannel: async (user, channelname, settings) => {
     try {
-      console.log("settings", settings);
-      channelname = channelname.toLowerCase().replace(" ", "");
-      const { server, port } = user;
-      let httpLink = `https://${server}/hls/${channelname}.m3u8`;
-      if (port !== 443) {
-        httpLink = `http://${server}:8080/hls/${channelname}.m3u8`;
-      }
-      const newchannel = {
-        name: channelname,
-        key: channelname,
-        owner: user.username,
-        ownerid: user["_id"],
-        server,
-        displayStreamLink: `rtmp://${server}/${settings.stub}`,
-        rtmpLink: `rtmp://${server}/${settings.stub}/${channelname}`,
-        httpLink,
-        token: `${channelname}?psk=${channelname}&token=${channelname}`,
-        status: true,
-      };
+      const newchannel = _constructChannel(user, channelname, settings);
       console.log("channel to create", newchannel);
       const response = await axios.post(`${API}/create`, {
         channel: newchannel,
@@ -34,6 +38,25 @@ const ChannelService = {
       return null;
     } catch (error) {
       // console.log("Error in creating channel", error.message);
+      return null;
+    }
+  },
+  editchannel: async (channel, user, settings) => {
+    try {
+      const chconstructed = _constructChannel(user, channel.name, settings);
+      const channeltoedit = {
+        ...chconstructed,
+        _id: channel["_id"],
+      };
+      console.log("Channel to edit", channeltoedit);
+      const response = await axios.post(`${API}/edit`, {
+        channel: channeltoedit,
+      });
+      const data = response.data;
+      if (data.payload.status === "failed") return null;
+      return channeltoedit["_id"];
+    } catch (error) {
+      // console.log("Error in editing channel", error.message);
       return null;
     }
   },
@@ -63,38 +86,6 @@ const ChannelService = {
     }
   },
 
-  editchannel: async (channel, user, settings) => {
-    try {
-      console.log("user", user);
-      const channelname = channel.key.toLowerCase().replace(" ", "");
-      const key = channel.name.toLowerCase().replace(" ", "");
-      const { server, port } = user;
-      let httpLink = `https://${server}/hls/${key}.m3u8`;
-      if (port !== 443) {
-        httpLink = `http://${server}:8080/hls/${key}.m3u8`;
-      }
-      const channeltoedit = {
-        _id: channel["_id"],
-        name: key,
-        key: channelname,
-        displayStreamLink: `rtmp://${server}/${settings.stub}`,
-        rtmpLink: `rtmp://${server}/${settings.stub}/${key}`,
-        httpLink,
-        token: `${channelname}?psk=${channelname}&token=${channelname}`,
-      };
-      console.log("Channel to edit", channeltoedit);
-      const response = await axios.post(`${API}/edit`, {
-        channel: channeltoedit,
-      });
-      const data = response.data;
-      if (data.payload.status === "failed") return null;
-      return channeltoedit["_id"];
-    } catch (error) {
-      // console.log("Error in editing channel", error.message);
-      return null;
-    }
-  },
-
   deleteChannel: async (channel) => {
     try {
       const response = await axios.post(`${API}/delete`, {
@@ -120,20 +111,11 @@ const ChannelService = {
 
   getChannelDetailsByName: async (channelName) => {
     try {
-      const db = firebase.firestore().collection("channels");
-      const snapshot = await db.get();
-      const filterted = snapshot.docs
-        .map((doc) => {
-          const { name, key, httpLink } = doc.data();
-          return {
-            name,
-            key,
-            httpLink,
-          };
-        })
-        .filter((channel) => channel.name === channelName);
-      if (filterted.length === 0) return null;
-      return filterted[0].httpLink;
+      const response = await axios.get(`${API}/detail?name=${channelName}`);
+      const data = response.data;
+      console.log(data);
+      if(data.status === "success") return data.payload;
+      return null;
     } catch (error) {
       // console.log("Error in deleting channel", error.message);
       return null;
@@ -156,11 +138,12 @@ const ChannelService = {
 
   editchannelAdmin: async (channel) => {
     try {
-      const db = firebase.firestore().collection("channels");
-      const id = channel.channelId;
-      delete channel.channelId;
-      await db.doc(id).update(channel);
-      return id;
+      const response = await axios.post(`${API}/edit`, {
+        channel,
+      });
+      const data = response.data;
+      if (data.payload.status === "failed") return null;
+      return channel["_id"];
     } catch (error) {
       // console.log("Error in editing channel", error.message);
       return null;
@@ -169,12 +152,15 @@ const ChannelService = {
 
   changeRtmpStatus: async (channel) => {
     try {
-      const response = await axios.post(`${API}/status`, {
-        channelId: channel["_id"],
-        status: !channel.status,
+      const response = await axios.post(`${API}/edit`, {
+        channel: {
+          ...channel,
+          status: !channel.status,
+        },
       });
-      if(response.data.status === 200) return true;
-      return false
+      const data = response.data;
+      if (data.payload.status === "failed") return false;
+      return true;
     } catch (error) {
       // console.log("error");
       return false;
