@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import {
   Grid,
   Button,
-  CircularProgress,
   Menu,
   MenuItem,
   Snackbar,
@@ -15,6 +14,7 @@ import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../../components/createchannel";
 import useStyles from "./player.styles";
 import RebootConfirmationDialog from "../../components/rebootconfirm";
+import Preloader from "../../components/preloader";
 import {
   StreamUserInfo,
   LiveDotIcon,
@@ -134,78 +134,74 @@ const Home = () => {
     loadChannels(false);
     //eslint-disable-next-line
   }, []);
-
   const classes = useStyles();
+  if (loading) {
+    return <Preloader message={"Loading channels..."} />;
+  }
+
   return (
     <div className={classes.home}>
-      {loading ? (
-        <div className={classes.preloadercnt}>
-          <CircularProgress />
-          <p className={classes.preloadertxt}>Loading channels...</p>
-        </div>
-      ) : (
-        <Grid container>
-          {ch !== null && (
-            <>
-              <Grid item container justify="flex-end" lg={12}>
-                <Grid item lg={1}>
+      <Grid container>
+        {ch !== null && (
+          <>
+            <Grid item container justify="flex-end" lg={12}>
+              <Grid item lg={1}>
+                <Button
+                  onClick={() => setOpenRebootDialog(true)}
+                  variant="contained"
+                  color="primary"
+                >
+                  Reboot
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid
+              item
+              lg={12}
+              container
+              direction="row"
+              alignItems="center"
+              className={classes.actioncnt}
+            >
+              <Grid item lg={3} />
+              <LiveDotIcon isLive={isLive} />
+              <Grid item lg={2} />
+              {chlist.length > 0 && (
+                <Grid itemlg={4}>
                   <Button
-                    onClick={() => setOpenRebootDialog(true)}
-                    variant="contained"
-                    color="primary"
+                    aria-controls="change-channel-menu"
+                    aria-haspopup="true"
+                    onClick={(event) => setAnchorEl(event.currentTarget)}
+                    disableElevation
+                    style={{ zIndex: "99" }}
                   >
-                    Reboot
+                    {ch.name}
+                    <DownArrowIcon />
                   </Button>
                 </Grid>
-              </Grid>
-              <Grid
-                item
-                lg={12}
-                container
-                direction="row"
-                alignItems="center"
-                className={classes.actioncnt}
-              >
-                <Grid item lg={3} />
-                <LiveDotIcon isLive={isLive} />
-                <Grid item lg={2} />
-                {chlist.length > 0 && (
-                  <Grid itemlg={4}>
-                    <Button
-                      aria-controls="change-channel-menu"
-                      aria-haspopup="true"
-                      onClick={(event) => setAnchorEl(event.currentTarget)}
-                      disableElevation
-                      style={{ zIndex: "99" }}
-                    >
-                      {ch.name}
-                      <DownArrowIcon />
-                    </Button>
-                  </Grid>
-                )}
-              </Grid>
-            </>
-          )}
-          {ch === null ? (
-            <div className={classes.preloadercnt}>
-              <p className={classes.preloadertxt}>
-                You don't have any channel.Create one
-              </p>
-            </div>
-          ) : (
-            <>
-              <StreamPlayer
-                ch={ch}
-                onVideoError={onVideoError}
-                onVideoStart={onVideoStart}
-                onVideoPlay={onVideoPlay}
-              />
-              <StreamMetadata metadata={metadata} />
-              <StreamUserInfo ch={ch} />
-            </>
-          )}
-        </Grid>
-      )}
+              )}
+            </Grid>
+          </>
+        )}
+        {ch === null ? (
+          <div className={classes.preloadercnt}>
+            <p className={classes.preloadertxt}>
+              You don't have any channel.Create one
+            </p>
+          </div>
+        ) : (
+          <>
+            <StreamPlayer
+              ch={ch}
+              onVideoError={onVideoError}
+              onVideoStart={onVideoStart}
+              onVideoPlay={onVideoPlay}
+            />
+            <StreamMetadata metadata={metadata} />
+            <StreamUserInfo ch={ch} />
+          </>
+        )}
+      </Grid>
       <CreateNewChannel
         openForm={openForm}
         closeCreatepop={closeCreatepop}

@@ -1,17 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import {
-  Grid,
-  CircularProgress,
-  // Button,
-  // Menu,
-  // MenuItem,
-} from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import ReactHighcharts from "react-highcharts";
 import userservice from "../../service/user.service";
 import AppContext from "../../context/context";
 import useStyles from "./usage.styles";
-// import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import formatDataFormVizualisation from "./usage.utils";
+import Preloader from "../../components/preloader";
 
 const Usage = () => {
   const { user, actions, usageData } = useContext(AppContext);
@@ -69,27 +63,24 @@ const Usage = () => {
   }, []);
   const classes = useStyles();
   // const isAdmin = user["_id"] === process.env.REACT_APP_ADMINID;
+  if (loading) {
+    return <Preloader message={"Loading data..."} />;
+  }
   return (
     <div className={classes.usage}>
-      {loading ? (
-        <div className={classes.preloadercntloader}>
-          <CircularProgress />
-          <p className={classes.preloadertxtloader}>Loading usage data.</p>
-        </div>
-      ) : (
-        <Grid className={classes.chcardcnt} container>
-          <Grid item lg={12}>
-            {nodata ? (
-              <>
-                <div className={classes.preloadercnt}>
-                  <p className={classes.preloadertxt}>
-                    Your usage data is yet to be processed.
-                  </p>
-                </div>
-              </>
-            ) : (
-              <React.Fragment>
-                {/* {isAdmin && (
+      <Grid className={classes.chcardcnt} container>
+        <Grid item lg={12}>
+          {nodata ? (
+            <>
+              <div className={classes.preloadercnt}>
+                <p className={classes.preloadertxt}>
+                  Your usage data is yet to be processed.
+                </p>
+              </div>
+            </>
+          ) : (
+            <React.Fragment>
+              {/* {isAdmin && (
                   <>
                     <Button
                       aria-controls="change-owner-menu"
@@ -118,12 +109,11 @@ const Usage = () => {
                     </Menu>
                   </>
                 )} */}
-                <DataViz totalData={totalData} graphData={graphData} />
-              </React.Fragment>
-            )}
-          </Grid>
+              <DataViz totalData={totalData} graphData={graphData} />
+            </React.Fragment>
+          )}
         </Grid>
-      )}
+      </Grid>
     </div>
   );
 };

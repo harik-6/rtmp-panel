@@ -1,10 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import {
   Grid,
-  CircularProgress,
   Snackbar,
   IconButton,
-  // TablePagination,
   Button,
   Menu,
   MenuItem,
@@ -20,6 +18,7 @@ import useStyles from "./channels.styles";
 import EditChannelAdmin from "../../components/editchanneladmin";
 import RtmpStatusConfirmationDialog from "../../components/rtmpstatusconfirm";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
+import Preloader from "../../components/preloader";
 
 const Channels = () => {
   const classes = useStyles();
@@ -176,32 +175,30 @@ const Channels = () => {
     //eslint-disable-next-line
   }, [channels]);
 
+  if (loading) {
+    return <Preloader message={msg} />;
+  }
+
   return (
     <div className={classes.channels}>
-      {loading ? (
-        <div className={classes.preloadercntloader}>
-          <CircularProgress />
-          <p className={classes.preloadertxtloader}>{msg}</p>
-        </div>
-      ) : (
-        <Grid className={classes.chcardcnt} container>
-          <Grid
-            style={{ marginBottom: "24px" }}
-            item
-            container
-            justify="flex-end"
-            lg={12}
-          >
-            <Grid item lg={2}>
-              <Button
-                onClick={recheckChannelHealth}
-                variant="contained"
-                color="primary"
-              >
-                Health check
-              </Button>
-            </Grid>
-            <Grid item lg={2}>
+      <Grid className={classes.chcardcnt} container>
+        <Grid
+          style={{ marginBottom: "24px" }}
+          item
+          container
+          justify="flex-end"
+          lg={12}
+        >
+          <Grid item lg={2}>
+            <Button
+              onClick={recheckChannelHealth}
+              variant="contained"
+              color="primary"
+            >
+              Health check
+            </Button>
+          </Grid>
+          {/* <Grid item lg={2}>
               <Button
                 // onClick={recheckChannelHealth}
                 variant="contained"
@@ -209,53 +206,52 @@ const Channels = () => {
               >
                 Backup channels
               </Button>
-            </Grid>
-          </Grid>
-          <Grid item lg={12}>
-            {(channels || []).length <= 0 ? (
-              <>
-                <div className={classes.preloadercnt}>
-                  <p className={classes.preloadertxt}>
-                    You don't have any channel.Create one
-                  </p>
-                </div>
-              </>
-            ) : (
-              <React.Fragment>
-                <Insights
-                  channels={channels}
-                  activeChannelCount={activeChannelCount}
-                />
-                {isAdmin && (
-                  <Grid container justify="flex-end">
-                    <Grid sm={12} xs={12} lg={3}>
-                      <Button
-                        aria-controls="change-ownwer-menu"
-                        aria-haspopup="true"
-                        onClick={(event) => setAnchorEl(event.currentTarget)}
-                        disableElevation
-                        style={{ marginTop: "16px", marginBottom: "-16px" }}
-                      >
-                        {activeOwnerId}
-                        <DownArrowIcon />
-                      </Button>
-                    </Grid>
-                  </Grid>
-                )}
-                <ChannelTable
-                  spliceddata={channels}
-                  healthStatus={healthStatus}
-                  setActiveChanel={setActiveChanel}
-                  openActionDialog={openActionDialog}
-                  askConfirmation={askConfirmation}
-                  openPreview={openPreview}
-                  setOpenStatusDialog={setOpenStatusDialog}
-                />
-              </React.Fragment>
-            )}
-          </Grid>
+            </Grid> */}
         </Grid>
-      )}
+        <Grid item lg={12}>
+          {(channels || []).length <= 0 ? (
+            <>
+              <div className={classes.preloadercnt}>
+                <p className={classes.preloadertxt}>
+                  You don't have any channel.Create one
+                </p>
+              </div>
+            </>
+          ) : (
+            <React.Fragment>
+              <Insights
+                channels={channels}
+                activeChannelCount={activeChannelCount}
+              />
+              {isAdmin && (
+                <Grid container justify="flex-end">
+                  <Grid sm={12} xs={12} lg={3}>
+                    <Button
+                      aria-controls="change-ownwer-menu"
+                      aria-haspopup="true"
+                      onClick={(event) => setAnchorEl(event.currentTarget)}
+                      disableElevation
+                      style={{ marginTop: "16px", marginBottom: "-16px" }}
+                    >
+                      {activeOwnerId}
+                      <DownArrowIcon />
+                    </Button>
+                  </Grid>
+                </Grid>
+              )}
+              <ChannelTable
+                spliceddata={channels}
+                healthStatus={healthStatus}
+                setActiveChanel={setActiveChanel}
+                openActionDialog={openActionDialog}
+                askConfirmation={askConfirmation}
+                openPreview={openPreview}
+                setOpenStatusDialog={setOpenStatusDialog}
+              />
+            </React.Fragment>
+          )}
+        </Grid>
+      </Grid>
       <CreateNewChannel
         openForm={action === "add"}
         closeCreatepop={closeActionDialog}

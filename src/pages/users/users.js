@@ -7,7 +7,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  CircularProgress,
   IconButton,
   TablePagination,
 } from "@material-ui/core";
@@ -20,6 +19,7 @@ import useStyles from "./users.styles";
 import CreateNewUser from "../../components/createuser";
 import EditUser from "../../components/edituser";
 import DeleteConfirmationDialog from "../../components/deletechannel";
+import Preloader from "../../components/preloader";
 
 const Users = () => {
   const classes = useStyles();
@@ -76,97 +76,94 @@ const Users = () => {
     //eslint-disable-next-line
   }, []);
 
+  if (loading) {
+    return <Preloader message={"Loading users..."} />;
+  }
+
   return (
     <div className={classes.users}>
-      {loading ? (
-        <div className={classes.preloadercntloader}>
-          <CircularProgress />
-          <p className={classes.preloadertxtloader}>{"Loading users..."}</p>
-        </div>
-      ) : (
-        <Grid className={classes.chcardcnt} container>
-          <Grid item lg={12}>
-            {allUsers.length <= 0 ? (
-              <>
-                <div className={classes.preloadercnt}>
-                  <p className={classes.preloadertxt}>
-                    You don't have any users.Create one
-                  </p>
-                </div>
-              </>
-            ) : (
-              <React.Fragment>
-                <TableContainer className={classes.tablecnt}>
-                  <TablePagination
-                    rowsPerPageOptions={[10, 15, 25]}
-                    component="div"
-                    count={allUsers.length}
-                    rowsPerPage={pageSize}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                  />
-                  <Table aria-label="channel-list">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell align="left">S.No</TableCell>
-                        <TableCell align="left">Name</TableCell>
-                        <TableCell align="left">Server</TableCell>
-                        <TableCell align="left">Limit</TableCell>
-                        <TableCell align="left">{""}</TableCell>
-                        <TableCell align="left">{""}</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {spliceddata.map((us, index) => {
-                        const { user, settings } = us;
-                        return (
-                          <TableRow key={user.username + " " + index}>
-                            <TableCell
-                              className={classes.tbcell}
-                              align="left"
-                            >{`${offSet + index + 1}.`}</TableCell>
-                            <TableCell className={classes.tbcell} align="left">
-                              {user.username}
-                            </TableCell>
-                            <TableCell className={classes.tbcell} align="left">
-                              {user.server}
-                            </TableCell>
-                            <TableCell className={classes.tbcell} align="left">
-                              {settings.limit}
-                            </TableCell>
-                            <TableCell className={classes.tbcell} align="left">
-                              <IconButton
-                                size="small"
-                                onClick={() => {
-                                  setuserAndSettings(us);
-                                  openActionDialog("edit");
-                                }}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </TableCell>
-                            <TableCell className={classes.tbcell} align="left">
-                              <IconButton
-                                onClick={(event) => {
-                                  setuserAndSettings(us);
-                                  askConfirmation();
-                                }}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </React.Fragment>
-            )}
-          </Grid>
+      <Grid className={classes.chcardcnt} container>
+        <Grid item lg={12}>
+          {allUsers.length <= 0 ? (
+            <>
+              <div className={classes.preloadercnt}>
+                <p className={classes.preloadertxt}>
+                  You don't have any users.Create one
+                </p>
+              </div>
+            </>
+          ) : (
+            <React.Fragment>
+              <TableContainer className={classes.tablecnt}>
+                <TablePagination
+                  rowsPerPageOptions={[10, 15, 25]}
+                  component="div"
+                  count={allUsers.length}
+                  rowsPerPage={pageSize}
+                  page={page}
+                  onChangePage={handleChangePage}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
+                <Table aria-label="channel-list">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left">S.No</TableCell>
+                      <TableCell align="left">Name</TableCell>
+                      <TableCell align="left">Server</TableCell>
+                      <TableCell align="left">Limit</TableCell>
+                      <TableCell align="left">{""}</TableCell>
+                      <TableCell align="left">{""}</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {spliceddata.map((us, index) => {
+                      const { user, settings } = us;
+                      return (
+                        <TableRow key={user.username + " " + index}>
+                          <TableCell
+                            className={classes.tbcell}
+                            align="left"
+                          >{`${offSet + index + 1}.`}</TableCell>
+                          <TableCell className={classes.tbcell} align="left">
+                            {user.username}
+                          </TableCell>
+                          <TableCell className={classes.tbcell} align="left">
+                            {user.server}
+                          </TableCell>
+                          <TableCell className={classes.tbcell} align="left">
+                            {settings.limit}
+                          </TableCell>
+                          <TableCell className={classes.tbcell} align="left">
+                            <IconButton
+                              size="small"
+                              onClick={() => {
+                                setuserAndSettings(us);
+                                openActionDialog("edit");
+                              }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </TableCell>
+                          <TableCell className={classes.tbcell} align="left">
+                            <IconButton
+                              onClick={(event) => {
+                                setuserAndSettings(us);
+                                askConfirmation();
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </React.Fragment>
+          )}
         </Grid>
-      )}
+      </Grid>
       <IconButton
         style={{
           position: "fixed",
