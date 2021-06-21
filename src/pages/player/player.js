@@ -89,37 +89,14 @@ const Home = () => {
     }
   };
 
-  const getMetadata = () => {
+  const getMetadata = async () => {
     try {
-      const url = `https://${user.server}/src_meta?surl=${ch.httpLink}`;
-      fetch(url)
-        .then((resp) => resp.json())
-        .then((data) => {
-          const videodata = data.metadata.streams[0];
-          const audiodata = data.metadata.streams[1];
-          const audioType = audiodata["codec_name"].toUpperCase();
-          const videoType = videodata["codec_name"].toUpperCase();
-          let audioRate = 0;
-          if (audioType === "MP3") {
-            audioRate = parseInt(audiodata["bit_rate"]);
-          } else {
-            audioRate = parseInt(audiodata["time_base"].split("/")[1]) || 0;
-          }
-          audioRate = audioRate / 1000 + " kbps";
-          const bitspersample = parseInt(videodata["bits_per_raw_sample"]);
-          const samperate = parseInt(audiodata["sample_rate"]);
-          const videoRate = (bitspersample * samperate * 2) / 1000 + " kbps";
-          const fps = videodata["r_frame_rate"].split("/")[0] + " FPS";
-          setMetadata({
-            audioType,
-            audioRate,
-            videoType,
-            videoRate,
-            fps,
-            resolution:
-              videodata["coded_width"] + "x" + videodata["coded_height"],
-          });
-        });
+      const bitratemetadata = await channelservice.getBitrateMedata(
+        ch.httpLink
+      );
+      if (bitratemetadata !== null) {
+        setMetadata(bitratemetadata);
+      }
     } catch (error) {}
   };
 

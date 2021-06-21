@@ -1,7 +1,7 @@
-import firebase from "firebase";
 import sha1 from "sha1";
 import axios from "axios";
 const API = "http://localhost:9000/user";
+const API_RTMP = "http://localhost:9000/rtmp";
 
 const isAdmin = (id) => id === process.env.REACT_APP_ADMINID;
 
@@ -141,23 +141,15 @@ const UserService = {
   },
   getUsageData: async (user) => {
     try {
-      const db = firebase.firestore().collection("usage");
-      const snapshot = await db.get();
-      const filtered = snapshot.docs
-        .map((doc) => {
-          const { ownwerId, updatedAt, usage } = doc.data();
-          return {
-            ownwerId,
-            date: new Date(updatedAt),
-            usage,
-          };
-        })
-        .filter((usagedata) => usagedata.ownwerId === user.userid);
-      if (filtered.length === 0) {
-        return null;
-      }
+      const response = await axios.post(`${API_RTMP}/usage`, {
+        usageId: user["_id"],
+      });
+      const data = response.data;
+      console.log("data", data);
+      if (data.status === "failed") return null;
+      if (data.payload.length === 0) return null;
       let mapped = {};
-      filtered.forEach((obj) => {
+      data.payload.forEach((obj) => {
         const date = obj.date;
         const key =
           date.getFullYear() +

@@ -1,5 +1,6 @@
 import axios from "axios";
 const API = "http://localhost:9000/channel";
+const API_RTMP = "http://localhost:9000/rtmp";
 
 const _constructChannel = (user, channelname, settings) => {
   channelname = channelname.toLowerCase().replace(" ", "");
@@ -55,7 +56,6 @@ const ChannelService = {
       return null;
     }
   },
-
   getAllTokens: async () => {
     try {
       const response = await axios.post(`${API}/keys`);
@@ -65,7 +65,6 @@ const ChannelService = {
       return null;
     }
   },
-
   getChannels: async (user) => {
     try {
       const response = await axios.post(`${API}/get`, {
@@ -77,7 +76,6 @@ const ChannelService = {
       return null;
     }
   },
-
   deleteChannel: async (channel) => {
     try {
       const response = await axios.post(`${API}/delete`, {
@@ -89,7 +87,6 @@ const ChannelService = {
       return false;
     }
   },
-
   rebootServer: async (channel) => {
     const url = `https://${channel.server}/sys_reboot?psk=${channel.key}&token=${channel.key}`;
     try {
@@ -99,7 +96,6 @@ const ChannelService = {
       return;
     }
   },
-
   getChannelDetailsByName: async (channelName) => {
     try {
       const response = await axios.get(`${API}/detail?name=${channelName}`);
@@ -110,7 +106,6 @@ const ChannelService = {
       return null;
     }
   },
-
   checkChannelHealth: async (channel) => {
     try {
       const response = await fetch(channel.httpLink);
@@ -123,7 +118,6 @@ const ChannelService = {
       return false;
     }
   },
-
   editchannelAdmin: async (channel) => {
     try {
       const response = await axios.post(`${API}/edit`, {
@@ -136,7 +130,6 @@ const ChannelService = {
       return null;
     }
   },
-
   changeRtmpStatus: async (channel) => {
     try {
       const response = await axios.post(`${API}/edit`, {
@@ -152,6 +145,19 @@ const ChannelService = {
       return false;
     }
   },
+  getBitrateMedata : async (httplink) => {
+    try {
+      const response = await axios.post(`${API_RTMP}/metadata`,{
+        surl : httplink
+      });
+      const data = response.data;
+      if(data.status === "success") return data.payload;
+      return null;
+    }catch(error) {
+      console.log(error);
+      return null;
+    }
+  }
 };
 
 export default ChannelService;
