@@ -35,6 +35,8 @@ const useStyles = makeStyles((theme) =>
       height: "auto",
       padding: theme.spacing(1),
       textOverflow: "wrap",
+      display: "flex",
+      justifyContent: "space-between",
     },
     actioncnt: {
       height: "48px",
