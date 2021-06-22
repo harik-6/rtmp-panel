@@ -55,7 +55,7 @@ const Usage = () => {
   }, []);
 
   const classes = useStyles();
-  const isAdmin = user["_id"] === process.env.REACT_APP_ADMINID;
+  const isAdmin = (user===null)?false:(user["_id"] === process.env.REACT_APP_ADMINID);
 
   if (loading) {
     return <Preloader message={"Loading data..."} />;

@@ -142,32 +142,36 @@ const UserService = {
     }
   },
   getUsageData: async (usersetting) => {
-    const cachkey = CACHEKEYS.FETCH_USAGE + "" + usersetting.user["usageid"];
-    const cachevalue = CacheService.get(cachkey);
-    if(cachevalue !== null) return cachevalue;
-    try {
-      const response = await axios.post(`${API_RTMP}/usage`, {
-        usageId: usersetting.settings["usageid"],
-      });
-      const data = response.data;
-      console.log("data", data);
-      if (data.status === "failed") return null;
-      if (data.payload.length === 0) return null;
-      let mapped = {};
-      data.payload.forEach((obj) => {
-        const date = obj.date;
-        const key =
-          date.getFullYear() +
-          "" +
-          String(date.getMonth()).padStart(2, "0") +
-          "" +
-          date.getDate();
-        mapped[key] = obj;
-      });
-      CacheService.set(cachkey,mapped);
-      return mapped;
-    } catch (error) {
-      return null;
+    const { settings } = usersetting;
+    if (settings !== undefined) {
+      console.log(settings);
+      const cachkey = CACHEKEYS.FETCH_USAGE + "#" + settings["usageid"];
+      const cachevalue = CacheService.get(cachkey);
+      if (cachevalue !== null) return cachevalue;
+      try {
+        const response = await axios.post(`${API_RTMP}/usage`, {
+          usageId: settings["usageid"],
+        });
+        const data = response.data;
+        console.log("data", data);
+        if (data.status === "failed") return null;
+        if (data.payload.length === 0) return null;
+        let mapped = {};
+        data.payload.forEach((obj) => {
+          const date = obj.date;
+          const key =
+            date.getFullYear() +
+            "" +
+            String(date.getMonth()).padStart(2, "0") +
+            "" +
+            date.getDate();
+          mapped[key] = obj;
+        });
+        CacheService.set(cachkey, mapped);
+        return mapped;
+      } catch (error) {
+        return null;
+      }
     }
   },
 };
