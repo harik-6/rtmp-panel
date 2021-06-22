@@ -1,6 +1,6 @@
 import axios from "axios";
-const API = "http://localhost:9000/channel";
-const API_RTMP = "http://localhost:9000/rtmp";
+const API = `${process.env.REACT_APP_API}/api/channel`;
+const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
 
 const _constructChannel = (user, channelname, settings) => {
   channelname = channelname.toLowerCase().replace(" ", "");

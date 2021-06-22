@@ -1,7 +1,7 @@
 import sha1 from "sha1";
 import axios from "axios";
-const API = "http://localhost:9000/user";
-const API_RTMP = "http://localhost:9000/rtmp";
+const API = `${process.env.REACT_APP_API}/api/user`;
+const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
 
 const isAdmin = (id) => id === process.env.REACT_APP_ADMINID;
 
