@@ -15,4 +15,4 @@ const CacheService = {
   },
 };
 
-export default ChannelService;
+export default CacheService;

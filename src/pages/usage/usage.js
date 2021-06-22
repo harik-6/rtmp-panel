@@ -1,18 +1,18 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Grid } from "@material-ui/core";
 import ReactHighcharts from "react-highcharts";
+import Preloader from "../../components/preloader";
+import UsageAdmin from "./usage.admin";
 import userservice from "../../service/user.service";
 import AppContext from "../../context/context";
 import useStyles from "./usage.styles";
 import formatDataFormVizualisation from "./usage.utils";
-import Preloader from "../../components/preloader";
 
 const Usage = () => {
   const { user, actions, usageData } = useContext(AppContext);
   const [nodata, setNoData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [graphData, setGraphData] = useState([]);
-  // const [anchorEl, setAnchorEl] = useState(null);
   const [totalData, setTotalData] = useState({
     total: {
       value: 0,
@@ -27,14 +27,6 @@ const Usage = () => {
       unit: "Mb/s",
     },
   });
-
-  // const openMenu = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-
-  // const closeMenu = () => {
-  //   setAnchorEl(null);
-  // };
 
   const formatVizData = (map) => {
     const resultObj = formatDataFormVizualisation(map);
@@ -61,12 +53,17 @@ const Usage = () => {
     loadUsageData();
     //eslint-disable-next-line
   }, []);
+
   const classes = useStyles();
-  // const isAdmin = user["_id"] === process.env.REACT_APP_ADMINID;
+  const isAdmin = user["_id"] === process.env.REACT_APP_ADMINID;
+
   if (loading) {
     return <Preloader message={"Loading data..."} />;
   }
-  return (
+
+  return isAdmin ? (
+    <UsageAdmin />
+  ) : (
     <div className={classes.usage}>
       <Grid className={classes.chcardcnt} container>
         <Grid item lg={12}>
@@ -80,35 +77,6 @@ const Usage = () => {
             </>
           ) : (
             <React.Fragment>
-              {/* {isAdmin && (
-                  <>
-                    <Button
-                      aria-controls="change-owner-menu"
-                      aria-haspopup="true"
-                      onClick={openMenu}
-                      disableElevation
-                    >
-                      {"something"}
-                      <DownArrowIcon />
-                    </Button>
-                    <Menu
-                      id="switch-channel-menu"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={Boolean(anchorEl)}
-                      onClose={closeMenu}
-                    >
-                      {chlist.map((channel, index) => (
-                        <MenuItem
-                          key={channel.name}
-                          onClick={() => changeRtmp(index)}
-                        >
-                          {channel.name}
-                        </MenuItem>
-                      ))}
-                    </Menu>
-                  </>
-                )} */}
               <DataViz totalData={totalData} graphData={graphData} />
             </React.Fragment>
           )}

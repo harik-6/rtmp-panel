@@ -1,5 +1,7 @@
 import sha1 from "sha1";
 import axios from "axios";
+import CacheService from "./cache.service";
+import CACHEKEYS from "../cacheKeys";
 const API = `${process.env.REACT_APP_API}/api/user`;
 const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
 
@@ -139,10 +141,13 @@ const UserService = {
       }
     }
   },
-  getUsageData: async (user) => {
+  getUsageData: async (usersetting) => {
+    const cachkey = CACHEKEYS.FETCH_USAGE + "" + usersetting.user["usageid"];
+    const cachevalue = CacheService.get(cachkey);
+    if(cachevalue !== null) return cachevalue;
     try {
       const response = await axios.post(`${API_RTMP}/usage`, {
-        usageId: user["_id"],
+        usageId: usersetting.settings["usageid"],
       });
       const data = response.data;
       console.log("data", data);
@@ -159,6 +164,7 @@ const UserService = {
           date.getDate();
         mapped[key] = obj;
       });
+      CacheService.set(cachkey,mapped);
       return mapped;
     } catch (error) {
       return null;
