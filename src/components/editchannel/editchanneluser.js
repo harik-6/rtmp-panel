@@ -11,8 +11,8 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
-import AppContext from "../context/context";
-import channelservice from "../service/channel.service";
+import AppContext from "../../context/context";
+import channelservice from "../../service/channel.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const EditChannel = ({ openForm, closeForm, successCallback, channel }) => {
+const EditChannelUser = ({ openForm, closeForm, successCallback, channel }) => {
   const { user, actions, settings } = useContext(AppContext);
   const [chname, setchname] = useState(channel.name);
   const [chkey, setchkey] = useState(channel.key);
@@ -136,4 +136,4 @@ const EditChannel = ({ openForm, closeForm, successCallback, channel }) => {
   );
 };
 
-export default EditChannel;
+export default EditChannelUser;
