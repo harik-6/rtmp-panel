@@ -1,6 +1,6 @@
 import axios from "axios";
-const API = "http://localhost:9000/channel";
-const API_RTMP = "http://localhost:9000/rtmp";
+const API = `${process.env.REACT_APP_API}/api/channel`;
+const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
 
 const _constructChannel = (user, channelname, settings) => {
   channelname = channelname.toLowerCase().replace(" ", "");
@@ -67,9 +67,17 @@ const ChannelService = {
   },
   getChannels: async (user) => {
     try {
-      const response = await axios.post(`${API}/get`, {
-        ownerid: user["_id"],
-      });
+      const response = await axios.post(
+        `${API}/get`,
+        {
+          ownerid: user["_id"],
+        },
+        {
+          headers: {
+            "x-auth-id": user["_id"],
+          },
+        }
+      );
       const data = response.data;
       return data.payload || [];
     } catch (error) {
@@ -100,7 +108,7 @@ const ChannelService = {
     try {
       const response = await axios.get(`${API}/detail?name=${channelName}`);
       const data = response.data;
-      if(data.status === "success") return data.payload;
+      if (data.status === "success") return data.payload;
       return null;
     } catch (error) {
       return null;
@@ -145,19 +153,19 @@ const ChannelService = {
       return false;
     }
   },
-  getBitrateMedata : async (httplink) => {
+  getBitrateMedata: async (httplink) => {
     try {
-      const response = await axios.post(`${API_RTMP}/metadata`,{
-        surl : httplink
+      const response = await axios.post(`${API_RTMP}/metadata`, {
+        surl: httplink,
       });
       const data = response.data;
-      if(data.status === "success") return data.payload;
+      if (data.status === "success") return data.payload;
       return null;
-    }catch(error) {
+    } catch (error) {
       console.log(error);
       return null;
     }
-  }
+  },
 };
 
 export default ChannelService;

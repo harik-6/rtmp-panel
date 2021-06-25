@@ -1,24 +1,17 @@
 import React, { useContext, useState, useEffect } from "react";
-import {
-  Grid,
-  Snackbar,
-  IconButton,
-  Button,
-  Menu,
-  MenuItem,
-} from "@material-ui/core";
+import { Grid, Snackbar, Button, Menu, MenuItem } from "@material-ui/core";
 import { ChannelTable, Insights } from "./channelcomponent";
 import channelservice from "../../service/channel.service";
 import AppContext from "../../context/context";
-import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../../components/createchannel";
-import EditChannel from "../../components/editchannel";
 import DeleteConfirmationDialog from "../../components/deletechannel";
 import useStyles from "./channels.styles";
-import EditChannelAdmin from "../../components/editchanneladmin";
+import EditChannel from "../../components/editchannel/index";
 import RtmpStatusConfirmationDialog from "../../components/rtmpstatusconfirm";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import Preloader from "../../components/preloader";
+import Nodataloader from "../../components/nodataloader";
+import FabAddButton from "../../components/fabaddbutton";
 
 const Channels = () => {
   const classes = useStyles();
@@ -181,24 +174,27 @@ const Channels = () => {
 
   return (
     <div className={classes.channels}>
-      <Grid className={classes.chcardcnt} container>
-        <Grid
-          style={{ marginBottom: "24px" }}
-          item
-          container
-          justify="flex-end"
-          lg={12}
-        >
-          <Grid item lg={2}>
-            <Button
-              onClick={recheckChannelHealth}
-              variant="contained"
-              color="primary"
-            >
-              Health check
-            </Button>
-          </Grid>
-          {/* <Grid item lg={2}>
+      {(channels || []).length <= 0 ? (
+        <Nodataloader message="You don't have any channel.Create one" />
+      ) : (
+        <Grid className={classes.chcardcnt} container>
+          <Grid
+            style={{ marginBottom: "24px" }}
+            item
+            container
+            justify="flex-end"
+            lg={12}
+          >
+            <Grid item lg={2}>
+              <Button
+                onClick={recheckChannelHealth}
+                variant="contained"
+                color="primary"
+              >
+                Health check
+              </Button>
+            </Grid>
+            {/* <Grid item lg={2}>
               <Button
                 // onClick={recheckChannelHealth}
                 variant="contained"
@@ -207,51 +203,39 @@ const Channels = () => {
                 Backup channels
               </Button>
             </Grid> */}
-        </Grid>
-        <Grid item lg={12}>
-          {(channels || []).length <= 0 ? (
-            <>
-              <div className={classes.preloadercnt}>
-                <p className={classes.preloadertxt}>
-                  You don't have any channel.Create one
-                </p>
-              </div>
-            </>
-          ) : (
-            <React.Fragment>
-              <Insights
-                channels={channels}
-                activeChannelCount={activeChannelCount}
-              />
-              {isAdmin && (
-                <Grid container justify="flex-end">
-                  <Grid sm={12} xs={12} lg={3}>
-                    <Button
-                      aria-controls="change-ownwer-menu"
-                      aria-haspopup="true"
-                      onClick={(event) => setAnchorEl(event.currentTarget)}
-                      disableElevation
-                      style={{ marginTop: "16px", marginBottom: "-16px" }}
-                    >
-                      {activeOwnerId}
-                      <DownArrowIcon />
-                    </Button>
-                  </Grid>
-                </Grid>
-              )}
-              <ChannelTable
-                spliceddata={channels}
-                healthStatus={healthStatus}
-                setActiveChanel={setActiveChanel}
-                openActionDialog={openActionDialog}
-                askConfirmation={askConfirmation}
-                openPreview={openPreview}
-                setOpenStatusDialog={setOpenStatusDialog}
-              />
-            </React.Fragment>
+          </Grid>
+          <Insights
+            channels={channels}
+            activeChannelCount={activeChannelCount}
+          />
+          {isAdmin && (
+            <Grid container justify="flex-end">
+              <Grid sm={12} xs={12} lg={3}>
+                <Button
+                  aria-controls="change-ownwer-menu"
+                  aria-haspopup="true"
+                  onClick={(event) => setAnchorEl(event.currentTarget)}
+                  disableElevation
+                  style={{ marginTop: "16px", marginBottom: "-16px" }}
+                >
+                  {activeOwnerId}
+                  <DownArrowIcon />
+                </Button>
+              </Grid>
+            </Grid>
           )}
+          <ChannelTable
+            spliceddata={channels}
+            healthStatus={healthStatus}
+            setActiveChanel={setActiveChanel}
+            openActionDialog={openActionDialog}
+            askConfirmation={askConfirmation}
+            openPreview={openPreview}
+            setOpenStatusDialog={setOpenStatusDialog}
+          />
         </Grid>
-      </Grid>
+      )}
+
       <CreateNewChannel
         openForm={action === "add"}
         closeCreatepop={closeActionDialog}
@@ -260,32 +244,16 @@ const Channels = () => {
           loadChannels();
         }}
       />
-      {chnl !== null && (
-        <EditChannel
-          openForm={
-            action === "edit" && user["_id"] !== process.env.REACT_APP_ADMINID
-          }
-          closeForm={closeActionDialog}
-          successCallback={() => {
-            closeActionDialog();
-            loadChannels();
-          }}
-          channel={chnl}
-        />
-      )}
-      {chnl !== null && (
-        <EditChannelAdmin
-          openForm={
-            action === "edit" && user["_id"] === process.env.REACT_APP_ADMINID
-          }
-          closeForm={closeActionDialog}
-          successCallback={() => {
-            closeActionDialog();
-            loadChannels();
-          }}
-          channel={chnl}
-        />
-      )}
+      <EditChannel
+        openForm={action === "edit"}
+        closeForm={closeActionDialog}
+        successCallback={() => {
+          closeActionDialog();
+          loadChannels();
+        }}
+        channel={chnl}
+        user={user}
+      />
       {chnl !== null && (
         <DeleteConfirmationDialog
           openForm={openDeleteConfirm}
@@ -310,17 +278,7 @@ const Channels = () => {
         onClose={closeSnack}
         key={"snack"}
       />
-      <IconButton
-        style={{
-          position: "fixed",
-          right: "24px",
-          bottom: "24px",
-          background: "#121858",
-        }}
-        onClick={openCreateChannelForm}
-      >
-        <PlusIcon style={{ color: "white", fontSize: "32px" }} />
-      </IconButton>
+      <FabAddButton onClickAction={openCreateChannelForm} />
       {isAdmin && channels !== null && (
         <Menu
           id="switch-channel-admin-menu"

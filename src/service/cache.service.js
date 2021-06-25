@@ -1,7 +1,7 @@
 const CacheService = {
   get: (key) => {
-    value = localStorage.getItem(key);
-    if (value === undefined) return null;
+    const value = localStorage.getItem(key);
+    if (value === undefined) return "nodata";
     return JSON.parse(value);
   },
   set: (key, value) => {
@@ -15,4 +15,4 @@ const CacheService = {
   },
 };
 
-export default ChannelService;
+export default CacheService;

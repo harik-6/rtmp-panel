@@ -1,7 +1,9 @@
 import sha1 from "sha1";
 import axios from "axios";
-const API = "http://localhost:9000/user";
-const API_RTMP = "http://localhost:9000/rtmp";
+import CacheService from "./cache.service";
+import CACHEKEYS from "../cacheKeys";
+const API = `${process.env.REACT_APP_API}/api/user`;
+const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
 
 const isAdmin = (id) => id === process.env.REACT_APP_ADMINID;
 
@@ -139,29 +141,37 @@ const UserService = {
       }
     }
   },
-  getUsageData: async (user) => {
-    try {
-      const response = await axios.post(`${API_RTMP}/usage`, {
-        usageId: user["_id"],
-      });
-      const data = response.data;
-      console.log("data", data);
-      if (data.status === "failed") return null;
-      if (data.payload.length === 0) return null;
-      let mapped = {};
-      data.payload.forEach((obj) => {
-        const date = obj.date;
-        const key =
-          date.getFullYear() +
-          "" +
-          String(date.getMonth()).padStart(2, "0") +
-          "" +
-          date.getDate();
-        mapped[key] = obj;
-      });
-      return mapped;
-    } catch (error) {
-      return null;
+  getUsageData: async (usersetting) => {
+    const { settings } = usersetting;
+    if (settings !== undefined) {
+      console.log(settings);
+      const cachkey = CACHEKEYS.FETCH_USAGE + "#" + settings["usageid"];
+      const cachevalue = CacheService.get(cachkey);
+      if (cachevalue !== null) return cachevalue;
+      try {
+        const response = await axios.post(`${API_RTMP}/usage`, {
+          usageId: settings["usageid"],
+        });
+        const data = response.data;
+        console.log("data", data);
+        if (data.status === "failed") return null;
+        if (data.payload.length === 0) return null;
+        let mapped = {};
+        data.payload.forEach((obj) => {
+          const date = obj.date;
+          const key =
+            date.getFullYear() +
+            "" +
+            String(date.getMonth()).padStart(2, "0") +
+            "" +
+            date.getDate();
+          mapped[key] = obj;
+        });
+        CacheService.set(cachkey, mapped);
+        return mapped;
+      } catch (error) {
+        return null;
+      }
     }
   },
 };

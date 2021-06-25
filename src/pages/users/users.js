@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core";
 import userservice from "../../service/user.service";
 import AppContext from "../../context/context";
-import PlusIcon from "@material-ui/icons/AddRounded";
 import EditIcon from "@material-ui/icons/EditRounded";
 import DeleteIcon from "@material-ui/icons/Delete";
 import useStyles from "./users.styles";
@@ -20,6 +19,8 @@ import CreateNewUser from "../../components/createuser";
 import EditUser from "../../components/edituser";
 import DeleteConfirmationDialog from "../../components/deletechannel";
 import Preloader from "../../components/preloader";
+import Nodataloader from "../../components/nodataloader";
+import FabAddButton from "../../components/fabaddbutton";
 
 const Users = () => {
   const classes = useStyles();
@@ -78,6 +79,15 @@ const Users = () => {
 
   if (loading) {
     return <Preloader message={"Loading users..."} />;
+  }
+
+  if (allUsers.length <= 0) {
+    return (
+      <>
+        <Nodataloader message={"You don't have any users.Create one"} />
+        <FabAddButton onClickAction={() => setAction("add")} />
+      </>
+    );
   }
 
   return (
@@ -164,17 +174,7 @@ const Users = () => {
           )}
         </Grid>
       </Grid>
-      <IconButton
-        style={{
-          position: "fixed",
-          right: "24px",
-          bottom: "24px",
-          background: "#121858",
-        }}
-        onClick={() => setAction("add")}
-      >
-        <PlusIcon style={{ color: "white", fontSize: "32px" }} />
-      </IconButton>
+      <FabAddButton onClickAction={() => setAction("add")} />
       <CreateNewUser
         openForm={action === "add"}
         closeCreatepop={closeActionDialog}

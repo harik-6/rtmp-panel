@@ -1,20 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  Grid,
-  Button,
-  Menu,
-  MenuItem,
-  Snackbar,
-  IconButton,
-} from "@material-ui/core";
+import { Grid, Button, Menu, MenuItem, Snackbar } from "@material-ui/core";
 import AppContext from "../../context/context";
 import channelservice from "../../service/channel.service";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
-import PlusIcon from "@material-ui/icons/AddRounded";
 import CreateNewChannel from "../../components/createchannel";
 import useStyles from "./player.styles";
 import RebootConfirmationDialog from "../../components/rebootconfirm";
+import FabAddButton from "../../components/fabaddbutton";
 import Preloader from "../../components/preloader";
+import Nodataloader from "../../components/nodataloader";
 import {
   StreamUserInfo,
   LiveDotIcon,
@@ -135,73 +129,77 @@ const Home = () => {
     //eslint-disable-next-line
   }, []);
   const classes = useStyles();
+
   if (loading) {
     return <Preloader message={"Loading channels..."} />;
   }
 
   return (
     <div className={classes.home}>
-      <Grid container>
-        {ch !== null && (
-          <>
-            <Grid item container justify="flex-end" lg={12}>
-              <Grid item lg={1}>
+      {ch === null ? (
+        <Nodataloader message="You don't have any channel.Create one" />
+      ) : (
+        <Grid container>
+          <Grid item container justify="flex-end" lg={12}>
+            <Grid item lg={1}>
+              <Button
+                onClick={() => setOpenRebootDialog(true)}
+                variant="contained"
+                color="primary"
+              >
+                Reboot
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            lg={12}
+            container
+            direction="row"
+            alignItems="center"
+            className={classes.actioncnt}
+          >
+            <Grid item lg={3} />
+            <LiveDotIcon isLive={isLive} />
+            <Grid item lg={2} />
+            {chlist.length > 0 && (
+              <Grid itemlg={4}>
                 <Button
-                  onClick={() => setOpenRebootDialog(true)}
-                  variant="contained"
-                  color="primary"
+                  aria-controls="change-channel-menu"
+                  aria-haspopup="true"
+                  onClick={(event) => setAnchorEl(event.currentTarget)}
+                  disableElevation
+                  style={{ zIndex: "99" }}
                 >
-                  Reboot
+                  {ch.name}
+                  <DownArrowIcon />
                 </Button>
               </Grid>
-            </Grid>
-            <Grid
-              item
-              lg={12}
-              container
-              direction="row"
-              alignItems="center"
-              className={classes.actioncnt}
-            >
-              <Grid item lg={3} />
-              <LiveDotIcon isLive={isLive} />
-              <Grid item lg={2} />
-              {chlist.length > 0 && (
-                <Grid itemlg={4}>
-                  <Button
-                    aria-controls="change-channel-menu"
-                    aria-haspopup="true"
-                    onClick={(event) => setAnchorEl(event.currentTarget)}
-                    disableElevation
-                    style={{ zIndex: "99" }}
-                  >
-                    {ch.name}
-                    <DownArrowIcon />
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
-          </>
-        )}
-        {ch === null ? (
-          <div className={classes.preloadercnt}>
-            <p className={classes.preloadertxt}>
-              You don't have any channel.Create one
-            </p>
-          </div>
-        ) : (
-          <>
-            <StreamPlayer
-              ch={ch}
-              onVideoError={onVideoError}
-              onVideoStart={onVideoStart}
-              onVideoPlay={onVideoPlay}
-            />
-            <StreamMetadata metadata={metadata} />
-            <StreamUserInfo ch={ch} />
-          </>
-        )}
-      </Grid>
+            )}
+          </Grid>
+          <StreamPlayer
+            ch={ch}
+            onVideoError={onVideoError}
+            onVideoStart={onVideoStart}
+            onVideoPlay={onVideoPlay}
+          />
+          <StreamMetadata metadata={metadata} />
+          <StreamUserInfo ch={ch} />
+          <Menu
+            id="switch-channel-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={closeMenu}
+          >
+            {chlist.map((channel, index) => (
+              <MenuItem key={channel.name} onClick={() => changeRtmp(index)}>
+                {channel.name}
+              </MenuItem>
+            ))}
+          </Menu>
+        </Grid>
+      )}
       <CreateNewChannel
         openForm={openForm}
         closeCreatepop={closeCreatepop}
@@ -210,19 +208,6 @@ const Home = () => {
           loadChannels(true);
         }}
       />
-      <Menu
-        id="switch-channel-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={closeMenu}
-      >
-        {chlist.map((channel, index) => (
-          <MenuItem key={channel.name} onClick={() => changeRtmp(index)}>
-            {channel.name}
-          </MenuItem>
-        ))}
-      </Menu>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={errorsnack}
@@ -231,17 +216,7 @@ const Home = () => {
         message="Channel limit exceeded"
         key={"err-snack"}
       />
-      <IconButton
-        style={{
-          position: "fixed",
-          right: "24px",
-          bottom: "24px",
-          background: "#121858",
-        }}
-        onClick={openCreateChannelForm}
-      >
-        <PlusIcon style={{ color: "white", fontSize: "32px" }} />
-      </IconButton>
+      <FabAddButton onClickAction={openCreateChannelForm} />
       <RebootConfirmationDialog
         openForm={openRebootDialog}
         closeForm={() => setOpenRebootDialog(false)}
