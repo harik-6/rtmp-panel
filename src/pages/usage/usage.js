@@ -9,7 +9,7 @@ import useStyles from "./usage.styles";
 import formatDataFormVizualisation from "./usage.utils";
 
 const Usage = () => {
-  const { user, actions, usageData } = useContext(AppContext);
+  const { user,settings, actions, usageData } = useContext(AppContext);
   const [nodata, setNoData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [graphData, setGraphData] = useState([]);
@@ -37,7 +37,7 @@ const Usage = () => {
   const loadUsageData = async () => {
     setLoading(true);
     if (usageData === null) {
-      const usage = await userservice.getUsageData(user);
+      const usage = await userservice.getUsageData({user,settings});
       if (usage === null) {
         setNoData(true);
       }

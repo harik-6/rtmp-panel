@@ -1,4 +1,4 @@
-import React, { useContext, useEffect,useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Table,
   TableRow,
@@ -32,32 +32,39 @@ const useStyles = makeStyles((theme) =>
       },
     },
     tbcell: {
-      paddingTop: "4px",
-      paddingBottom: "4px",
+      paddingTop: "16px",
+      paddingBottom: "16px",
     },
   })
 );
 
 const UsageAdmin = () => {
-  const { allUsers } = useContext(AppContext);
+  const { user, settings, allUsers } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [usagelist, setUsageList] = useState([]);
 
-  const formatVizData = (mapdata) => {
-    const fulllist = mapdata.map(
-      (datapoint) => formatDataFormVizualisation(datapoint).usageDataObj
-    );
-    setUsageList(fulllist);
-  };
-
   const loadUsageData = async () => {
     setLoading(true);
-    let alldata = [];
-    allUsers.forEach(async (userAndSett) => {
-      const tempdata = await userservice.getUsageData(userAndSett);
-      alldata.push(tempdata);
+    let alldata =
+      (await userservice.getUsageData({
+        user,
+        settings,
+      })) || [];
+    const allids = [...new Set(alldata.map((obj) => obj.usageId))];
+    let list = [];
+    const idtoservernamp = {};
+    allUsers.forEach(obj => {
+      idtoservernamp[obj.settings.usageid] = obj.user.server
     });
-    formatVizData(alldata);
+    allids.forEach((id) => {
+      const filtered = alldata.filter((obj) => obj["usageId"] === id);
+      let fmtd = Object.assign(
+        { usageId: idtoservernamp[id]||id },
+        formatDataFormVizualisation(filtered).usageDataObj
+      );
+      list.push(fmtd);
+    });
+    setUsageList(list);
     setLoading(false);
   };
 
@@ -76,17 +83,25 @@ const UsageAdmin = () => {
       <TableContainer className={classes.tablecnt}>
         <Table aria-label="channel-list">
           <TableRow>
-            <TableCell align="left">Name</TableCell>
-            <TableCell align="left">Hls</TableCell>
+            <TableCell align="left">Server</TableCell>
+            <TableCell align="left">Total</TableCell>
+            <TableCell align="left">Inbound(Mbps)</TableCell>
+            <TableCell align="left">Outbound(Mbps)</TableCell>
           </TableRow>
           <TableBody>
-            {usagelist.map((channel, index) => (
-              <TableRow key={channel.key + " " + index}>
+            {usagelist.map((usage, index) => (
+              <TableRow key={usage.usageId + " " + index}>
                 <TableCell className={classes.tbcell} align="left">
-                  {channel.name}
+                  {usage.usageId}
                 </TableCell>
                 <TableCell className={classes.tbcell} align="left">
-                  {channel.httpLink}
+                  {usage.total.value + " " + usage.total.unit}
+                </TableCell>
+                <TableCell className={classes.tbcell} align="left">
+                  {usage.inBand.value}
+                </TableCell>
+                <TableCell className={classes.tbcell} align="left">
+                  {usage.outBand.value}
                 </TableCell>
               </TableRow>
             ))}

@@ -63,14 +63,14 @@ const useStyles = makeStyles((theme) =>
       paddingBottom: "16px",
     },
     countValue: {
-      fontSize: "48px",
+      fontSize: "36px",
     },
     countUnit: {
-      fontSize: "24px",
+      fontSize: "20px",
       opacity: "0.7",
       marginBottom: "8px",
       marginLeft: "8px",
-    },
+    }
   })
 );
 export default useStyles;

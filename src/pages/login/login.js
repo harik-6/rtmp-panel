@@ -14,6 +14,7 @@ import EyeOff from "@material-ui/icons/VisibilityOff";
 import AppConext from "../../context/context";
 import service from "../../service/user.service";
 import useStyles from "./login.styles";
+import CacheService from "../../service/cache.service";
 
 const Login = () => {
   const classes = useStyles();
@@ -35,6 +36,7 @@ const Login = () => {
 
   const loginUser = async () => {
     setloginin(true);
+    CacheService.clear();
     if (username.length > 0 && password.length > 0) {
       const userAndSettings = await service.getUser(username, password);
       if (userAndSettings == null) {

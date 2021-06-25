@@ -172,6 +172,16 @@ const Channels = () => {
     return <Preloader message={msg} />;
   }
 
+  let filtereddata = [];
+  if (isAdmin) {
+    filtereddata = channels === null
+      ? []
+      : channels.filter((ch) => ch.server === activeOwnerId) || [];
+  } else {
+    filtereddata = channels || [];
+    
+  }
+
   return (
     <div className={classes.channels}>
       {(channels || []).length <= 0 ? (
@@ -225,7 +235,7 @@ const Channels = () => {
             </Grid>
           )}
           <ChannelTable
-            spliceddata={channels}
+            spliceddata={filtereddata}
             healthStatus={healthStatus}
             setActiveChanel={setActiveChanel}
             openActionDialog={openActionDialog}

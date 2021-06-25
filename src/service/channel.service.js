@@ -162,7 +162,6 @@ const ChannelService = {
       if (data.status === "success") return data.payload;
       return null;
     } catch (error) {
-      console.log(error);
       return null;
     }
   },

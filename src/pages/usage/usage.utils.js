@@ -47,46 +47,7 @@ const defaultConfiguration = {
   },
 };
 
-const getBoundUsageFormattedData = (map, key, type) => {
-  const usage = map.usage[type];
-  const splitted = usage[key].split(" ");
-  let value = parseFloat(splitted[0]);
-  const unit = splitted[1];
-  switch (unit) {
-    case "kBit/s":
-      value /= 8000;
-      break;
-    case "GBit":
-      value /= 8;
-      break;
-    case "MByte":
-      value /= 1024;
-      break;
-    default:
-  }
-  return {
-    value,
-    unit,
-  };
-};
-
-const getFormattedData = (map, key, section) => {
-  const inbound = getBoundUsageFormattedData(map, key, "inboundUsage");
-  const outbound = getBoundUsageFormattedData(map, key, "outboundUsage");
-  let total = 0;
-  if (section === "in") {
-    total = inbound.value;
-  }
-  if (section === "out") {
-    total = outbound.value;
-  }
-  if (section === "total") {
-    total = inbound.value + outbound.value;
-  }
-  return total;
-};
-
-const xaxisFormat = (dateid) => {
+const _xaxisFormat = (usagearr) => {
   const months = [
     "Jan",
     "Feb",
@@ -101,12 +62,13 @@ const xaxisFormat = (dateid) => {
     "Nov",
     "Dec",
   ];
-  const m = parseInt(dateid.substring(4, 6));
-  const d = dateid.substring(6);
-  return months[m] + " " + d;
+  return (usagearr || []).map(({ date }) => {
+    const dateid = new Date(date);
+    return months[dateid.getUTCMonth()] + " " + dateid.getUTCDate();
+  });
 };
 
-const caclculateTotalBandWidthConsumed = (arr) => {
+const _totalConsumption = (arr) => {
   let total = 0;
   let subtotal = arr[0];
   const temp = [...arr];
@@ -122,85 +84,63 @@ const caclculateTotalBandWidthConsumed = (arr) => {
   return subtotal + total;
 };
 
-const formatDataFormVizualisation = (map) => {
-  const reverseMap = {
-    Jan: 0,
-    Feb: 1,
-    Mar: 2,
-    Apr: 3,
-    May: 4,
-    Jun: 5,
-    Jul: 6,
-    Aug: 7,
-    Sep: 8,
-    Oct: 9,
-    Nov: 10,
-    Dec: 11,
-  };
-  let bw = 0;
-  let bwunit = "GB";
-  let inb = 0;
-  let outb = 0;
-  let len = 0;
-  let dateids = [];
-  let usageperdate = [];
-  for (const key in map) {
-    len += 1;
-    const upd = getFormattedData(map[key], "ttl", "total");
-    dateids.push(xaxisFormat(key));
-    usageperdate.push(upd);
-    inb += Math.max(getFormattedData(map[key], "avg", "in"), 0.83);
-    outb += Math.max(getFormattedData(map[key], "avg", "out"), 0.61);
+const _averageConsumption = (dataarr) => {
+  if (dataarr.length === 0) {
+    return {
+      avgInband: 0,
+      avgOutBan: 0,
+    };
   }
-  dateids.sort((a, b) => {
-    const asplitted = a.split(" ");
-    const bsplitted = b.split(" ");
-    const adate = new Date(
-      2021,
-      reverseMap[asplitted[0]],
-      parseInt(asplitted[1])
-    );
-    const bdate = new Date(
-      2021,
-      reverseMap[bsplitted[0]],
-      parseInt(bsplitted[1])
-    );
-    return adate - bdate;
+  let totalin = 0;
+  let totalout = 0;
+  dataarr.forEach(({ usage }) => {
+    totalin += parseFloat(usage.inbound);
+    totalout += parseFloat(usage.outbound);
   });
-  usageperdate = usageperdate.map((val) => parseFloat((val + 10).toFixed(2)));
-  inb /= len;
-  outb /= len;
-  bw = caclculateTotalBandWidthConsumed(usageperdate);
-  if (bw > 1000) {
-    bw /= 1000;
-    bwunit = "TB";
+  return {
+    avgInband: totalin / dataarr.length,
+    avgOutBand: totalout / dataarr.length,
+  };
+};
+
+const formatDataFormVizualisation = (usagearr) => {
+  usagearr = usagearr || [];
+  usagearr.sort((a, b) => new Date(a.date) - new Date(b.date));
+  const xaxisdata = usagearr.map((data) => parseFloat(data.usage.total)+10);
+  const xaxislabels = _xaxisFormat(usagearr);
+  let totalusage = _totalConsumption(xaxisdata);
+  let totlaunit = "GB";
+  const { avgInband, avgOutBand } = _averageConsumption(usagearr);
+  if (totalusage > 1000) {
+    totalusage /= 1000;
+    totlaunit = "TB";
   }
   return {
     usageDataObj: {
       total: {
-        value: bw.toFixed(2),
-        unit: bwunit,
+        value: totalusage.toFixed(2),
+        unit: totlaunit,
       },
       inBand: {
-        value: inb.toFixed(2),
-        unit: "Mb/s",
+        value: avgInband.toFixed(2),
+        unit: "Mbps",
       },
       outBand: {
-        value: outb.toFixed(2),
-        unit: "Mb/s",
+        value: avgOutBand.toFixed(2),
+        unit: "Mbps",
       },
     },
     graphDataObj: {
       ...defaultConfiguration,
       xAxis: {
-        categories: dateids,
+        categories: xaxislabels,
       },
       series: [
         {
           type: "area",
           showInLegend: false,
           name: "Usage",
-          data: usageperdate,
+          data: xaxisdata,
         },
       ],
     },

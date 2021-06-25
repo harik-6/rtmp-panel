@@ -142,33 +142,32 @@ const UserService = {
     }
   },
   getUsageData: async (usersetting) => {
-    const { settings } = usersetting;
+    const { settings, user } = usersetting;
     if (settings !== undefined) {
-      console.log(settings);
       const cachkey = CACHEKEYS.FETCH_USAGE + "#" + settings["usageid"];
       const cachevalue = CacheService.get(cachkey);
       if (cachevalue !== null) return cachevalue;
       try {
-        const response = await axios.post(`${API_RTMP}/usage`, {
-          usageId: settings["usageid"],
-        });
+        const response = await axios.post(
+          `${API_RTMP}/usage`,
+          {
+            usageId: settings["usageid"],
+          },
+          {
+            headers: {
+              "x-auth-id": user["_id"],
+            },
+          }
+        );
         const data = response.data;
-        console.log("data", data);
-        if (data.status === "failed") return null;
+        if (
+          data.status === "failed" &&
+          user["_id"] !== process.env.REACT_APP_ADMINID
+        )
+          return null;
         if (data.payload.length === 0) return null;
-        let mapped = {};
-        data.payload.forEach((obj) => {
-          const date = obj.date;
-          const key =
-            date.getFullYear() +
-            "" +
-            String(date.getMonth()).padStart(2, "0") +
-            "" +
-            date.getDate();
-          mapped[key] = obj;
-        });
-        CacheService.set(cachkey, mapped);
-        return mapped;
+        CacheService.set(cachkey, data.payload);
+        return data.payload;
       } catch (error) {
         return null;
       }
