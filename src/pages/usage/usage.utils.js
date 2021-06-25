@@ -167,7 +167,7 @@ const formatDataFormVizualisation = (map) => {
     );
     return adate - bdate;
   });
-  usageperdate = usageperdate.map((val) => parseFloat((val + 30).toFixed(2)));
+  usageperdate = usageperdate.map((val) => parseFloat((val + 10).toFixed(2)));
   inb /= len;
   outb /= len;
   bw = caclculateTotalBandWidthConsumed(usageperdate);
