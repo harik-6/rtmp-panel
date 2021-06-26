@@ -1,12 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { AppBar, Toolbar, Button, Typography } from "@material-ui/core";
 import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
+import LoginDialog from "../login/logindialog";
 import Ourservices from "./ourservices";
 import Aboutus from "./aboutus";
 import useStyles from "./landing.styles";
 
 const Landing = () => {
   const classes = useStyles();
+  const [openLogin, setOpenLogin] = useState(false);
 
   const _scrollTo = (idName) => {
     document.getElementById(idName).scrollIntoView();
@@ -39,6 +41,7 @@ const Landing = () => {
                 About us
               </Typography>
               <Button
+                onClick={() => setOpenLogin(true)}
                 className={classes.navlink}
                 color="primary"
                 variant="outlined"
@@ -79,6 +82,7 @@ const Landing = () => {
       <div id="aboutus" className={classes.segment}>
         <Aboutus />
       </div>
+      <LoginDialog openForm={openLogin} closeForm={() => setOpenLogin(false)} />
     </div>
   );
 };
