@@ -16,14 +16,18 @@ const Landing = () => {
 
   return (
     <div className={classes.landing}>
-      <div className={classes.segment}>
+      <div id="home" className={classes.segment}>
         <AppBar elevation={0} position="static" className={classes.appbar}>
           <Toolbar className={classes.toolbar}>
             <Typography variant="h6" className={classes.title}>
               StreamWell
             </Typography>
             <div className={classes.navbar}>
-              <Typography className={classes.navlink} variant="p">
+              <Typography
+                onClick={() => _scrollTo("home")}
+                className={classes.navlink}
+                variant="p"
+              >
                 Home
               </Typography>
               <Typography

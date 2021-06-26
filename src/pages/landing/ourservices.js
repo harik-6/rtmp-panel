@@ -11,26 +11,25 @@ const allservices = [
   {
     name: "Live Streaming",
     image: "liveevents.png",
-    desc: `Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctic`,
+    desc: `We support you to stream your live events like Marriages,
+     Corporate events and Church prayers etc.`,
   },
   {
     name: "Channel Distribution",
     image: "distribution.png",
-    desc: `Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctic`,
+    desc: `We support you to distribute your tv channel to different MSO with decoder boxes.`,
   },
   {
     name: "Mobile Development",
     image: "mobileapp.png",
-    desc: `Lizards are a widespread group of squamate reptiles, with over 6,000
-        species, ranging across all continents except Antarctic`,
+    desc: `We develop mobile apk and support publishig it to playstore.
+    Also hybrid technologies used based on user requirements.`,
   },
   {
     name: "Web Development",
     image: "webapp.png",
-    desc: `Lizards are a widespread group of squamate reptiles, with over 6,000
-        species, ranging across all continents except Antarctic`,
+    desc: `We develop web application and also develop static web pages.
+    We also support in deploying the same and search engine optimization.`,
   },
 ];
 
