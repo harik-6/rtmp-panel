@@ -5,6 +5,7 @@ import Login from "./pages/login/login";
 import AppState from "./context/state";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Preview from "./pages/preview";
+import Landing from "./pages/landing/landing";
 
 const App = () => {
   return (
@@ -14,7 +15,7 @@ const App = () => {
           <Switch>
             <Route exact path="/play/:channel" component={Preview} />
             <Route exact path="/login" component={Login} />
-            <Route path="" component={Main} />
+            <Route path="" component={Landing} />
           </Switch>
         </Router>
       </div>
