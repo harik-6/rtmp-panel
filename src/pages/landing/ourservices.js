@@ -49,7 +49,7 @@ const Ourservices = () => {
       </Typography>
       <div className={classes.serviceslist}>
         {allservices.map((service) => (
-          <FeatureCard data={service} />
+          <FeatureCard key={service.name} data={service} />
         ))}
       </div>
     </div>
@@ -63,7 +63,11 @@ const FeatureCard = ({ data }) => {
       <CardActionArea className={classes.cardactionarea}>
         <CardContent>
           <p style={{ textAlign: "center", marginBottom: "16px" }}>
-            <img className={classes.cardmedia} src={data.image} />
+            <img
+              alt={data.name}
+              className={classes.cardmedia}
+              src={data.image}
+            />
           </p>
           <p className={classes.servicename}>{data.name}</p>
           <Typography variant="body2" color="textSecondary" component="p">

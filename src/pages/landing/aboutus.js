@@ -71,7 +71,7 @@ const Aboutus = () => {
           </p>
         </div>
         <div style={{ flex: 1 }}>
-          <img width="500px" height="500px" src="aboutus.jpg" />
+          <img alt="Contact Us" width="500px" height="500px" src="aboutus.jpg" />
         </div>
       </div>
       <div className={classes.footer}>
