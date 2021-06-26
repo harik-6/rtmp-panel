@@ -21,7 +21,8 @@ const StreamUserInfo = ({ ch }) => {
     });
   };
   const classes = useStyles();
-  const previewUrl = `${process.env.REACT_APP_APPURL}/play/${ch.name}`;
+  // const previewUrl = `${process.env.REACT_APP_APPURL}/play/${ch.name}`;
+  const previewUrl = `https://${ch.server}/play/${ch.name}`;
   return (
     <Grid
       className={classes.rtmpinfo}
