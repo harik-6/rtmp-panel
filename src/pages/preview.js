@@ -1,28 +1,31 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 import channelService from "../service/channel.service";
-// import ReactDOM from "react-dom";
-// import screenfull from "screenfull";
 
-const Preview = () => {
-  const [httpLink, setHttpLink] = useState("http://errorurl.m3u8");
+const Preview = (props) => {
+  const [httpLink, setHttpLink] = useState(
+    "https://rtmp.streamwell.in/novideo.m3u8"
+  );
   const previewPlayer = useRef();
 
+  const _redirectToHome = () => {
+    window.location.href = process.env.REACT_APP_APPURL;
+  }
+
   const setHlsLink = async () => {
-    const url = window.location.href;
-    const splitted = url.split("&channel=");
-    const channelName = splitted[1];
+    const channelName = props.match.params.channel
     if ((channelName || "").length === 0) {
-      window.location.href = process.env.REACT_APP_APPURL;
+      _redirectToHome();
     }
     const hlsLink = await channelService.getChannelDetailsByName(channelName);
     if (hlsLink === null) {
-      window.location.href = process.env.REACT_APP_APPURL;
+       _redirectToHome();
     }
     setHttpLink(hlsLink);
   };
   useEffect(() => {
     setHlsLink();
+    // eslint-disable-next-line
   }, []);
 
   return (

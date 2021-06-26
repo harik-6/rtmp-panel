@@ -109,9 +109,7 @@ const Channels = () => {
   };
 
   const openPreview = (chnllll) => {
-    window.open(
-      `${process.env.REACT_APP_APPURL}?page=play&channel=${chnllll.name}`
-    );
+    window.open(`${process.env.REACT_APP_APPURL}/play/${chnllll.name}`);
   };
   const updateActiveCount = (hlthList) => {
     let count = 0;
@@ -174,13 +172,14 @@ const Channels = () => {
 
   let filtereddata = [];
   if (isAdmin) {
-    filtereddata = channels === null
-      ? []
-      : channels.filter((ch) => ch.server === activeOwnerId) || [];
+    filtereddata =
+      channels === null
+        ? []
+        : channels.filter((ch) => ch.server === activeOwnerId) || [];
   } else {
     filtereddata = channels || [];
-    
   }
+  filtereddata.sort((a,b) => a.name.localeCompare(b.name));
 
   return (
     <div className={classes.channels}>

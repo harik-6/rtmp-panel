@@ -66,13 +66,13 @@ const StreamUserInfo = ({ ch }) => {
             <p className={classes.urlheader}>Player URL</p>
             <p
               className={classes.urlvalue}
-            >{`${process.env.REACT_APP_APPURL}?page=play&channel=${ch.name}`}</p>
+            >{`${process.env.REACT_APP_APPURL}/play/${ch.name}`}</p>
           </div>
           <IconButton
             color="primary"
             onClick={() =>
               onCopy(
-                `${process.env.REACT_APP_APPURL}?page=play&channel=${ch.name}`
+                `${process.env.REACT_APP_APPURL}/play/${ch.name}`
               )
             }
           >
