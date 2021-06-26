@@ -5,6 +5,14 @@ import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
 import useStyles from "./player.styles";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 
+const CopyIcon = ({ onClick }) => {
+  return (
+    <IconButton color="primary" onClick={onClick}>
+      <FileCopyIcon fontSize="small" />
+    </IconButton>
+  );
+};
+
 const StreamUserInfo = ({ ch }) => {
   const [snack, setSnack] = useState(false);
   const onCopy = (text) => {
@@ -13,6 +21,7 @@ const StreamUserInfo = ({ ch }) => {
     });
   };
   const classes = useStyles();
+  const previewUrl = `${process.env.REACT_APP_APPURL}/play/${ch.name}`;
   return (
     <Grid
       className={classes.rtmpinfo}
@@ -27,15 +36,15 @@ const StreamUserInfo = ({ ch }) => {
           <div>
             <p className={classes.urlheader}>Stream URL</p>
             <p className={classes.urlvalue}>{ch.displayStreamLink}</p>
+          </div>
+          <CopyIcon onClick={() => onCopy(ch.displayStreamLink)} />
+        </Paper>
+        <Paper elevation={0} square className={classes.paper}>
+          <div>
             <p className={classes.urlheader}>Key</p>
             <p className={classes.urlvalue}>{ch.token}</p>
           </div>
-          <IconButton
-            color="primary"
-            onClick={() => onCopy(ch.displayStreamLink)}
-          >
-            <FileCopyIcon />
-          </IconButton>
+          <CopyIcon onClick={() => onCopy(ch.token)} />
         </Paper>
       </Grid>
       <Grid item lg={12} xs={12} className={classes.urls}>
@@ -44,9 +53,7 @@ const StreamUserInfo = ({ ch }) => {
             <p className={classes.urlheader}>RTMP Play URL</p>
             <p className={classes.urlvalue}>{ch.rtmpLink}</p>
           </div>
-          <IconButton color="primary" onClick={() => onCopy(ch.rtmpLink)}>
-            <FileCopyIcon />
-          </IconButton>
+          <CopyIcon onClick={() => onCopy(ch.rtmpLink)} />
         </Paper>
       </Grid>
       <Grid item lg={12} xs={12} className={classes.urls}>
@@ -55,9 +62,7 @@ const StreamUserInfo = ({ ch }) => {
             <p className={classes.urlheader}>HLS</p>
             <p className={classes.urlvalue}>{ch.httpLink}</p>
           </div>
-          <IconButton color="primary" onClick={() => onCopy(ch.httpLink)}>
-            <FileCopyIcon />
-          </IconButton>
+          <CopyIcon onClick={() => onCopy(ch.httpLink)} />
         </Paper>
       </Grid>
       <Grid item lg={12} xs={12} className={classes.urls}>
@@ -66,25 +71,16 @@ const StreamUserInfo = ({ ch }) => {
             <p className={classes.urlheader}>Player URL</p>
             <p
               className={classes.urlvalue}
-            >{`${process.env.REACT_APP_APPURL}/play/${ch.name}`}</p>
+            >{previewUrl}</p>
           </div>
-          <IconButton
-            color="primary"
-            onClick={() =>
-              onCopy(
-                `${process.env.REACT_APP_APPURL}/play/${ch.name}`
-              )
-            }
-          >
-            <FileCopyIcon />
-          </IconButton>
+          <CopyIcon onClick={() => onCopy(previewUrl)} />
         </Paper>
       </Grid>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={snack}
         onClose={() => setSnack(false)}
-        autoHideDuration={5000}
+        autoHideDuration={1000}
         message="Copied to clipboard"
         key={"text-copy-snack"}
       />
