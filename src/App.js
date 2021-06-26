@@ -31,6 +31,7 @@ const Auth = () => {
     <div className="app-main">
       <Router>
         <Switch>
+          <Route exact path="/play" component={Preview} />
           <Route exact path="/login" component={Login} />
           <Route path="" component={Main} />
         </Switch>
