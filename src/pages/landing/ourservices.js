@@ -21,13 +21,13 @@ const allservices = [
             species, ranging across all continents except Antarctic`,
   },
   {
-    name: "Mobile App Development",
+    name: "Mobile Development",
     image: "mobileapp.png",
     desc: `Lizards are a widespread group of squamate reptiles, with over 6,000
         species, ranging across all continents except Antarctic`,
   },
   {
-    name: "Web App Development",
+    name: "Web Development",
     image: "webapp.png",
     desc: `Lizards are a widespread group of squamate reptiles, with over 6,000
         species, ranging across all continents except Antarctic`,

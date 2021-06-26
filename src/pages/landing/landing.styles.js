@@ -4,10 +4,11 @@ const useStyles = makeStyles((theme) =>
     landing: {
       backgroundColor: "#ffffff",
       overflowX: "hidden",
+      scrollBehavior: "smooth",
     },
     appbar: {
-      background: "#ffffff",
-      color: "#000000",
+      background: "#1a237e",
+      color: "#ffffff",
     },
     toolbar: {
       paddingLeft: "32px",
@@ -45,9 +46,13 @@ const useStyles = makeStyles((theme) =>
     },
     demobutton: {
       marginTop: "18px",
-      borderRadius: "20px",
+      borderRadius: "30px",
       padding: "12px",
+      paddingLeft: "24px",
+      paddingRight: "24px",
       fontSize: "18px",
+      backgroundColor: "#1a237e",
+      color: "#ffffff",
     },
     gright: {
       flex: 1,
@@ -76,13 +81,35 @@ const useStyles = makeStyles((theme) =>
     },
     cardmedia: {
       height: "150px",
-      width: "150px"
+      width: "150px",
     },
     servicename: {
       textAlign: "center",
       fontSize: "20px",
       fontWeight: "bold",
       marginBottom: "16px",
+    },
+    aboutsseg: {
+      height: "100%",
+      width: "100%",
+    },
+    aboutstext: {
+      fontSize: "24px",
+      marginRight: "16px",
+      marginBottom: "16px",
+    },
+    aboutusdesc: {
+      fontSize: "18px",
+      lineHeight: "1.5rem",
+      marginBottom: "24px",
+    },
+    footer: {
+      height: "110px",
+      backgroundColor: "#1a237e",
+      color: "#ffffff",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     },
   })
 );

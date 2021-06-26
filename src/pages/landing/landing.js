@@ -1,11 +1,17 @@
 import React, { useState, useContext } from "react";
 import { AppBar, Toolbar, Button, Typography } from "@material-ui/core";
-import Ourservices from "./ourservices";
 import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
+import Ourservices from "./ourservices";
+import Aboutus from "./aboutus";
 import useStyles from "./landing.styles";
 
 const Landing = () => {
   const classes = useStyles();
+
+  const _scrollTo = (idName) => {
+    document.getElementById(idName).scrollIntoView();
+  };
+
   return (
     <div className={classes.landing}>
       <div className={classes.segment}>
@@ -16,18 +22,30 @@ const Landing = () => {
             </Typography>
             <div className={classes.navbar}>
               <Typography className={classes.navlink} variant="p">
+                Home
+              </Typography>
+              <Typography
+                onClick={() => _scrollTo("services")}
+                className={classes.navlink}
+                variant="p"
+              >
                 Services
               </Typography>
-              <Typography className={classes.navlink} variant="p">
-                Features
-              </Typography>
-              <Typography className={classes.navlink} variant="p">
-                About Us
+              <Typography
+                onClick={() => _scrollTo("aboutus")}
+                className={classes.navlink}
+                variant="p"
+              >
+                About us
               </Typography>
               <Button
                 className={classes.navlink}
                 color="primary"
                 variant="outlined"
+                style={{
+                  color: "#ffffff",
+                  border: "2px solid white",
+                }}
               >
                 Login
               </Button>
@@ -55,8 +73,11 @@ const Landing = () => {
           <div className={classes.gright}></div>
         </div>
       </div>
-      <div className={classes.segment}>
+      <div id="services" className={classes.segment}>
         <Ourservices />
+      </div>
+      <div id="aboutus" className={classes.segment}>
+        <Aboutus />
       </div>
     </div>
   );
