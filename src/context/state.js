@@ -2,6 +2,8 @@ import { useReducer } from "react";
 import AppReducer from "./reducer";
 import AppContext from "./context";
 const initialState = {
+  appName : "StreamWell",
+  appDesc : "While Stream is well, All is Well.",
   user: null,
   channels: null,
   settings: null,
@@ -55,6 +57,13 @@ const AppState = (props) => {
     });
   };
 
+  const setAppName = (appNameAndDesc) => {
+    dispatch({
+      type: "setappname",
+      payload: appNameAndDesc,
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -66,6 +75,7 @@ const AppState = (props) => {
           setHealth,
           setAllUsers,
           setUsageData,
+          setAppName
         },
       }}
     >

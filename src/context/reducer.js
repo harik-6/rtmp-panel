@@ -14,7 +14,7 @@ const AppReducer = (state, action) => {
       return {
         ...state,
         user: payload.user,
-        settings : payload.settings
+        settings: payload.settings,
       };
     case "setchannels":
       return {
@@ -35,6 +35,12 @@ const AppReducer = (state, action) => {
       return {
         ...state,
         usageData: payload,
+      };
+    case "setappname":
+      return {
+        ...state,
+        appName: payload.name,
+        appDesc: payload.desc
       };
     default:
       return state;

@@ -17,7 +17,7 @@ import Users from "../users/users";
 const Main = () => {
   const classes = useStyles();
   const history = useHistory();
-  const { user, actions, settings } = useContext(AppContext);
+  const { user, actions, settings, appName } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(1);
   const [isAdmin, setAdmin] = useState(false);
 
@@ -41,7 +41,7 @@ const Main = () => {
   return (
     <div className={classes.appmain}>
       <div className={classes.sidenav}>
-        <p className={classes.appname}>{process.env.REACT_APP_NAME}</p>
+        <p className={classes.appname}>{appName}</p>
         <List className={classes.navlist} aria-label="navigation-list">
           <Link to="/player">
             <ListItem

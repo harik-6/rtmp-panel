@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Grid,
   Paper,
@@ -24,7 +24,7 @@ const Login = () => {
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  const { actions } = useContext(AppConext);
+  const { actions, appName, appDesc } = useContext(AppConext);
 
   const handleusername = (e) => {
     setusername(e.target.value);
@@ -53,6 +53,30 @@ const Login = () => {
   const togglePassword = () => {
     setShowPass(!showPass);
   };
+
+  const _setAppName = () => {
+    const location = window.location.href;
+    if (location.includes("localhost")) {
+      actions.setAppName({
+        name: "Localhost",
+        desc: "Localhost",
+      });
+      return;
+    }
+    if (location.includes("iptelevision")) {
+      actions.setAppName({
+        name: "Iptelevision",
+        desc: "Streaming server dashboard.",
+      });
+      return;
+    }
+  };
+
+  useEffect(() => {
+    _setAppName();
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div className={classes.login}>
       <Grid container className={classes.logingrid}>
@@ -90,10 +114,8 @@ const Login = () => {
         >
           <Grid item xs={12} sm={12} lg={7}>
             <div className={classes.txtcnt}>
-              <p className={classes.maintxt}>{process.env.REACT_APP_NAME}</p>
-              <p className={classes.subtxt}>
-                While Stream is well, All is Well.
-              </p>
+              <p className={classes.maintxt}>{appName}</p>
+              <p className={classes.subtxt}>{appDesc}</p>
             </div>
           </Grid>
           <Grid item xs={12} sm={6} lg={3}>
