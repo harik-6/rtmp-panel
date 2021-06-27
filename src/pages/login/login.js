@@ -59,14 +59,14 @@ const Login = () => {
     if (location.includes("localhost")) {
       actions.setAppName({
         name: "Localhost",
-        desc: "Localhost",
+        desc: `Test.<n> New line1.<n> New line2.`,
       });
       return;
     }
     if (location.includes("iptelevision")) {
       actions.setAppName({
-        name: "Iptelevision",
-        desc: "Streaming server dashboard.",
+        name: "IPtelevision",
+        desc: `Dedicated Streaming Server.<n>For contact +91 97154 42908.`,
       });
       return;
     }
@@ -115,7 +115,11 @@ const Login = () => {
           <Grid item xs={12} sm={12} lg={7}>
             <div className={classes.txtcnt}>
               <p className={classes.maintxt}>{appName}</p>
-              <p className={classes.subtxt}>{appDesc}</p>
+              <>
+                {appDesc.split("<n>").map((text) => (
+                  <p className={classes.subtxt}>{text}</p>
+                ))}
+              </>
             </div>
           </Grid>
           <Grid item xs={12} sm={6} lg={3}>

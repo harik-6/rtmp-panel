@@ -44,7 +44,8 @@ const useStyles = makeStyles((theme) =>
     },
     subtxt: {
       fontSize: "18px",
-      color: "#ffffff"
+      color: "#ffffff",
+      marginBottom: "8px",
     },
     txtcnt: {
       padding: theme.spacing(6),
@@ -64,10 +65,10 @@ const useStyles = makeStyles((theme) =>
     },
     gridContainer: {
       marginTop: "72px",
-      marginLeft : "24px",
+      marginLeft: "24px",
       [theme.breakpoints.down("xs")]: {
         marginTop: "-32px",
-        marginLeft : "0",
+        marginLeft: "0",
       },
     },
   })
