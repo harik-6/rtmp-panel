@@ -15,7 +15,7 @@ import FabAddButton from "../../components/fabaddbutton";
 
 const Channels = () => {
   const classes = useStyles();
-  const { user, channels, actions, healthList } = useContext(AppContext);
+  const { user, channels, actions, healthList,settings} = useContext(AppContext);
   const [chnl, setChannel] = useState(null);
   const [msg, setMsg] = useState("Loading channels...");
   const [healthStatus, setHealthStatus] = useState({});
@@ -51,7 +51,7 @@ const Channels = () => {
   };
 
   const openCreateChannelForm = () => {
-    if (user.channelLimit === channels.length) {
+    if (settings.limit === channels.length) {
       openSnack();
       return;
     } else {
