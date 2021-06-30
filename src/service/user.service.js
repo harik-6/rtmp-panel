@@ -160,11 +160,7 @@ const UserService = {
           }
         );
         const data = response.data;
-        if (
-          data.status === "failed" &&
-          user["_id"] !== process.env.REACT_APP_ADMINID
-        )
-          return null;
+        if (data.status === "failed") return null;
         if (data.payload.length === 0) return null;
         CacheService.set(cachkey, data.payload);
         return data.payload;

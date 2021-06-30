@@ -65,7 +65,7 @@ const _xaxisFormat = (usagearr) => {
   return (usagearr || []).map(({ date }) => {
     const dateid = new Date(date);
     return months[dateid.getUTCMonth()] + " " + dateid.getUTCDate();
-  });
+  }).slice(1);
 };
 
 const _totalConsumption = (arr) => {
@@ -94,21 +94,28 @@ const _averageConsumption = (dataarr) => {
   let totalin = 0;
   let totalout = 0;
   dataarr.forEach(({ usage }) => {
-    totalin += parseFloat(usage.inbound);
-    totalout += parseFloat(usage.outbound);
+    totalin = Math.max(totalin, usage.inbound);
+    totalout = Math.max(totalout, usage.outbound);
   });
   return {
-    avgInband: totalin / dataarr.length,
-    avgOutBand: totalout / dataarr.length,
+    avgInband: totalin,
+    avgOutBand: totalout,
   };
 };
 
 const formatDataFormVizualisation = (usagearr) => {
   usagearr = usagearr || [];
   usagearr.sort((a, b) => new Date(a.date) - new Date(b.date));
-  const xaxisdata = usagearr.map((data) => parseFloat(data.usage.total)+10);
+  const consumptionmap = usagearr.map(
+    (data) => parseFloat(data.usage.totalIn) + parseFloat(data.usage.totalOut)
+  );
   const xaxislabels = _xaxisFormat(usagearr);
-  let totalusage = _totalConsumption(xaxisdata);
+  let xaxisdata = [];
+  for (let i = 1; i < consumptionmap.length; i++) {
+    let diff = consumptionmap[i] - consumptionmap[i - 1];
+    xaxisdata.push(parseFloat(diff.toFixed(2)));
+  }
+  let totalusage = _totalConsumption(consumptionmap);
   let totlaunit = "GB";
   const { avgInband, avgOutBand } = _averageConsumption(usagearr);
   if (totalusage > 1000) {
@@ -147,4 +154,28 @@ const formatDataFormVizualisation = (usagearr) => {
   };
 };
 
-export default formatDataFormVizualisation;
+const formatDataFormVizualisationAdmin = (usagearr) => {
+  usagearr = usagearr || [];
+  usagearr.sort((a, b) => new Date(a.date) - new Date(b.date));
+  const intotalmap = usagearr.map((data) => parseFloat(data.usage.totalIn));
+  const outtotalmap = usagearr.map((data) => parseFloat(data.usage.totalOut));
+  const intotal = _totalConsumption(intotalmap);
+  const outtotal = _totalConsumption(outtotalmap);
+  const { avgInband, avgOutBand } = _averageConsumption(usagearr);
+  return {
+    usageDataObj: {
+      total: {
+        intotal: intotal.toFixed(3),
+        outtotal: outtotal.toFixed(3),
+      },
+      inBand: {
+        value: avgInband.toFixed(2),
+      },
+      outBand: {
+        value: avgOutBand.toFixed(2),
+      },
+    },
+  };
+};
+
+export { formatDataFormVizualisation, formatDataFormVizualisationAdmin };

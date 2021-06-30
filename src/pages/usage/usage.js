@@ -6,7 +6,7 @@ import UsageAdmin from "./usage.admin";
 import userservice from "../../service/user.service";
 import AppContext from "../../context/context";
 import useStyles from "./usage.styles";
-import formatDataFormVizualisation from "./usage.utils";
+import { formatDataFormVizualisation } from "./usage.utils";
 
 const Usage = () => {
   const { user,settings, actions, usageData } = useContext(AppContext);

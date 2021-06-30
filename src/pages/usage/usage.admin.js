@@ -9,7 +9,7 @@ import {
 import Preloader from "../../components/preloader";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import AppContext from "../../context/context";
-import formatDataFormVizualisation from "./usage.utils";
+import { formatDataFormVizualisationAdmin } from "./usage.utils";
 import userservice from "../../service/user.service";
 
 const useStyles = makeStyles((theme) =>
@@ -53,14 +53,14 @@ const UsageAdmin = () => {
     const allids = [...new Set(alldata.map((obj) => obj.usageId))];
     let list = [];
     const idtoservernamp = {};
-    allUsers.forEach(obj => {
-      idtoservernamp[obj.settings.usageid] = obj.user.server
+    allUsers.forEach((obj) => {
+      idtoservernamp[obj.settings.usageid] = obj.user.server;
     });
     allids.forEach((id) => {
       const filtered = alldata.filter((obj) => obj["usageId"] === id);
       let fmtd = Object.assign(
-        { usageId: idtoservernamp[id]||id },
-        formatDataFormVizualisation(filtered).usageDataObj
+        { usageId: idtoservernamp[id] || id },
+        formatDataFormVizualisationAdmin(filtered).usageDataObj
       );
       list.push(fmtd);
     });
@@ -75,6 +75,11 @@ const UsageAdmin = () => {
 
   const classes = useStyles();
 
+  const formatDisplayTotal = (value) => {
+    if (value > 1000) return (value / 1000).toFixed(2) + " Tb";
+    return value + " Gb";
+  };
+
   if (loading) {
     return <Preloader message={"Loading data..."} />;
   }
@@ -84,9 +89,10 @@ const UsageAdmin = () => {
         <Table aria-label="channel-list">
           <TableRow>
             <TableCell align="left">Server</TableCell>
-            <TableCell align="left">Total</TableCell>
-            <TableCell align="left">Inbound(Mbps)</TableCell>
-            <TableCell align="left">Outbound(Mbps)</TableCell>
+            <TableCell align="left">Inbound Usage</TableCell>
+            <TableCell align="left">Outbound Usage</TableCell>
+            <TableCell align="left">Inbound Transfer(Mbps)</TableCell>
+            <TableCell align="left">Outbound Transfer(Mbps)</TableCell>
           </TableRow>
           <TableBody>
             {usagelist.map((usage, index) => (
@@ -95,7 +101,10 @@ const UsageAdmin = () => {
                   {usage.usageId}
                 </TableCell>
                 <TableCell className={classes.tbcell} align="left">
-                  {usage.total.value + " " + usage.total.unit}
+                  {formatDisplayTotal(usage.total.intotal)}
+                </TableCell>
+                <TableCell className={classes.tbcell} align="left">
+                  {formatDisplayTotal(usage.total.outtotal)}
                 </TableCell>
                 <TableCell className={classes.tbcell} align="left">
                   {usage.inBand.value}
