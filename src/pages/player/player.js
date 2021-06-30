@@ -17,7 +17,7 @@ import {
 } from "./playercomponents";
 
 const Home = () => {
-  const { user, channels, actions } = useContext(AppContext);
+  const { user, channels, actions,settings } = useContext(AppContext);
   const [chlist, setchlist] = useState([]);
   const [ch, setCh] = useState(null);
   const [metadata, setMetadata] = useState({
@@ -75,7 +75,7 @@ const Home = () => {
   };
 
   const openCreateChannelForm = () => {
-    if (user.channelLimit === channels.length) {
+    if (settings.limit === channels.length) {
       seterrorsnack(true);
       return;
     } else {
