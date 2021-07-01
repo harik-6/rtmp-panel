@@ -180,7 +180,7 @@ const Channels = () => {
   } else {
     filtereddata = channels || [];
   }
-  filtereddata.sort((a, b) => a.name.localeCompare(b.name));
+  // filtereddata.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className={classes.channels}>

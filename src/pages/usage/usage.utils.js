@@ -81,7 +81,7 @@ const _totalConsumption = (arr) => {
       subtotal = arr[i];
     }
   }
-  return subtotal + total;
+  return (subtotal + total - arr[0]);
 };
 
 const _averageConsumption = (dataarr) => {

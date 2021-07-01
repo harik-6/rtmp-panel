@@ -79,7 +79,7 @@ const ChannelService = {
         }
       );
       const data = response.data;
-      return data.payload || [];
+      return (data.payload || []).sort((a, b) => a.name.localeCompare(b.name));
     } catch (error) {
       return null;
     }
