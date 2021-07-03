@@ -28,6 +28,7 @@ const Landing = () => {
             <Typography variant="h6" className={classes.title}>
               <img
                 src="logotrans.png"
+                alt=""
                 width="36"
                 height="36"
                 style={{
