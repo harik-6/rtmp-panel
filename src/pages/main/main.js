@@ -31,7 +31,7 @@ const Main = () => {
 
   useEffect(() => {
     if (user === null || settings === null) {
-      history.replace("/login");
+      history.replace("/home");
     } else {
       setAdmin(user["_id"] === process.env.REACT_APP_ADMINID);
     }
