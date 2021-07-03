@@ -4,16 +4,36 @@ const useStyles = makeStyles((theme) =>
     login: {
       height: "100%",
       width: "100%",
-      backgroundImage: `url(${process.env.PUBLIC_URL}/bg2.jpg)`,
-      overflowX: "hidden",
-    },
-    loginform: {
-      height: "auto",
-      paddingLeft: theme.spacing(3),
-      paddingRight: theme.spacing(3),
-      [theme.breakpoints.down("xs")]: {
-        margin: "24px",
+      display: "flex",
+      overflow: "hidden",
+      backgroundColor: "#f5f5f5",
+      padding: "48px",
+      [theme.breakpoints.down("sm")]: {
+        flexDirection: "column",
+        padding: "0",
+        overflowX: "hidden",
       },
+    },
+    leftgrid: {
+      flex: 1,
+      display: "flex",
+      backgroundImage: `url(${process.env.PUBLIC_URL}/landingbg.png)`,
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      borderTopLeftRadius: "20px",
+      borderBottomLeftRadius: "20px",
+      [theme.breakpoints.down("sm")]: {
+        backgroundImage: "none",
+      },
+    },
+    rightgrid: {
+      flex: 1,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      backgroundColor: "#ffffff",
+      borderTopRightRadius: "20px",
+      borderBottomRightRadius: "20px",
     },
     txtfield: {
       marginTop: theme.spacing(2),
@@ -23,7 +43,7 @@ const useStyles = makeStyles((theme) =>
       textAlign: "center",
       fontSize: "20px",
       fontWeight: "bold",
-      paddingTop: theme.spacing(3),
+      paddingTop: theme.spacing(2),
     },
     loginmessage: {
       textAlign: "center",
@@ -32,23 +52,23 @@ const useStyles = makeStyles((theme) =>
     },
     loginbtn: {
       marginTop: theme.spacing(5),
-      marginBottom: theme.spacing(6),
+      marginBottom: theme.spacing(5),
+    },
+    txtcontainer: {
+      marginLeft: "40px",
+      marginTop: "32px",
     },
     maintxt: {
-      fontSize: "100px",
-      color: "#ffffff",
+      fontSize: "40px",
       fontWeight: "bold",
+      marginBottom: "8px",
       [theme.breakpoints.down("xs")]: {
         fontSize: "48px",
       },
     },
     subtxt: {
       fontSize: "18px",
-      color: "#ffffff",
       marginBottom: "8px",
-    },
-    txtcnt: {
-      padding: theme.spacing(6),
     },
     preloadercnt: {
       display: "flex",
@@ -63,13 +83,9 @@ const useStyles = makeStyles((theme) =>
       color: "grey",
       cursor: "pointer",
     },
-    gridContainer: {
-      marginTop: "72px",
-      marginLeft: "24px",
-      [theme.breakpoints.down("xs")]: {
-        marginTop: "-32px",
-        marginLeft: "0",
-      },
+    loginform: {
+      marginTop: "48px",
+      padding: "32px",
     },
   })
 );

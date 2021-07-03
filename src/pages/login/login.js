@@ -59,7 +59,7 @@ const Login = () => {
     if (location.includes("localhost")) {
       actions.setAppName({
         name: "Localhost",
-        desc: `Test.<n> New line1.<n> New line2.`,
+        desc: `Dedicated Streaming Server.<n>For contact +91 97154 42908.`,
       });
       return;
     }
@@ -79,120 +79,85 @@ const Login = () => {
 
   return (
     <div className={classes.login}>
-      <Grid container className={classes.logingrid}>
-        <Grid
-          style={{ marginTop: "16px", marginBottom: "16px" }}
-          item
-          xs={12}
-          container
-          justify="flex-end"
-        >
-          <Grid item xs={12} lg={2}>
-            <Button
-              variant="text"
-              style={{
-                color: "white",
-                textTransform: "none",
-                textDecoration: "underline",
-              }}
-            >
-              {/* <Link to={`${process.env.PUBLIC_URL}/streamwell_pricing.pdf`} target="_blank" download>
-                Download Pricing
-              </Link> */}
-            </Button>
-          </Grid>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          lg={12}
-          alignItems="center"
-          container
-          spacing={1}
-          className={classes.gridContainer}
-        >
-          <Grid item xs={12} sm={12} lg={7}>
-            <div className={classes.txtcnt}>
-              <p className={classes.maintxt}>{appName}</p>
-              <>
-                {appDesc.split("<n>").map((text) => (
-                  <p className={classes.subtxt}>{text}</p>
-                ))}
-              </>
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={6} lg={3}>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <Paper className={classes.loginform}>
-                <p className={classes.welcomemsg}>Welcome back</p>
-                <p className={classes.loginmessage}>Login to continue</p>
-                {error && (
-                  <p style={{ color: "red" }}>
-                    Username or Password incorrect.
-                  </p>
-                )}
-                <TextField
-                  className={classes.txtfield}
+      <div className={classes.leftgrid}>
+        <div className={classes.txtcontainer}>
+          <p className={classes.maintxt}>{appName}</p>
+          <>
+            {appDesc.split("<n>").map((text) => (
+              <p className={classes.subtxt}>{text}</p>
+            ))}
+          </>
+        </div>
+      </div>
+      <div className={classes.rightgrid}>
+        <Grid item xs={12} sm={12} lg={6}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <Paper elevation={4} className={classes.loginform}>
+              <p className={classes.welcomemsg}>Welcome back</p>
+              <p className={classes.loginmessage}>Login to continue</p>
+              {error && (
+                <p style={{ color: "red" }}>Username or Password incorrect.</p>
+              )}
+              <TextField
+                className={classes.txtfield}
+                fullWidth
+                variant="outlined"
+                id="username"
+                label="Username"
+                value={username}
+                onChange={handleusername}
+              />
+              <TextField
+                className={classes.txtfield}
+                fullWidth
+                variant="outlined"
+                id="password"
+                label="Password"
+                type={showPass ? "text" : "password"}
+                value={password}
+                onChange={handlepass}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {!showPass ? (
+                        <EyeOff
+                          className={classes.eyeIcon}
+                          onClick={togglePassword}
+                        />
+                      ) : (
+                        <EyeOn
+                          className={classes.eyeIcon}
+                          onClick={togglePassword}
+                        />
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              {logingin ? (
+                <div className={classes.preloadercnt}>
+                  <CircularProgress className={classes.preloader} />
+                </div>
+              ) : (
+                <Button
+                  onClick={loginUser}
+                  variant="contained"
+                  color="primary"
+                  disableElevation
                   fullWidth
-                  variant="outlined"
-                  id="username"
-                  label="Username"
-                  value={username}
-                  onChange={handleusername}
-                />
-                <TextField
-                  className={classes.txtfield}
-                  fullWidth
-                  variant="outlined"
-                  id="password"
-                  label="Password"
-                  type={showPass ? "text" : "password"}
-                  value={password}
-                  onChange={handlepass}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {!showPass ? (
-                          <EyeOff
-                            className={classes.eyeIcon}
-                            onClick={togglePassword}
-                          />
-                        ) : (
-                          <EyeOn
-                            className={classes.eyeIcon}
-                            onClick={togglePassword}
-                          />
-                        )}
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                {logingin ? (
-                  <div className={classes.preloadercnt}>
-                    <CircularProgress className={classes.preloader} />
-                  </div>
-                ) : (
-                  <Button
-                    onClick={loginUser}
-                    variant="contained"
-                    color="primary"
-                    disableElevation
-                    fullWidth
-                    className={classes.loginbtn}
-                  >
-                    Login
-                  </Button>
-                )}
-              </Paper>
-            </form>
-          </Grid>
+                  className={classes.loginbtn}
+                >
+                  Login
+                </Button>
+              )}
+            </Paper>
+          </form>
         </Grid>
-      </Grid>
+      </div>
     </div>
   );
 };
