@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { AppBar, Toolbar, Button, Typography } from "@material-ui/core";
 import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import Ourservices from "./ourservices";
 import Aboutus from "./aboutus";
+import RequestDemo from "./demorequest";
 import useStyles from "./landing.styles";
 
 const Landing = () => {
+  const [openReq, setopeReq] = useState(false);
+
   const classes = useStyles();
 
   const openPanel = () => {
-    window.open(process.env.REACT_APP_APPURL+"/login","_blank")
-  }
+    window.open(process.env.REACT_APP_APPURL + "/login", "_blank");
+  };
 
   const _scrollTo = (idName) => {
     document.getElementById(idName).scrollIntoView();
@@ -18,10 +21,20 @@ const Landing = () => {
 
   return (
     <div className={classes.landing}>
+      <RequestDemo openForm={openReq} closeForm={() => setopeReq(false)} />
       <div id="home" className={classes.segment}>
         <AppBar elevation={0} position="static" className={classes.appbar}>
           <Toolbar className={classes.toolbar}>
             <Typography variant="h6" className={classes.title}>
+              <img
+                src="logotrans.png"
+                width="36"
+                height="36"
+                style={{
+                  marginRight: "8px",
+                  marginTop: "4px",
+                }}
+              />
               StreamWell
             </Typography>
             <div className={classes.navbar}>
@@ -48,7 +61,7 @@ const Landing = () => {
               </Typography>
               <Button
                 onClick={openPanel}
-                className={classes.navlink}
+                className={classes.navlinkbtn}
                 color="primary"
                 variant="outlined"
                 style={{
@@ -65,16 +78,17 @@ const Landing = () => {
           <div className={classes.gleft}>
             <div className={classes.content}>
               <p className={classes.appdesc}>
-                Streamwell is an cloud platform for streaming service with low
-                latency rtmp streaming servers located in india for different
-                users according to their requirements.
+                <strong>Streamwell</strong> is an cloud platform for streaming
+                service with low latency rtmp streaming servers located in india
+                for different users according to their requirements.
               </p>
               <Button
                 color="primary"
                 variant="contained"
                 className={classes.demobutton}
+                onClick={() => setopeReq(true)}
               >
-                Request a demo
+                Request a free demo
                 <PlayArrowRoundedIcon />
               </Button>
             </div>

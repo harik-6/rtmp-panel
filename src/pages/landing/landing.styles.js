@@ -17,14 +17,26 @@ const useStyles = makeStyles((theme) =>
     title: {
       flexGrow: 1,
       marginLeft: "32px",
+      display:"flex",
+      alignItems:"center"
     },
     navlink: {
+      margin: "16px",
+      cursor: "pointer",
+      [theme.breakpoints.down("xs")]: {
+        display: "none",
+      },
+    },
+    navlinkbtn: {
       margin: "16px",
       cursor: "pointer",
     },
     segment: {
       width: "100%",
       height: "100vh",
+      [theme.breakpoints.down("xs")]: {
+        height: "auto",
+      },
     },
     greeter: {
       width: "100%",
@@ -70,11 +82,19 @@ const useStyles = makeStyles((theme) =>
       marginTop: "64px",
       display: "flex",
       justifyContent: "space-evenly",
+      [theme.breakpoints.down("xs")]: {
+        flexDirection: "column",
+      },
     },
     card: {
       width: "300px",
       height: "350px",
       borderRadius: "16px",
+      [theme.breakpoints.down("xs")]: {
+        borderRadius: "0",
+        width: "100%",
+        marginTop: "8px",
+      },
     },
     cardactionarea: {
       height: "100%",
@@ -110,6 +130,11 @@ const useStyles = makeStyles((theme) =>
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+    },
+    aboutusmobile: {
+      [theme.breakpoints.down("xs")]: {
+        flexDirection: "column",
+      },
     },
   })
 );
