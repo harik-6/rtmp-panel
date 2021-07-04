@@ -15,21 +15,21 @@ const allservices = [
      Corporate events and Church prayers etc.`,
   },
   {
-    name: "Channel Distribution",
+    name: "TV Channel Distribution",
     image: "distribution.png",
     desc: `We support you to distribute your tv channel to different MSO with decoder boxes.`,
   },
   {
-    name: "Mobile Development",
-    image: "mobileapp.png",
-    desc: `We develop mobile apk and support publishig it to playstore.
-    Also hybrid technologies used based on user requirements.`,
-  },
-  {
-    name: "Web Development",
+    name: "Website Development",
     image: "webapp.png",
     desc: `We develop web application and also develop static web pages.
     We also support in deploying the same and search engine optimization.`,
+  },
+  {
+    name: "APK Development",
+    image: "mobileapp.png",
+    desc: `We develop mobile apk and support publishig it to playstore.
+    Also hybrid technologies used based on user requirements.`,
   },
 ];
 

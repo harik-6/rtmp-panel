@@ -22,7 +22,7 @@ const Aboutus = () => {
           <p className={classes.aboutusdesc}>
             Let us know more about your project. We can customize our services
             into a package that fits your specific needs. Tell us more about
-            your ideas, and we'll get back to you soon with some answers.
+            your ideas, and we will get back to you soon with some answers.
           </p>
           <ContactIcons />
           <p
@@ -33,8 +33,9 @@ const Aboutus = () => {
           >
             StreamWell
           </p>
+          <p className={classes.aboutusdesc}>+91 79040 37932</p>
           <p className={classes.aboutusdesc}>
-            TamilNadu,Andhra Pradhesh, Telangana and Karnataka
+            Tamilnadu, Andhra Pradhesh, Telangana and Karnataka
           </p>
         </div>
         <div style={{ flex: 1 }}>

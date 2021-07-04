@@ -11,6 +11,7 @@ import {
 import { useHistory } from "react-router-dom";
 import EyeOn from "@material-ui/icons/Visibility";
 import EyeOff from "@material-ui/icons/VisibilityOff";
+import LockIcon from "@material-ui/icons/Lock";
 import AppConext from "../../context/context";
 import service from "../../service/user.service";
 import useStyles from "./login.styles";
@@ -99,6 +100,13 @@ const Login = () => {
             <Paper elevation={4} className={classes.loginform}>
               <p className={classes.welcomemsg}>Welcome back</p>
               <p className={classes.loginmessage}>Login to continue</p>
+              <p
+                style={{
+                  textAlign: "center",
+                }}
+              >
+                <LockIcon style={{ color: "#3f51b5" }} fontSize="large" />
+              </p>
               {error && (
                 <p style={{ color: "red" }}>Username or Password incorrect.</p>
               )}

@@ -3,7 +3,7 @@ import AppReducer from "./reducer";
 import AppContext from "./context";
 const initialState = {
   appName : "StreamWell",
-  appDesc : "While Stream is well, All is Well.",
+  appDesc : "Dedicated streaming server provider.",
   user: null,
   channels: null,
   settings: null,

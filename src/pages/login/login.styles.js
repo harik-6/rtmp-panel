@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) =>
     loginmessage: {
       textAlign: "center",
       fontSize: "14px",
-      paddingBottom: theme.spacing(4),
+      paddingBottom: theme.spacing(2),
     },
     loginbtn: {
       marginTop: theme.spacing(5),
