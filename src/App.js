@@ -15,9 +15,9 @@ const theme = createMuiTheme({
     primary: {
       main: "#050f66",
     },
-    secondary : {
-      main : "#ff6551"
-    }
+    secondary: {
+      main: "#ff6551",
+    },
   },
 });
 
@@ -42,6 +42,7 @@ const Appmarketing = () => {
 const App = () => {
   const [panel, setPanel] = useState("blank");
   useEffect(() => {
+    console.log("location gref", window.location.href);
     const location = window.location.href;
     const appurl = process.env.REACT_APP_APPURL;
     if (location === appurl || location === appurl + "/") {
