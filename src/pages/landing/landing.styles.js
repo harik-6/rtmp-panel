@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) =>
       scrollBehavior: "smooth",
     },
     appbar: {
-      background: "#1a237e",
+      background: theme.palette.primary.main,
       color: "#ffffff",
     },
     toolbar: {
@@ -17,8 +17,8 @@ const useStyles = makeStyles((theme) =>
     title: {
       flexGrow: 1,
       marginLeft: "32px",
-      display:"flex",
-      alignItems:"center"
+      display: "flex",
+      alignItems: "center",
     },
     navlink: {
       margin: "16px",
@@ -50,11 +50,28 @@ const useStyles = makeStyles((theme) =>
     },
     content: {
       padding: "64px",
-      marginTop: "-32px",
+      marginTop: "-56px",
+      [theme.breakpoints.down("xs")]: {
+        padding: "12px",
+        marginTop: "16px",
+        textAlign: "center",
+      },
+    },
+    appmaindesc: {
+      fontSize: "80px",
+      fontWeight: "bold",
+      [theme.breakpoints.down("xs")]: {
+        marginTop: "48px",
+        fontSize: "40px",
+      },
     },
     appdesc: {
-      fontSize: "18px",
+      fontSize: "20px",
       lineHeight: 1.5,
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "16px",
+        textAlign: "justify",
+      },
     },
     demobutton: {
       marginTop: "18px",
@@ -124,16 +141,50 @@ const useStyles = makeStyles((theme) =>
       marginBottom: "24px",
     },
     footer: {
-      height: "110px",
-      backgroundColor: "#1a237e",
+      height: "90px",
+      backgroundColor: theme.palette.primary.main,
       color: "#ffffff",
+      display: "flex",
+      flexDirection: "column",
+    },
+    footerdecor: {
+      flex: 1,
+      backgroundColor: theme.palette.secondary.main,
+    },
+    footercontent: {
+      flex: 1,
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      fontSize: "18px",
+      [theme.breakpoints.down("xs")]: {
+        textAlign: "center",
+      },
     },
     aboutusmobile: {
       [theme.breakpoints.down("xs")]: {
         flexDirection: "column",
+      },
+    },
+    bannerspace: {
+      height: "48px",
+      position: "absolute",
+      background: theme.palette.secondary.main,
+      whiteSpace: "nowrap",
+      display: "flex",
+      alignItems: "center",
+      animation: "$scrolltext 120s linear infinite",
+    },
+    bannercontent: {
+      padding: "4px",
+      display: "inline",
+    },
+    "@keyframes scrolltext": {
+      "0%": {
+        transform: "translate(0, 0)",
+      },
+      "100%": {
+        transform: "translate(-100%, 0)",
       },
     },
   })

@@ -17,7 +17,7 @@ import {
 } from "./playercomponents";
 
 const Home = () => {
-  const { user, channels, actions,settings } = useContext(AppContext);
+  const { user, channels, actions, settings } = useContext(AppContext);
   const [chlist, setchlist] = useState([]);
   const [ch, setCh] = useState(null);
   const [metadata, setMetadata] = useState({
@@ -60,7 +60,7 @@ const Home = () => {
         chs = channels;
       }
     }
-    if (chs.length > 0) {
+    if ((chs || []).length > 0) {
       setchlist(chs);
       setCh(chs[0]);
     } else {

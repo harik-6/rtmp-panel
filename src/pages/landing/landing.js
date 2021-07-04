@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AppBar, Toolbar, Button, Typography } from "@material-ui/core";
 import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import Ourservices from "./ourservices";
@@ -6,10 +6,24 @@ import Aboutus from "./aboutus";
 import RequestDemo from "./demorequest";
 import useStyles from "./landing.styles";
 
+const offers = [
+  "Exclusive offer to start a tv channel - Rs.700 per rtmp / month for mobile app & website streaming.",
+  "Rs.1000 per rtmp / month for one mso decoder,mobile app & website streaming",
+];
+
 const Landing = () => {
   const [openReq, setopeReq] = useState(false);
+  const [bannerContent, setBannerContent] = useState([]);
 
   const classes = useStyles();
+
+  const _addBannerConetnt = () => {
+    let dummy = [];
+    for (let i = 0; i < 5; i++) {
+      dummy = [...dummy, ...offers];
+    }
+    setBannerContent(dummy);
+  };
 
   const openPanel = () => {
     window.open(process.env.REACT_APP_APPURL + "/login", "_blank");
@@ -18,6 +32,14 @@ const Landing = () => {
   const _scrollTo = (idName) => {
     document.getElementById(idName).scrollIntoView();
   };
+
+  const _openCall = () => {
+    window.open("tel:7904037932", "_blank");
+  };
+
+  useEffect(() => {
+    _addBannerConetnt();
+  }, []);
 
   return (
     <div className={classes.landing}>
@@ -58,7 +80,7 @@ const Landing = () => {
                 className={classes.navlink}
                 variant="p"
               >
-                About us
+                Contact Us
               </Typography>
               <Button
                 onClick={openPanel}
@@ -75,13 +97,24 @@ const Landing = () => {
             </div>
           </Toolbar>
         </AppBar>
+        <ul className={classes.bannerspace}>
+          {bannerContent.map((content, index) => {
+            return (
+              <li key={`offer-${index}`} className={classes.bannercontent}>
+                {content} <span style={{ color: "yellow" }}> &#9733; </span>
+              </li>
+            );
+          })}
+        </ul>
         <div className={classes.greeter}>
           <div className={classes.gleft}>
             <div className={classes.content}>
+              <p className={classes.appmaindesc}>StreamWell</p>
               <p className={classes.appdesc}>
-                <strong>Streamwell</strong> is an cloud platform for streaming
-                service with low latency rtmp streaming servers located in india
-                for different users according to their requirements.
+                <span style={{ marginLeft: "40px" }} />
+                Cloud platform for rtmp streaming service with low latency servers
+                located in india for different users according to their needs and
+                requirements.
               </p>
               <Button
                 color="primary"
@@ -92,6 +125,19 @@ const Landing = () => {
                 Request a free demo
                 <PlayArrowRoundedIcon />
               </Button>
+              <p
+                onClick={_openCall}
+                style={{
+                  marginTop: "24px",
+                  marginBottom: "8px",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                Call +91 79040 37932
+              </p>
+              <p>Support in Tamil, Telugu, Kannada and English.</p>
             </div>
           </div>
           <div className={classes.gright}></div>

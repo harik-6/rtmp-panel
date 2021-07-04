@@ -48,7 +48,10 @@ const Aboutus = () => {
         </div>
       </div>
       <div className={classes.footer}>
-        <p>Copyright © 2021 StreamWell - All Rights Reserved</p>
+        <p className={classes.footerdecor} />
+        <p className={classes.footercontent}>
+          Copyright © 2021 StreamWell - All Rights Reserved
+        </p>
       </div>
     </div>
   );

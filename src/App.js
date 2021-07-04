@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.scss";
 import AppState from "./context/state";
@@ -7,6 +9,17 @@ import Main from "./pages/main/main";
 import Login from "./pages/login/login";
 import Preview from "./pages/preview";
 import Landing from "./pages/landing/landing";
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#050f66",
+    },
+    secondary : {
+      main : "#ff6551"
+    }
+  },
+});
 
 const Apppanel = () => {
   return (
@@ -31,7 +44,6 @@ const App = () => {
   useEffect(() => {
     const location = window.location.href;
     const appurl = process.env.REACT_APP_APPURL;
-    console.log(location, appurl);
     if (location === appurl || location === appurl + "/") {
       setPanel("marketing");
     } else {
@@ -40,9 +52,11 @@ const App = () => {
   }, []);
   if (panel === "blank") return <div className="app-main-blank"></div>;
   return (
-    <div className="app-main">
-      {panel === "panel" ? <Apppanel /> : <Appmarketing />}
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="app-main">
+        {panel === "panel" ? <Apppanel /> : <Appmarketing />}
+      </div>
+    </ThemeProvider>
   );
 };
 

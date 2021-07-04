@@ -76,7 +76,7 @@ const Channels = () => {
     await checkHealth(channels);
     setSnack({
       open: true,
-      message: "Channel health recheked.",
+      message: "Channel health rechecked.",
     });
   };
 

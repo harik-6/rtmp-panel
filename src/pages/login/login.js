@@ -60,14 +60,14 @@ const Login = () => {
     if (location.includes("localhost")) {
       actions.setAppName({
         name: "Localhost",
-        desc: `Dedicated Streaming Server.<n>For contact +91 97154 42908.`,
+        desc: `Dedicated Streaming Server Provider.<n>For contact +91 97154 42908.`,
       });
       return;
     }
     if (location.includes("iptelevision")) {
       actions.setAppName({
         name: "IPtelevision",
-        desc: `Dedicated Streaming Server.<n>For contact +91 97154 42908.`,
+        desc: `Dedicated Streaming Server Provider.<n>For contact +91 97154 42908.`,
       });
       return;
     }
@@ -105,7 +105,7 @@ const Login = () => {
                   textAlign: "center",
                 }}
               >
-                <LockIcon style={{ color: "#3f51b5" }} fontSize="large" />
+                <LockIcon color="primary" fontSize="large" />
               </p>
               {error && (
                 <p style={{ color: "red" }}>Username or Password incorrect.</p>
