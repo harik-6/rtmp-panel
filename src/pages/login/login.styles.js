@@ -57,6 +57,9 @@ const useStyles = makeStyles((theme) =>
     txtcontainer: {
       marginLeft: "40px",
       marginTop: "32px",
+      [theme.breakpoints.down("sm")]: {
+        color: "#ffffff",
+      },
     },
     maintxt: {
       fontSize: "40px",
