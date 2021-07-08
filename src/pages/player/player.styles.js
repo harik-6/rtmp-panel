@@ -19,6 +19,16 @@ const useStyles = makeStyles((theme) =>
         flexDirection: "column",
       },
     },
+    iconlive: {
+      marginRight: "4px",
+      position: "absolute",
+      display:"flex",
+      alignItems:"center",
+      color:"#ffffff",
+      marginTop:"301px",
+      marginLeft:"450px",
+      opacity:"0.6"
+    },
     rtmpinfo: {
       marginTop: theme.spacing(3),
     },
@@ -66,11 +76,6 @@ const useStyles = makeStyles((theme) =>
     profilemenu: {
       marginTop: "32px",
       marginLeft: "-48px",
-    },
-    iconlive: {
-      marginRight: "4px",
-      position: "absolute",
-      top: 0,
     },
     metadatacontainer: {
       flex: 1,

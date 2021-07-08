@@ -194,6 +194,7 @@ const Home = () => {
             onVideoError={onVideoError}
             onVideoStart={onVideoStart}
             onVideoPlay={onVideoPlay}
+            isLive={healthMap[activeChannel.name]}
           />
           <StreamMetadata metadata={metadata} />
           <StreamUserInfo ch={activeChannel} />

@@ -130,7 +130,13 @@ const StreamMetadata = ({ metadata }) => {
   );
 };
 
-const StreamPlayer = ({ ch, onVideoError, onVideoStart, onVideoPlay }) => {
+const StreamPlayer = ({
+  ch,
+  onVideoError,
+  onVideoStart,
+  onVideoPlay,
+  isLive,
+}) => {
   const classes = useStyles();
   return (
     <Grid item lg={12} xs={12} sm={12} container justify="center">
@@ -144,9 +150,9 @@ const StreamPlayer = ({ ch, onVideoError, onVideoStart, onVideoPlay }) => {
           onStart={onVideoStart}
           onPlay={onVideoPlay}
         />
-        {/* <div className={classes.iconlive}>
-          <HealthIcon status={true} /> Live
-        </div> */}
+        <div className={classes.iconlive}>
+          <HealthIcon status={isLive} /> {isLive ? "Live" : "Idle"}
+        </div>
       </div>
     </Grid>
   );
