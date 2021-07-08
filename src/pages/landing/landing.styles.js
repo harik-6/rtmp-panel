@@ -171,8 +171,7 @@ const useStyles = makeStyles((theme) =>
     },
     bannerspace: {
       height: "48px",
-      position: "absolute",
-      background: theme.palette.secondary.main,
+      position: "relative",
       whiteSpace: "nowrap",
       display: "flex",
       alignItems: "center",
@@ -184,8 +183,11 @@ const useStyles = makeStyles((theme) =>
       },
     },
     bannercontent: {
-      padding: "4px",
       display: "inline",
+      height: "48px",
+      display: "flex",
+      alignItems: "center",
+      background: theme.palette.secondary.main,
     },
     "@keyframes scrolltext": {
       "0%": {

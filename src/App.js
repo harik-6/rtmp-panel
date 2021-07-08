@@ -60,4 +60,4 @@ const App = () => {
   );
 };
 
-export default Appmarketing
+export default App;
