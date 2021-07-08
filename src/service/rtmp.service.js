@@ -32,6 +32,7 @@ const getUsageData = async (usersetting) => {
     }
   }
 };
+
 const changeRtmpStatus = async (channel) => {
   try {
     const response = await axios.post(`${API}/edit`, {
@@ -47,6 +48,7 @@ const changeRtmpStatus = async (channel) => {
     return false;
   }
 };
+
 const getBitrateMedata = async (httplink) => {
   try {
     const response = await axios.post(`${API_RTMP}/metadata`, {
@@ -59,6 +61,7 @@ const getBitrateMedata = async (httplink) => {
     return null;
   }
 };
+
 const rebootServer = async (channel) => {
   const url = `https://${channel.server}/sys_reboot?psk=${channel.key}&token=${channel.key}`;
   try {
@@ -69,16 +72,30 @@ const rebootServer = async (channel) => {
   }
 };
 
-const checkChannelHealth = async (channel) => {
+const checkChannelHealth = async (list) => {
   try {
-    const response = await fetch(channel.httpLink);
-    if (response.status >= 200 && response.status <= 205) {
-      return true;
-    } else {
-      return false;
+    const cachkey = CACHEKEYS.FETCH_CHANNEL_HEALTH;
+    const cachevalue = CacheService.get(cachkey);
+    if (cachevalue !== null) return cachevalue;
+    console.log("going fopr backedn");
+    let healthMap = {};
+    for (let i = 0; i < list.length; i++) {
+      const channel = list[i];
+      try {
+        const response = await fetch(channel.httpLink);
+        if (response.status >= 200 && response.status <= 205) {
+          healthMap[channel.name] = true;
+        } else {
+          healthMap[channel.name] = false;
+        }
+      } catch (_) {
+        healthMap[channel.name] = false;
+      }
     }
+    CacheService.set(cachkey, healthMap);
+    return healthMap;
   } catch (error) {
-    return false;
+    return null;
   }
 };
 export {

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) =>
     videoplayer: {
       backgroundColor: "#000000",
       display: "flex",
-      flexDirection: "row",
+      flexDirection: "column",
       [theme.breakpoints.down("sm")]: {
         width: "300px",
         flexDirection: "column",
@@ -68,12 +68,9 @@ const useStyles = makeStyles((theme) =>
       marginLeft: "-48px",
     },
     iconlive: {
-      color: "#32CD32",
       marginRight: "4px",
-    },
-    iconidle: {
-      color: "red",
-      marginRight: "4px",
+      position: "absolute",
+      top: 0,
     },
     metadatacontainer: {
       flex: 1,
@@ -92,7 +89,7 @@ const useStyles = makeStyles((theme) =>
     },
     carousel: {
       marginTop: "16px",
-      marginBottom:"24px",
+      marginBottom: "24px",
       maxWidth: "1166px",
     },
   })

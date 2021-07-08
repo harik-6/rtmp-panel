@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Grid, Paper, Snackbar, IconButton } from "@material-ui/core";
 import ReactPlayer from "react-player";
-import RoundIcon from "@material-ui/icons/FiberManualRecordRounded";
 import useStyles from "./player.styles";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
+import HealthIcon from "../../components/healthicon";
 
 const CopyIcon = ({ onClick }) => {
   return (
@@ -70,9 +70,7 @@ const StreamUserInfo = ({ ch }) => {
         <Paper elevation={0} square className={classes.paper}>
           <div>
             <p className={classes.urlheader}>Player URL</p>
-            <p
-              className={classes.urlvalue}
-            >{previewUrl}</p>
+            <p className={classes.urlvalue}>{previewUrl}</p>
           </div>
           <CopyIcon onClick={() => onCopy(previewUrl)} />
         </Paper>
@@ -85,23 +83,6 @@ const StreamUserInfo = ({ ch }) => {
         message="Copied to clipboard"
         key={"text-copy-snack"}
       />
-    </Grid>
-  );
-};
-
-const LiveDotIcon = ({ isLive }) => {
-  const classes = useStyles();
-  return (
-    <Grid item container alignItems="center" sm={12} xs={12} lg={3}>
-      {isLive ? (
-        <React.Fragment>
-          <RoundIcon className={classes.iconlive} /> Live
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          <RoundIcon className={classes.iconidle} /> Idle
-        </React.Fragment>
-      )}
     </Grid>
   );
 };
@@ -163,9 +144,12 @@ const StreamPlayer = ({ ch, onVideoError, onVideoStart, onVideoPlay }) => {
           onStart={onVideoStart}
           onPlay={onVideoPlay}
         />
+        {/* <div className={classes.iconlive}>
+          <HealthIcon status={true} /> Live
+        </div> */}
       </div>
     </Grid>
   );
 };
 
-export { StreamUserInfo, LiveDotIcon, StreamMetadata, StreamPlayer };
+export { StreamUserInfo, StreamMetadata, StreamPlayer };

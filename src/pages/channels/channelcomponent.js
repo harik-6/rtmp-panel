@@ -12,8 +12,8 @@ import {
   Switch,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/EditRounded";
-import HealthIcon from "@material-ui/icons/FiberManualRecordRounded";
 import DeleteIcon from "@material-ui/icons/Delete";
+import HealthIcon from "../../components/healthicon";
 import PreviewIcon from "@material-ui/icons/PlayArrow";
 import useStyles from "./channels.styles";
 
@@ -74,12 +74,7 @@ const ChannelTable = ({
               </TableCell>
               <TableCell className={classes.tbcell} align="left">
                 <IconButton size="small">
-                  <HealthIcon
-                    fontSize="small"
-                    style={{
-                      color: healthStatus[channel.name] ? "#32CD32" : "red",
-                    }}
-                  />
+                  <HealthIcon status={healthStatus[channel.name]} />
                 </IconButton>
               </TableCell>
               <TableCell className={classes.tbcell} align="left">

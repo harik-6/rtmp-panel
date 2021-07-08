@@ -8,28 +8,36 @@ import {
   Chip,
 } from "@material-ui/core";
 import AppContext from "../../context/context";
+//icons
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
+//components
 import CreateNewChannel from "../../components/createchannel";
-import useStyles from "./player.styles";
 import RebootConfirmationDialog from "../../components/rebootconfirm";
 import FabAddButton from "../../components/fabaddbutton";
 import Preloader from "../../components/preloader";
 import Nodataloader from "../../components/nodataloader";
 import ScrollMenu from "react-horizontal-scrolling-menu";
+import HealthIcon from "../../components/healthicon";
 import {
   StreamUserInfo,
-  LiveDotIcon,
   StreamMetadata,
   StreamPlayer,
 } from "./playercomponents";
+//services
 import { getChannels } from "../../service/channel.service";
-import { getBitrateMedata, rebootServer } from "../../service/rtmp.service";
+import {
+  getBitrateMedata,
+  rebootServer,
+  checkChannelHealth,
+} from "../../service/rtmp.service";
+import useStyles from "./player.styles";
 
 const Home = () => {
   const { user, actions, settings } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
+  const [healthMap, setHealthMap] = useState({});
   const [metadata, setMetadata] = useState({
     audioType: "N/A",
     audioRate: "0 kbps",
@@ -52,6 +60,7 @@ const Home = () => {
       setChannelList(chs);
       setActiveChannel(chs[0]);
       setSelectedChip(chs[0].name);
+      _checkChannelHealth(chs);
     } else {
       _changeActiveChannel(null);
     }
@@ -68,15 +77,30 @@ const Home = () => {
   const _renderChipItems = () => {
     const style = {
       marginRight: "8px",
+      border: "1px solid grey",
     };
-    return channelList.map((chl) => {
-      if (chl.name === selectedChip) {
-        return (
-          <Chip style={style} color="primary" key={chl.name} label={chl.name} />
-        );
+    return channelList.map((chnl) => {
+      const { name } = chnl;
+      if (name === selectedChip) {
+        return <Chip style={style} color="primary" key={name} label={name} />;
       }
-      return <Chip variant="outlined" style={style} key={chl.name} label={chl.name} />;
+      return (
+        <Chip
+          variant="outlined"
+          style={style}
+          key={name}
+          label={name}
+          onDelete={() => {}}
+          deleteIcon={<HealthIcon status={healthMap[name]} />}
+        />
+      );
     });
+  };
+
+  const _checkChannelHealth = async (allchannels) => {
+    const healthMap = await checkChannelHealth(allchannels);
+    setHealthMap(healthMap);
+    // console.log(healthMap);
   };
 
   const closeCreatepop = () => {
@@ -153,15 +177,17 @@ const Home = () => {
               Reboot
             </Button>
           </div>
-          <div className={classes.carousel}>
-            <ScrollMenu
-              scrollToSelected={true}
-              arrowRight={<ArrowRightIcon fontSize="small" />}
-              arrowLeft={<ArrowLeftIcon fontSize="small" />}
-              data={_renderChipItems()}
-              selected={selectedChip}
-              onSelect={_changeActiveChannel}
-            />
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div className={classes.carousel}>
+              <ScrollMenu
+                scrollToSelected={true}
+                arrowRight={<ArrowRightIcon fontSize="small" />}
+                arrowLeft={<ArrowLeftIcon fontSize="small" />}
+                data={_renderChipItems()}
+                selected={selectedChip}
+                onSelect={_changeActiveChannel}
+              />
+            </div>
           </div>
           <StreamPlayer
             ch={activeChannel}

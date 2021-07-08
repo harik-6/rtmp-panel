@@ -20,9 +20,11 @@ import {
 
 const Channels = () => {
   const classes = useStyles();
-  const { user, actions, healthList, settings } = useContext(AppContext);
+  const { user, settings } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
+  const [healthMap, setHealthMap] = useState({});
+  const [healthCount, setHealthCount] = useState(-1);
   const [msg, setMsg] = useState("Loading channels...");
   const [isAdmin, setAdmin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -45,6 +47,16 @@ const Channels = () => {
       setActiveChannel(null);
     }
     setLoading(false);
+    _checkHealthStatus(chs);
+  };
+
+  const _checkHealthStatus = async (allchannels = []) => {
+    setHealthCount(-1);
+    const hmap = await checkChannelHealth(allchannels);
+    setHealthMap(hmap);
+    setHealthCount(
+      allchannels.filter((channel) => hmap[channel.name] == true).length
+    );
   };
 
   const openSnack = () => {
@@ -163,7 +175,7 @@ const Channels = () => {
               </Button>
             </Grid> */}
           </Grid>
-          <Insights channels={channelList} activeChannelCount={0} />
+          <Insights channels={channelList} activeChannelCount={healthCount} />
           {isAdmin && (
             <Grid container justify="flex-end">
               <Grid sm={12} xs={12} lg={3}>
@@ -182,7 +194,7 @@ const Channels = () => {
           )}
           <ChannelTable
             spliceddata={filtereddata}
-            healthStatus={{}}
+            healthStatus={healthMap}
             setActiveChanel={setActiveChannel}
             openActionDialog={openActionDialog}
             askConfirmation={askConfirmation}
