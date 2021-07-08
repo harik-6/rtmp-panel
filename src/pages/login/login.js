@@ -20,8 +20,8 @@ import CacheService from "../../service/cache.service";
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [username, setusername] = useState("");
-  const [password, setpassword] = useState("");
+  const [username, setusername] = useState("admin@streamwell");
+  const [password, setpassword] = useState("@dm1n@$tream248well");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -91,7 +91,7 @@ const Login = () => {
         </div>
       </div>
       <div className={classes.rightgrid}>
-        <Grid item xs={12} sm={12} lg={6}>
+        <Grid item xs={10} sm={10} lg={6}>
           <form
             onSubmit={(e) => {
               e.preventDefault();

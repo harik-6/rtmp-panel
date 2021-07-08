@@ -60,25 +60,27 @@ const Usage = () => {
   return isAdmin ? (
     <UsageAdmin />
   ) : (
-    <div className={classes.usage}>
-      <Grid className={classes.chcardcnt} container>
-        <Grid item lg={12}>
-          {nodata ? (
-            <>
-              <div className={classes.preloadercnt}>
-                <p className={classes.preloadertxt}>
-                  Your usage data is yet to be processed.
-                </p>
-              </div>
-            </>
-          ) : (
-            <React.Fragment>
-              <DataViz totalData={totalData} graphData={graphData} />
-            </React.Fragment>
-          )}
+    <>
+      <div className={classes.usage}>
+        <Grid className={classes.chcardcnt} container>
+          <Grid item lg={12}>
+            {nodata ? (
+              <>
+                <div className={classes.preloadercnt}>
+                  <p className={classes.preloadertxt}>
+                    Your usage data is yet to be processed.
+                  </p>
+                </div>
+              </>
+            ) : (
+              <React.Fragment>
+                <DataViz totalData={totalData} graphData={graphData} />
+              </React.Fragment>
+            )}
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+    </>
   );
 };
 

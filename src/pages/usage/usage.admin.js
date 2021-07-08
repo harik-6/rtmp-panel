@@ -14,7 +14,9 @@ import { getUsageData } from "../../service/rtmp.service";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
-    channelsadmin: {
+    usageadmin: {
+      flex : 1,
+      minHeight:"100vh",
       padding: theme.spacing(2),
       backgroundColor: "#ebe9e9",
       [theme.breakpoints.down("sm")]: {
@@ -84,7 +86,7 @@ const UsageAdmin = () => {
     return <Preloader message={"Loading data..."} />;
   }
   return (
-    <div className={classes.channelsadmin}>
+    <div className={classes.usageadmin}>
       <TableContainer className={classes.tablecnt}>
         <Table aria-label="channel-list">
           <TableRow>

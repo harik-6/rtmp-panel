@@ -12,6 +12,14 @@ const useStyles = makeStyles((theme) =>
         flexDirection: "column",
         padding: "0",
         overflowX: "hidden",
+        overflowY: "scroll",
+        paddingBottom:"16px",
+      },
+      [theme.breakpoints.down("md")]: {
+        flexDirection: "column",
+        padding: "0",
+        overflowX: "hidden",
+        overflowY: "scroll",
       },
     },
     leftgrid: {
@@ -34,6 +42,10 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: "#ffffff",
       borderTopRightRadius: "20px",
       borderBottomRightRadius: "20px",
+      [theme.breakpoints.down("sm")]: {
+        width: "380px",
+        backgroundColor:"transparent",
+      },
     },
     txtfield: {
       marginTop: theme.spacing(2),
