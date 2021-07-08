@@ -2,8 +2,8 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) =>
   createStyles({
     login: {
-      height: "100%",
-      width: "100%",
+      height: "100vh",
+      width: "100vw",
       display: "flex",
       overflow: "hidden",
       backgroundColor: "#050f66",
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) =>
     },
     loginbtn: {
       marginTop: theme.spacing(5),
-      marginBottom: theme.spacing(5),
+      marginBottom: theme.spacing(2),
     },
     txtcontainer: {
       marginLeft: "40px",

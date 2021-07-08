@@ -42,6 +42,7 @@ const changeRtmpStatus = async (channel) => {
       },
     });
     const data = response.data;
+    CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
     if (data.payload.status === "failed") return false;
     return true;
   } catch (error) {
@@ -72,9 +73,12 @@ const rebootServer = async (channel) => {
   }
 };
 
-const checkChannelHealth = async (list) => {
+const checkChannelHealth = async (list,forceCheck=false) => {
   try {
     const cachkey = CACHEKEYS.FETCH_CHANNEL_HEALTH;
+    if(forceCheck) {
+      CacheService.remove(cachkey);
+    }
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
     console.log("going fopr backedn");

@@ -3,6 +3,7 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     channels: {
       flex: 1,
+      minHeight:"100vh",
       padding: theme.spacing(2),
       backgroundColor: "#ebe9e9",
       [theme.breakpoints.down("sm")]: {

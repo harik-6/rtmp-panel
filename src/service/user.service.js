@@ -24,6 +24,9 @@ const UserService = {
   getAllUsers: async (user) => {
     if (!isAdmin(user["_id"])) return [];
     try {
+      const cachkey = CACHEKEYS.FETCH_USERS;
+      const cachevalue = CacheService.get(cachkey);
+      if (cachevalue !== null) return cachevalue;
       const response = await axios.post(
         `${API}/get`,
         {},
@@ -35,6 +38,7 @@ const UserService = {
       );
       const data = response.data;
       if (data.payload.status === "failed") return [];
+      CacheService.set(cachkey, data.payload);
       return data.payload;
     } catch (error) {
       return [];
@@ -60,6 +64,7 @@ const UserService = {
             },
           }
         );
+        CacheService.remove(CACHEKEYS.FETCH_USERS);
         const data = response.data;
         return data.payload;
       } catch (error) {
@@ -112,6 +117,7 @@ const UserService = {
             },
           }
         );
+        CacheService.remove(CACHEKEYS.FETCH_USERS);
         if (response.data.status === "failed") return null;
         return editeduserandsettings;
       } catch (error) {
@@ -134,12 +140,13 @@ const UserService = {
             },
           }
         );
+        CacheService.remove(CACHEKEYS.FETCH_USERS);
         return true;
       } catch (error) {
         return false;
       }
     }
-  }
+  },
 };
 
 export default UserService;

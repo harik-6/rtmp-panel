@@ -11,7 +11,7 @@ import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import Preloader from "../../components/preloader";
 import Nodataloader from "../../components/nodataloader";
 import FabAddButton from "../../components/fabaddbutton";
-import { getChannels } from "../../service/channel.service";
+import { getChannels, deleteChannel } from "../../service/channel.service";
 import {
   rebootServer,
   checkChannelHealth,
@@ -50,13 +50,17 @@ const Channels = () => {
     _checkHealthStatus(chs);
   };
 
-  const _checkHealthStatus = async (allchannels = []) => {
+  const _checkHealthStatus = async (allchannels = [], recheck = false) => {
     setHealthCount(-1);
-    const hmap = await checkChannelHealth(allchannels);
+    const hmap = await checkChannelHealth(allchannels, recheck);
     setHealthMap(hmap);
     setHealthCount(
-      allchannels.filter((channel) => hmap[channel.name] == true).length
+      allchannels.filter((channel) => hmap[channel.name] === true).length
     );
+    setSnack({
+      open: true,
+      message: "Channel health rechecked.",
+    });
   };
 
   const openSnack = () => {
@@ -95,7 +99,7 @@ const Channels = () => {
     setDeleteConfirm(true);
   };
 
-  const deleteChannel = async () => {
+  const _deleteChannel = async () => {
     setDeleteConfirm(false);
     setMsg("Deleting channel " + activeChannel.name);
     setLoading(true);
@@ -161,7 +165,11 @@ const Channels = () => {
             lg={12}
           >
             <Grid item lg={2}>
-              <Button onClick={() => {}} variant="contained" color="primary">
+              <Button
+                onClick={() => _checkHealthStatus(channelList, true)}
+                variant="contained"
+                color="primary"
+              >
                 Health check
               </Button>
             </Grid>
@@ -226,7 +234,7 @@ const Channels = () => {
         <DeleteConfirmationDialog
           openForm={openDeleteConfirm}
           closeForm={() => setDeleteConfirm(false)}
-          onDeleteYes={deleteChannel}
+          onDeleteYes={_deleteChannel}
           channel={activeChannel}
         />
       )}

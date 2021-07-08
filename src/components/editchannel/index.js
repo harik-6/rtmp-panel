@@ -9,7 +9,7 @@ const EditChannel = ({
   channel,
   user,
 }) => {
-  if (channel === null) return <></>;
+  if (channel === null || user === null) return <></>;
   if (user["_id"] === process.env.REACT_APP_ADMINID) {
     return (
       <EditChannelAdmin

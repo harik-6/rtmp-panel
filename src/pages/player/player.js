@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  Grid,
-  Button,
-  Menu,
-  MenuItem,
-  Snackbar,
-  Chip,
-} from "@material-ui/core";
+import { Button, Snackbar, Chip } from "@material-ui/core";
 import AppContext from "../../context/context";
 //icons
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";

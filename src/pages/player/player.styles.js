@@ -20,14 +20,14 @@ const useStyles = makeStyles((theme) =>
       },
     },
     iconlive: {
+      fontSize:"14px",
       marginRight: "4px",
       position: "absolute",
       display:"flex",
       alignItems:"center",
       color:"#ffffff",
       marginTop:"301px",
-      marginLeft:"450px",
-      opacity:"0.6"
+      marginLeft:"450px"
     },
     rtmpinfo: {
       marginTop: theme.spacing(3),

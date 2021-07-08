@@ -31,6 +31,7 @@ const createChannel = async (user, channelname, settings) => {
     const response = await axios.post(`${API}/create`, {
       channel: newchannel,
     });
+    CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
     if (response.data.status === "success") {
       return response.data.payload["_id"];
     }
@@ -50,6 +51,7 @@ const editchannel = async (channel, user, settings) => {
       channel: channeltoedit,
     });
     const data = response.data;
+    CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
     if (data.payload.status === "failed") return null;
     return channeltoedit["_id"];
   } catch (error) {
@@ -96,6 +98,7 @@ const deleteChannel = async (channel) => {
     const response = await axios.post(`${API}/delete`, {
       channelId: channel["_id"],
     });
+    CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
     if (response.data.status === "success") return true;
     return false;
   } catch (error) {
@@ -120,6 +123,7 @@ const editchannelAdmin = async (channel) => {
       channel,
     });
     const data = response.data;
+    CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
     if (data.payload.status === "failed") return null;
     return channel["_id"];
   } catch (error) {
