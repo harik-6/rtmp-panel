@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) =>
       display: "flex",
       flexDirection: "column",
       [theme.breakpoints.down("sm")]: {
-        width: "300px",
+        width: "98vw",
         flexDirection: "column",
       },
     },
@@ -27,7 +27,10 @@ const useStyles = makeStyles((theme) =>
       alignItems:"center",
       color:"#ffffff",
       marginTop:"301px",
-      marginLeft:"450px"
+      marginLeft:"450px",
+      [theme.breakpoints.down("sm")]: {
+        display: "none",
+      },
     },
     rtmpinfo: {
       marginTop: theme.spacing(3),

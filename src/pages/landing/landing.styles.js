@@ -5,6 +5,9 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: "#ffffff",
       overflowX: "hidden",
       scrollBehavior: "smooth",
+      [theme.breakpoints.down("sm")]: {
+        width: "100vw",
+      },
     },
     appbar: {
       background: theme.palette.primary.main,
@@ -174,6 +177,11 @@ const useStyles = makeStyles((theme) =>
       display: "flex",
       alignItems: "center",
       animation: "$scrolltext 120s linear infinite",
+      [theme.breakpoints.down("md")]: {
+        width: "100%",
+        overflowX: "scroll",
+        animation: "none",
+      },
     },
     bannercontent: {
       padding: "4px",

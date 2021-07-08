@@ -7,6 +7,10 @@ const useStyles = makeStyles((theme) =>
       width: "100%",
       display: "flex",
       flexDirection: "row",
+      [theme.breakpoints.down("sm")]: {
+        width: "100vw",
+        overflowX: "hidden",
+      },
     },
     grow: {
       flexGrow: 1,
@@ -22,7 +26,6 @@ const useStyles = makeStyles((theme) =>
       top: "0",
       bottom: "0",
       [theme.breakpoints.down("sm")]: {
-        transform: "translateX(0px)",
         position: "absolute",
         backgroundColor: "transparent",
         width: "100%",
@@ -36,7 +39,7 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: "#ebe9e9",
       display: "flex",
       [theme.breakpoints.down("sm")]: {
-        marginLeft: 0,
+        width: "100vw",
         overflowX: "hidden",
         overflowY: "visible !important",
       },
@@ -49,8 +52,16 @@ const useStyles = makeStyles((theme) =>
         display: "flex",
         flexDirection: "row",
         backgroundColor: "#ffffff",
-        maxHeight: "60px",
-        justiyContent: "space-between",
+        maxHeight: "80px",
+        justiyContent: "space-evenly",
+      },
+    },
+    mobilenav: {
+      display: "flex",
+      flexDirection: "row",
+      [theme.breakpoints.down("sm")]: {
+        display: "flex",
+        flexDirection: "row",
       },
     },
     navtextactive: {

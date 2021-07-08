@@ -49,6 +49,7 @@ const Main = () => {
               disableGutters={true}
               onClick={() => changePage(1)}
               button
+              className={classes.mobilenav}
             >
               <ListItemIcon
                 className={activeTab === 1 ? classes.iconactive : classes.icon}
@@ -69,6 +70,7 @@ const Main = () => {
               disableGutters={true}
               onClick={() => changePage(2)}
               button
+              className={classes.mobilenav}
             >
               <ListItemIcon
                 className={activeTab === 2 ? classes.iconactive : classes.icon}
@@ -91,6 +93,7 @@ const Main = () => {
                 disableGutters={true}
                 onClick={() => changePage(3)}
                 button
+                className={classes.mobilenav}
               >
                 <ListItemIcon
                   className={
@@ -115,6 +118,7 @@ const Main = () => {
                 disableGutters={true}
                 onClick={() => changePage(4)}
                 button
+                className={classes.mobilenav}
               >
                 <ListItemIcon
                   className={
@@ -133,7 +137,12 @@ const Main = () => {
               </ListItem>
             </Link>
           )}
-          <ListItem disableGutters={true} onClick={logoutUser} button>
+          <ListItem
+            disableGutters={true}
+            onClick={logoutUser}
+            button
+            className={classes.mobilenav}
+          >
             <ListItemIcon className={classes.icon}>
               <LogoutIcon />
             </ListItemIcon>
