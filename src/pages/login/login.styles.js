@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) =>
       borderTopRightRadius: "20px",
       borderBottomRightRadius: "20px",
       [theme.breakpoints.down("sm")]: {
-        width: "380px",
-        backgroundColor:"transparent",
+        width: "360px",
+        backgroundColor:"transparent"
       },
     },
     txtfield: {
@@ -101,6 +101,9 @@ const useStyles = makeStyles((theme) =>
     loginform: {
       marginTop: "48px",
       padding: "32px",
+      [theme.breakpoints.down("sm")]: {
+        marginBottom: "36px",
+      },
     },
   })
 );

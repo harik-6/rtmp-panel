@@ -3,7 +3,6 @@ import { Grid, Paper, Snackbar, IconButton } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import useStyles from "./player.styles";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
-import HealthIcon from "../../components/healthicon";
 
 const CopyIcon = ({ onClick }) => {
   return (
@@ -150,9 +149,9 @@ const StreamPlayer = ({
           onStart={onVideoStart}
           onPlay={onVideoPlay}
         />
-        <div className={classes.iconlive}>
+        {/* <div className={classes.iconlive}>
           <HealthIcon status={isLive} /> {isLive ? "Live" : "Idle"}
-        </div>
+        </div> */}
       </div>
     </Grid>
   );

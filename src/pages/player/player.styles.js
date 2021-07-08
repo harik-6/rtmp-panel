@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) =>
     carousel: {
       marginTop: "16px",
       marginBottom: "24px",
-      maxWidth: "1166px",
+      maxWidth: "1000px",
     },
   })
 );

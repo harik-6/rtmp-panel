@@ -71,20 +71,26 @@ const Home = () => {
     const style = {
       marginRight: "8px",
       border: "1px solid grey",
+      fontWeight:"bold"
     };
     return channelList.map((chnl) => {
       const { name } = chnl;
       if (name === selectedChip) {
         return <Chip style={style} color="primary" key={name} label={name} />;
       }
+      if (!healthMap[name])
+        return (
+          <Chip color="primary" variant="outlined" style={style} key={name} label={name} />
+        );
       return (
         <Chip
+        color="primary"
           variant="outlined"
           style={style}
           key={name}
           label={name}
           onDelete={() => {}}
-          deleteIcon={<HealthIcon status={healthMap[name]} />}
+          deleteIcon={<HealthIcon status={true} />}
         />
       );
     });
@@ -173,8 +179,8 @@ const Home = () => {
             <div className={classes.carousel}>
               <ScrollMenu
                 scrollToSelected={true}
-                arrowRight={<ArrowRightIcon fontSize="small" />}
-                arrowLeft={<ArrowLeftIcon fontSize="small" />}
+                arrowRight={<ArrowRightIcon fontSize="large" />}
+                arrowLeft={<ArrowLeftIcon fontSize="large"  />}
                 data={_renderChipItems()}
                 selected={selectedChip}
                 onSelect={_changeActiveChannel}
