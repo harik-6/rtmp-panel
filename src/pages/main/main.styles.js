@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) =>
       width: "200px",
       backgroundColor: "#FFFFFF",
       overflow: "hidden",
-      position: "fixed",
       top: "0",
       bottom: "0",
       [theme.breakpoints.down("sm")]: {
@@ -27,15 +26,15 @@ const useStyles = makeStyles((theme) =>
         position: "absolute",
         backgroundColor: "transparent",
         width: "100%",
-        maxHeight:"60px"
+        maxHeight: "60px",
       },
     },
     routes: {
-      marginLeft: "200px",
       flex: 1,
       overflow: "visible",
       scrollBehavior: "smooth",
-      backgroundColor:"#ebe9e9",
+      backgroundColor: "#ebe9e9",
+      display: "flex",
       [theme.breakpoints.down("sm")]: {
         marginLeft: 0,
         overflowX: "hidden",
@@ -51,7 +50,7 @@ const useStyles = makeStyles((theme) =>
         flexDirection: "row",
         backgroundColor: "#ffffff",
         maxHeight: "60px",
-        justiyContent:"space-between"
+        justiyContent: "space-between",
       },
     },
     navtextactive: {

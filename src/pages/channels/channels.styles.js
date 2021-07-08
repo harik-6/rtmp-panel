@@ -2,8 +2,9 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) =>
   createStyles({
     channels: {
+      flex: 1,
       padding: theme.spacing(2),
-      backgroundColor:"#ebe9e9",
+      backgroundColor: "#ebe9e9",
       [theme.breakpoints.down("sm")]: {
         padding: theme.spacing(0.5),
         marginTop: "48px",

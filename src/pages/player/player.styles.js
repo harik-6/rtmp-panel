@@ -2,6 +2,7 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) =>
   createStyles({
     home: {
+      width: "100%",
       padding: theme.spacing(2),
       backgroundColor: "#ebe9e9",
       [theme.breakpoints.down("sm")]: {
@@ -88,6 +89,11 @@ const useStyles = makeStyles((theme) =>
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-evenly",
+    },
+    carousel: {
+      marginTop: "16px",
+      marginBottom:"24px",
+      maxWidth: "1166px",
     },
   })
 );

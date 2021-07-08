@@ -20,12 +20,10 @@ import {
 
 const Channels = () => {
   const classes = useStyles();
-  const { user, channels, actions, healthList, settings } =
-    useContext(AppContext);
-  const [chnl, setChannel] = useState(null);
+  const { user, actions, healthList, settings } = useContext(AppContext);
+  const [channelList, setChannelList] = useState([]);
+  const [activeChannel, setActiveChannel] = useState(null);
   const [msg, setMsg] = useState("Loading channels...");
-  const [healthStatus, setHealthStatus] = useState({});
-  const [activeChannelCount, setActiveChannelCount] = useState(-1);
   const [isAdmin, setAdmin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [activeOwnerId, setActiveOwnerId] = useState(
@@ -38,8 +36,15 @@ const Channels = () => {
   const [snack, setSnack] = useState({ open: false, message: "" });
   const [openStatusDialog, setOpenStatusDialog] = useState(false);
 
-  const setActiveChanel = (channneeelll) => {
-    setChannel(channneeelll);
+  const loadChannels = async () => {
+    setMsg("Loading channels...");
+    setLoading(true);
+    const chs = (await getChannels(user)) || [];
+    setChannelList(chs);
+    if (chs.length === 0) {
+      setActiveChannel(null);
+    }
+    setLoading(false);
   };
 
   const openSnack = () => {
@@ -57,7 +62,7 @@ const Channels = () => {
   };
 
   const openCreateChannelForm = () => {
-    if (settings.limit === channels.length) {
+    if (settings.limit === channelList.length) {
       openSnack();
       return;
     } else {
@@ -70,7 +75,7 @@ const Channels = () => {
   };
 
   const closeActionDialog = () => {
-    setChannel(null);
+    setActiveChannel(null);
     setAction(null);
   };
 
@@ -78,19 +83,11 @@ const Channels = () => {
     setDeleteConfirm(true);
   };
 
-  const recheckChannelHealth = async () => {
-    await checkHealth(channels);
-    setSnack({
-      open: true,
-      message: "Channel health rechecked.",
-    });
-  };
-
   const deleteChannel = async () => {
     setDeleteConfirm(false);
-    setMsg("Deleting channel " + chnl.name);
+    setMsg("Deleting channel " + activeChannel.name);
     setLoading(true);
-    await deleteChannel(chnl);
+    await deleteChannel(activeChannel);
     setSnack({
       open: true,
       message: "Channel successfully deleted.",
@@ -98,52 +95,15 @@ const Channels = () => {
     loadChannels();
   };
 
-  const loadChannels = async () => {
-    actions.setChannles(null);
-    setMsg("Loading channels...");
-    setLoading(true);
-    setTimeout(async () => {
-      const chs = await getChannels(user);
-      actions.setChannles(chs);
-      const htharray = new Array(chs.length);
-      for (let i = 0; i < htharray.length; i++) {
-        htharray[i] = false;
-      }
-      checkHealth(chs);
-      setLoading(false);
-    }, 1000);
-  };
-
   const openPreview = (chnllll) => {
     // window.open(`${process.env.REACT_APP_APPURL}/play/${chnllll.name}`);
     window.open(`https://${chnllll.server}/play/${chnllll.name}`);
   };
-  const updateActiveCount = (hlthList) => {
-    let count = 0;
-    Object.keys(hlthList).forEach((key) => {
-      if (hlthList[key]) {
-        count += 1;
-      }
-    });
-    setActiveChannelCount(count);
-  };
-
-  const checkHealth = async (channelslist) => {
-    let healthArr = new Array(channelslist.length);
-    for (let i = 0; i < channelslist.length; i++) {
-      const health = await checkChannelHealth(channelslist[i]);
-      healthArr[channelslist[i].name] = health;
-    }
-    const arr = { ...healthArr };
-    setHealthStatus(arr);
-    updateActiveCount(arr);
-    actions.setHealth(arr);
-  };
 
   const _changeRtmpStatus = async () => {
     setOpenStatusDialog(false);
-    await changeRtmpStatus(chnl);
-    await rebootServer(chnl);
+    await changeRtmpStatus(activeChannel);
+    await rebootServer(activeChannel);
     setMsg("Loading channels...");
     setLoading(true);
     setTimeout(() => loadChannels(), 2000);
@@ -155,23 +115,12 @@ const Channels = () => {
   };
 
   useEffect(() => {
-    if (
-      channels !== null &&
-      channels.length > 0 &&
-      (healthList === null || healthList === undefined)
-    ) {
-      checkHealth(channels);
-    } else {
-      if (Object.keys(healthList || []).length > 0) {
-        setHealthStatus({ ...healthList });
-        updateActiveCount(healthList);
-      }
-    }
+    loadChannels();
     if (user !== null) {
       setAdmin(user["_id"] === process.env.REACT_APP_ADMINID);
     }
     //eslint-disable-next-line
-  }, [channels]);
+  }, []);
 
   if (loading) {
     return <Preloader message={msg} />;
@@ -180,17 +129,15 @@ const Channels = () => {
   let filtereddata = [];
   if (isAdmin) {
     filtereddata =
-      channels === null
-        ? []
-        : channels.filter((ch) => ch.server === activeOwnerId) || [];
+      channelList.filter((ch) => ch.server === activeOwnerId) || [];
   } else {
-    filtereddata = channels || [];
+    filtereddata = channelList || [];
   }
   // filtereddata.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className={classes.channels}>
-      {(channels || []).length <= 0 ? (
+      {channelList.length <= 0 ? (
         <Nodataloader message="You don't have any channel.Create one" />
       ) : (
         <Grid className={classes.chcardcnt} container>
@@ -202,11 +149,7 @@ const Channels = () => {
             lg={12}
           >
             <Grid item lg={2}>
-              <Button
-                onClick={recheckChannelHealth}
-                variant="contained"
-                color="primary"
-              >
+              <Button onClick={() => {}} variant="contained" color="primary">
                 Health check
               </Button>
             </Grid>
@@ -220,10 +163,7 @@ const Channels = () => {
               </Button>
             </Grid> */}
           </Grid>
-          <Insights
-            channels={channels}
-            activeChannelCount={activeChannelCount}
-          />
+          <Insights channels={channelList} activeChannelCount={0} />
           {isAdmin && (
             <Grid container justify="flex-end">
               <Grid sm={12} xs={12} lg={3}>
@@ -242,8 +182,8 @@ const Channels = () => {
           )}
           <ChannelTable
             spliceddata={filtereddata}
-            healthStatus={healthStatus}
-            setActiveChanel={setActiveChanel}
+            healthStatus={{}}
+            setActiveChanel={setActiveChannel}
             openActionDialog={openActionDialog}
             askConfirmation={askConfirmation}
             openPreview={openPreview}
@@ -267,23 +207,23 @@ const Channels = () => {
           closeActionDialog();
           loadChannels();
         }}
-        channel={chnl}
+        channel={activeChannel}
         user={user}
       />
-      {chnl !== null && (
+      {activeChannel !== null && (
         <DeleteConfirmationDialog
           openForm={openDeleteConfirm}
           closeForm={() => setDeleteConfirm(false)}
           onDeleteYes={deleteChannel}
-          channel={chnl}
+          channel={activeChannel}
         />
       )}
-      {chnl !== null && (
+      {activeChannel !== null && (
         <RtmpStatusConfirmationDialog
           openForm={openStatusDialog}
           onYes={_changeRtmpStatus}
           closeForm={() => setOpenStatusDialog(false)}
-          status={chnl.status}
+          status={activeChannel.status}
         />
       )}
       <Snackbar
@@ -295,7 +235,7 @@ const Channels = () => {
         key={"snack"}
       />
       <FabAddButton onClickAction={openCreateChannelForm} />
-      {isAdmin && channels !== null && (
+      {isAdmin && channelList.length > 0 && (
         <Menu
           id="switch-channel-admin-menu"
           anchorEl={anchorEl}
@@ -303,7 +243,7 @@ const Channels = () => {
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
-          {[...new Set([...channels.map((ch) => ch.server)])].map(
+          {[...new Set([...channelList.map((ch) => ch.server)])].map(
             (servername) => (
               <MenuItem
                 key={servername}

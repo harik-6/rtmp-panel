@@ -10,7 +10,7 @@ const Preloader = ({ message }) => {
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
-        height: "100%",
+        height: "100vh",
       }}
     >
       <CircularProgress />

@@ -8,7 +8,6 @@ import {
   Chip,
 } from "@material-ui/core";
 import AppContext from "../../context/context";
-import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 import CreateNewChannel from "../../components/createchannel";
@@ -17,6 +16,7 @@ import RebootConfirmationDialog from "../../components/rebootconfirm";
 import FabAddButton from "../../components/fabaddbutton";
 import Preloader from "../../components/preloader";
 import Nodataloader from "../../components/nodataloader";
+import ScrollMenu from "react-horizontal-scrolling-menu";
 import {
   StreamUserInfo,
   LiveDotIcon,
@@ -26,36 +26,8 @@ import {
 import { getChannels } from "../../service/channel.service";
 import { getBitrateMedata, rebootServer } from "../../service/rtmp.service";
 
-// react-carousel
-// import "react-responsive-carousel/lib/styles/carousel.min.css";
-// import { Carousel } from "react-responsive-carousel";
-
-import ScrollMenu from "react-horizontal-scrolling-menu";
-// import Carousel from "react-multi-carousel";
-// import "react-multi-carousel/lib/styles.css";
-// import "./carousel-override.css";
-
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 10,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 27,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 10,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 10,
-  },
-};
-
 const Home = () => {
-  const { user, channels, actions, settings } = useContext(AppContext);
+  const { user, actions, settings } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [metadata, setMetadata] = useState({
@@ -73,20 +45,38 @@ const Home = () => {
   const [openRebootDialog, setOpenRebootDialog] = useState(false);
   const [selectedChip, setSelectedChip] = useState(0);
 
-  _changeActiveChannel = (channelName) => {
+  const loadChannels = async () => {
+    setloading(true);
+    const chs = (await getChannels(user)) || [];
+    if (chs.length > 0) {
+      setChannelList(chs);
+      setActiveChannel(chs[0]);
+      setSelectedChip(chs[0].name);
+    } else {
+      _changeActiveChannel(null);
+    }
+    setloading(false);
+  };
+
+  const _changeActiveChannel = (channelName) => {
+    setActiveChannel(
+      channelList.find((channel) => channel.name === channelName)
+    );
     setSelectedChip(channelName);
   };
 
-  const loadChannels = async (forceload) => {
-    setloading(true);
-    const chs = (await getChannels(user)) || [];
-    if ((chs || []).length > 0) {
-      setChannelList(chs);
-      setCh(chs[0]);
-    } else {
-      setCh(null);
-    }
-    setloading(false);
+  const _renderChipItems = () => {
+    const style = {
+      marginRight: "8px",
+    };
+    return channelList.map((chl) => {
+      if (chl.name === selectedChip) {
+        return (
+          <Chip style={style} color="primary" key={chl.name} label={chl.name} />
+        );
+      }
+      return <Chip variant="outlined" style={style} key={chl.name} label={chl.name} />;
+    });
   };
 
   const closeCreatepop = () => {
@@ -94,7 +84,7 @@ const Home = () => {
   };
 
   const openCreateChannelForm = () => {
-    if (settings.limit === channels.length) {
+    if (settings.limit === channelList.length) {
       seterrorsnack(true);
       return;
     } else {
@@ -104,7 +94,7 @@ const Home = () => {
 
   const getMetadata = async () => {
     try {
-      const bitratemetadata = await getBitrateMedata(ch.httpLink);
+      const bitratemetadata = await getBitrateMedata(activeChannel.httpLink);
       if (bitratemetadata !== null) {
         setMetadata(bitratemetadata);
       }
@@ -131,15 +121,15 @@ const Home = () => {
   };
 
   const _rebootServer = async () => {
-    if (channels !== null && channels.length > 0) {
-      await rebootServer(channels[0]);
+    if (channelList !== null && channelList.length > 0) {
+      await rebootServer(channelList[0]);
       setOpenRebootDialog(false);
       actions.logout();
     }
   };
 
   useEffect(() => {
-    loadChannels(false);
+    loadChannels();
     //eslint-disable-next-line
   }, []);
   const classes = useStyles();
@@ -150,68 +140,38 @@ const Home = () => {
 
   return (
     <div className={classes.home}>
-      {ch === null ? (
+      {activeChannel === null ? (
         <Nodataloader message="You don't have any channel.Create one" />
       ) : (
-        <Grid container>
-          <Grid item container justify="flex-end" lg={12}>
-            <Grid item lg={1}>
-              <Button
-                onClick={() => setOpenRebootDialog(true)}
-                variant="contained"
-                color="primary"
-              >
-                Reboot
-              </Button>
-            </Grid>
-          </Grid>
-          <div style={{ width: "57%" }}>
+        <>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              onClick={() => setOpenRebootDialog(true)}
+              variant="contained"
+              color="primary"
+            >
+              Reboot
+            </Button>
+          </div>
+          <div className={classes.carousel}>
             <ScrollMenu
               scrollToSelected={true}
               arrowRight={<ArrowRightIcon fontSize="small" />}
               arrowLeft={<ArrowLeftIcon fontSize="small" />}
-              data={chlist.map((chl) => (
-                <Chip key={chl.name} label={chl.name} />
-              ))}
+              data={_renderChipItems()}
               selected={selectedChip}
               onSelect={_changeActiveChannel}
             />
           </div>
-          {/* <Grid
-            item
-            lg={12}
-            container
-            direction="row"
-            alignItems="center"
-            className={classes.actioncnt}
-          >
-            <Grid item lg={3} />
-            <LiveDotIcon isLive={isLive} />
-            <Grid item lg={2} />
-            {chlist.length > 0 && (
-              <Grid itemlg={4}>
-                <Button
-                  aria-controls="change-channel-menu"
-                  aria-haspopup="true"
-                  onClick={(event) => setAnchorEl(event.currentTarget)}
-                  disableElevation
-                  style={{ zIndex: "99" }}
-                >
-                  {ch.name}
-                  <DownArrowIcon />
-                </Button>
-              </Grid>
-            )}
-          </Grid>
           <StreamPlayer
-            ch={ch}
+            ch={activeChannel}
             onVideoError={onVideoError}
             onVideoStart={onVideoStart}
             onVideoPlay={onVideoPlay}
           />
           <StreamMetadata metadata={metadata} />
-          <StreamUserInfo ch={ch} /> */}
-        </Grid>
+          <StreamUserInfo ch={activeChannel} />
+        </>
       )}
       <CreateNewChannel
         openForm={openForm}

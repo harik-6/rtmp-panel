@@ -42,7 +42,6 @@ const Appmarketing = () => {
 const App = () => {
   const [panel, setPanel] = useState("blank");
   useEffect(() => {
-    console.log("location gref", window.location.href);
     const location = window.location.href;
     const appurl = process.env.REACT_APP_APPURL;
     if (location === appurl || location === appurl + "/") {
