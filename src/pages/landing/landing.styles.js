@@ -183,7 +183,6 @@ const useStyles = makeStyles((theme) =>
       },
     },
     bannercontent: {
-      display: "inline",
       height: "48px",
       display: "flex",
       alignItems: "center",

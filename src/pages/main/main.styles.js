@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) =>
     mobilenav: {
       display: "flex",
       flexDirection: "row",
+      marginBottom: "4px",
       [theme.breakpoints.down("sm")]: {
         display: "flex",
         flexDirection: "row",
@@ -87,9 +88,6 @@ const useStyles = makeStyles((theme) =>
       opacity: "0.3",
       marginRight: "8px",
       marginLeft: "8px",
-    },
-    navbtn: {
-      marginBottom: "8px",
     },
     appname: {
       textAlign: "center",

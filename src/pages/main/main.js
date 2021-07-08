@@ -45,7 +45,6 @@ const Main = () => {
         <List className={classes.navlist} aria-label="navigation-list">
           <Link to="/player">
             <ListItem
-              className={classes.navbtn}
               disableGutters={true}
               onClick={() => changePage(1)}
               button
@@ -89,7 +88,6 @@ const Main = () => {
           {(settings || { usage: false }).usage && (
             <Link to="/usage">
               <ListItem
-                className={classes.navbtn}
                 disableGutters={true}
                 onClick={() => changePage(3)}
                 button
