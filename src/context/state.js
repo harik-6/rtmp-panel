@@ -1,6 +1,7 @@
 import { useReducer } from "react";
 import AppReducer from "./reducer";
 import AppContext from "./context";
+import CacheService from "../service/cache.service";
 const initialState = {
   appName : "StreamWell",
   appDesc : "Dedicated streaming server provider.",
@@ -30,6 +31,7 @@ const AppState = (props) => {
   };
 
   const logout = () => {
+    CacheService.clear()
     dispatch({
       type: "logout",
       payload: null,

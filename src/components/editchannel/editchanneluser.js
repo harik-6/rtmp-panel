@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 import AppContext from "../../context/context";
-import channelservice from "../../service/channel.service";
+import { editchannel, getAllTokens } from "../../service/channel.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -44,9 +44,9 @@ const EditChannelUser = ({ openForm, closeForm, successCallback, channel }) => {
     setchkey(e.target.value);
   };
 
-  const editChannel = async () => {
+  const _editChannel = async () => {
     if (chname.length > 0 && chkey.length > 0) {
-      const alltokens = channelservice.getAllTokens();
+      const alltokens = getAllTokens();
       if (alltokens.length > 0) {
         if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
           setchnameerror(true);
@@ -54,7 +54,7 @@ const EditChannelUser = ({ openForm, closeForm, successCallback, channel }) => {
         }
       }
       setcreating(true);
-      const editedchannel = await channelservice.editchannel(
+      const editedchannel = await editchannel(
         {
           ...channel,
           name: chname.toLowerCase(),
@@ -123,7 +123,7 @@ const EditChannelUser = ({ openForm, closeForm, successCallback, channel }) => {
       <DialogActions>
         {!creating && (
           <Button
-            onClick={editChannel}
+            onClick={_editChannel}
             variant="contained"
             color="primary"
             disableElevation

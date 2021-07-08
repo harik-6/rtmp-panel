@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 import AppContext from "../context/context";
-import service from "../service/channel.service";
+import { createChannel, getAllTokens } from "../service/channel.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -46,23 +46,15 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
 
   const createNewChannel = async () => {
     if (chname.length > 0 && chkey.length > 0) {
-      const alltokens = await service.getAllTokens();
+      const alltokens = await getAllTokens();
       if (alltokens.length > 0) {
         if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
           setchnameerror(true);
           return;
         }
-        // if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-        //   setchkeyerror(true);
-        //   return;
-        // }
       }
       setcreating(true);
-      const channel = await service.createChannel(
-        user,
-        chname,
-        settings
-      );
+      const channel = await createChannel(user, chname, settings);
       if (channel !== null) {
         actions.setChannles([]);
         setcreating(false);

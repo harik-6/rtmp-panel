@@ -1,15 +1,15 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Grid } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 import ReactHighcharts from "react-highcharts";
 import Preloader from "../../components/preloader";
 import UsageAdmin from "./usage.admin";
-import userservice from "../../service/user.service";
 import AppContext from "../../context/context";
 import useStyles from "./usage.styles";
+import { getUsageData } from "../../service/rtmp.service";
 import { formatDataFormVizualisation } from "./usage.utils";
 
 const Usage = () => {
-  const { user,settings, actions, usageData } = useContext(AppContext);
+  const { user, settings } = useContext(AppContext);
   const [nodata, setNoData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [graphData, setGraphData] = useState([]);
@@ -36,16 +36,11 @@ const Usage = () => {
 
   const loadUsageData = async () => {
     setLoading(true);
-    if (usageData === null) {
-      const usage = await userservice.getUsageData({user,settings});
-      if (usage === null) {
-        setNoData(true);
-      }
-      actions.setUsageData(usage);
-      formatVizData(usage);
-    } else {
-      formatVizData(usageData);
+    const usage = await getUsageData({ user, settings });
+    if (usage === null) {
+      setNoData(true);
     }
+    formatVizData(usage);
     setLoading(false);
   };
 
@@ -55,7 +50,8 @@ const Usage = () => {
   }, []);
 
   const classes = useStyles();
-  const isAdmin = (user===null)?false:(user["_id"] === process.env.REACT_APP_ADMINID);
+  const isAdmin =
+    user === null ? false : user["_id"] === process.env.REACT_APP_ADMINID;
 
   if (loading) {
     return <Preloader message={"Loading data..."} />;

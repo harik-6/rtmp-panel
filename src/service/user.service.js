@@ -3,7 +3,6 @@ import axios from "axios";
 import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `${process.env.REACT_APP_API}/api/user`;
-const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
 
 const isAdmin = (id) => id === process.env.REACT_APP_ADMINID;
 
@@ -140,35 +139,7 @@ const UserService = {
         return false;
       }
     }
-  },
-  getUsageData: async (usersetting) => {
-    const { settings, user } = usersetting;
-    if (settings !== undefined) {
-      const cachkey = CACHEKEYS.FETCH_USAGE + "#" + settings["usageid"];
-      const cachevalue = CacheService.get(cachkey);
-      if (cachevalue !== null) return cachevalue;
-      try {
-        const response = await axios.post(
-          `${API_RTMP}/usage`,
-          {
-            usageId: settings["usageid"],
-          },
-          {
-            headers: {
-              "x-auth-id": user["_id"],
-            },
-          }
-        );
-        const data = response.data;
-        if (data.status === "failed") return null;
-        if (data.payload.length === 0) return null;
-        CacheService.set(cachkey, data.payload);
-        return data.payload;
-      } catch (error) {
-        return null;
-      }
-    }
-  },
+  }
 };
 
 export default UserService;

@@ -64,7 +64,7 @@ const Main = () => {
               />
             </ListItem>
           </Link>
-          <Link to="/channels">
+          {/* <Link to="/channels">
             <ListItem
               disableGutters={true}
               onClick={() => changePage(2)}
@@ -132,7 +132,7 @@ const Main = () => {
                 />
               </ListItem>
             </Link>
-          )}
+          )} */}
           <ListItem disableGutters={true} onClick={logoutUser} button>
             <ListItemIcon className={classes.icon}>
               <LogoutIcon />

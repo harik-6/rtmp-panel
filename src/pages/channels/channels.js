@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Grid, Snackbar, Button, Menu, MenuItem } from "@material-ui/core";
 import { ChannelTable, Insights } from "./channelcomponent";
-import channelservice from "../../service/channel.service";
 import AppContext from "../../context/context";
 import CreateNewChannel from "../../components/createchannel";
 import DeleteConfirmationDialog from "../../components/deletechannel";
@@ -12,10 +11,17 @@ import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import Preloader from "../../components/preloader";
 import Nodataloader from "../../components/nodataloader";
 import FabAddButton from "../../components/fabaddbutton";
+import { getChannels } from "../../service/channel.service";
+import {
+  rebootServer,
+  checkChannelHealth,
+  changeRtmpStatus,
+} from "../../service/rtmp.service";
 
 const Channels = () => {
   const classes = useStyles();
-  const { user, channels, actions, healthList,settings} = useContext(AppContext);
+  const { user, channels, actions, healthList, settings } =
+    useContext(AppContext);
   const [chnl, setChannel] = useState(null);
   const [msg, setMsg] = useState("Loading channels...");
   const [healthStatus, setHealthStatus] = useState({});
@@ -84,7 +90,7 @@ const Channels = () => {
     setDeleteConfirm(false);
     setMsg("Deleting channel " + chnl.name);
     setLoading(true);
-    await channelservice.deleteChannel(chnl);
+    await deleteChannel(chnl);
     setSnack({
       open: true,
       message: "Channel successfully deleted.",
@@ -97,7 +103,7 @@ const Channels = () => {
     setMsg("Loading channels...");
     setLoading(true);
     setTimeout(async () => {
-      const chs = await channelservice.getChannels(user);
+      const chs = await getChannels(user);
       actions.setChannles(chs);
       const htharray = new Array(chs.length);
       for (let i = 0; i < htharray.length; i++) {
@@ -125,7 +131,7 @@ const Channels = () => {
   const checkHealth = async (channelslist) => {
     let healthArr = new Array(channelslist.length);
     for (let i = 0; i < channelslist.length; i++) {
-      const health = await channelservice.checkChannelHealth(channelslist[i]);
+      const health = await checkChannelHealth(channelslist[i]);
       healthArr[channelslist[i].name] = health;
     }
     const arr = { ...healthArr };
@@ -134,10 +140,10 @@ const Channels = () => {
     actions.setHealth(arr);
   };
 
-  const changeRtmpStatus = async () => {
+  const _changeRtmpStatus = async () => {
     setOpenStatusDialog(false);
-    await channelservice.changeRtmpStatus(chnl);
-    await channelservice.rebootServer(chnl);
+    await changeRtmpStatus(chnl);
+    await rebootServer(chnl);
     setMsg("Loading channels...");
     setLoading(true);
     setTimeout(() => loadChannels(), 2000);
@@ -275,7 +281,7 @@ const Channels = () => {
       {chnl !== null && (
         <RtmpStatusConfirmationDialog
           openForm={openStatusDialog}
-          onYes={changeRtmpStatus}
+          onYes={_changeRtmpStatus}
           closeForm={() => setOpenStatusDialog(false)}
           status={chnl.status}
         />

@@ -10,7 +10,7 @@ import Preloader from "../../components/preloader";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import AppContext from "../../context/context";
 import { formatDataFormVizualisationAdmin } from "./usage.utils";
-import userservice from "../../service/user.service";
+import { getUsageData } from "../../service/rtmp.service";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -45,11 +45,11 @@ const UsageAdmin = () => {
 
   const loadUsageData = async () => {
     setLoading(true);
-    let alldata =
-      (await userservice.getUsageData({
-        user,
-        settings,
-      })) || [];
+    let alldata = await getUsageData({
+      user,
+      settings,
+    });
+    alldata = alldata || [];
     const allids = [...new Set(alldata.map((obj) => obj.usageId))];
     let list = [];
     const idtoservernamp = {};

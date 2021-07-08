@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 import AppContext from "../../context/context";
-import channelservice from "../../service/channel.service";
+import { getAllTokens, editchannelAdmin } from "../../service/channel.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -48,7 +48,7 @@ const EditChannelAdmin = ({
 
   const editChannel = async () => {
     if (chnl.name.length > 0) {
-      const alltokens = channelservice.getAllTokens();
+      const alltokens = getAllTokens();
       if (alltokens.length > 0) {
         if (alltokens.indexOf(chnl.name.toLowerCase()) !== -1) {
           setchnameerror(true);
@@ -64,7 +64,7 @@ const EditChannelAdmin = ({
         ...chnl,
         key: chnl.name,
       };
-      const editedchannel = await channelservice.editchannelAdmin(toedit);
+      const editedchannel = await editchannelAdmin(toedit);
       if (editedchannel !== null) {
         actions.setChannles([]);
         successCallback();

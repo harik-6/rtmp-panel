@@ -1,8 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Grid, Button, Menu, MenuItem, Snackbar } from "@material-ui/core";
+import {
+  Grid,
+  Button,
+  Menu,
+  MenuItem,
+  Snackbar,
+  Chip,
+} from "@material-ui/core";
 import AppContext from "../../context/context";
-import channelservice from "../../service/channel.service";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
+import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 import CreateNewChannel from "../../components/createchannel";
 import useStyles from "./player.styles";
 import RebootConfirmationDialog from "../../components/rebootconfirm";
@@ -15,11 +23,41 @@ import {
   StreamMetadata,
   StreamPlayer,
 } from "./playercomponents";
+import { getChannels } from "../../service/channel.service";
+import { getBitrateMedata, rebootServer } from "../../service/rtmp.service";
+
+// react-carousel
+// import "react-responsive-carousel/lib/styles/carousel.min.css";
+// import { Carousel } from "react-responsive-carousel";
+
+import ScrollMenu from "react-horizontal-scrolling-menu";
+// import Carousel from "react-multi-carousel";
+// import "react-multi-carousel/lib/styles.css";
+// import "./carousel-override.css";
+
+const responsive = {
+  superLargeDesktop: {
+    breakpoint: { max: 4000, min: 3000 },
+    items: 10,
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 27,
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 10,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 10,
+  },
+};
 
 const Home = () => {
   const { user, channels, actions, settings } = useContext(AppContext);
-  const [chlist, setchlist] = useState([]);
-  const [ch, setCh] = useState(null);
+  const [channelList, setChannelList] = useState([]);
+  const [activeChannel, setActiveChannel] = useState(null);
   const [metadata, setMetadata] = useState({
     audioType: "N/A",
     audioRate: "0 kbps",
@@ -29,39 +67,21 @@ const Home = () => {
     resolution: "N/A",
   });
   // preloaders and errors
-  const [anchorEl, setAnchorEl] = useState(null);
   const [openForm, setOpenForm] = useState(false);
   const [loading, setloading] = useState(false);
   const [errorsnack, seterrorsnack] = useState(false);
-  const [isLive, setChannelLive] = useState(false);
   const [openRebootDialog, setOpenRebootDialog] = useState(false);
+  const [selectedChip, setSelectedChip] = useState(0);
 
-  const changeRtmp = (index) => {
-    setCh(chlist[index]);
-    closeMenu();
-    getMetadata();
-  };
-
-  const closeMenu = () => {
-    setAnchorEl(null);
+  _changeActiveChannel = (channelName) => {
+    setSelectedChip(channelName);
   };
 
   const loadChannels = async (forceload) => {
     setloading(true);
-    let chs = [];
-    if (forceload) {
-      chs = await channelservice.getChannels(user);
-      actions.setChannles(chs);
-    } else {
-      if (channels === null) {
-        chs = await channelservice.getChannels(user);
-        actions.setChannles(chs);
-      } else {
-        chs = channels;
-      }
-    }
+    const chs = (await getChannels(user)) || [];
     if ((chs || []).length > 0) {
-      setchlist(chs);
+      setChannelList(chs);
       setCh(chs[0]);
     } else {
       setCh(null);
@@ -71,7 +91,6 @@ const Home = () => {
 
   const closeCreatepop = () => {
     setOpenForm(false);
-    closeMenu();
   };
 
   const openCreateChannelForm = () => {
@@ -85,9 +104,7 @@ const Home = () => {
 
   const getMetadata = async () => {
     try {
-      const bitratemetadata = await channelservice.getBitrateMedata(
-        ch.httpLink
-      );
+      const bitratemetadata = await getBitrateMedata(ch.httpLink);
       if (bitratemetadata !== null) {
         setMetadata(bitratemetadata);
       }
@@ -95,17 +112,14 @@ const Home = () => {
   };
 
   const onVideoStart = () => {
-    setChannelLive(true);
     getMetadata();
   };
 
   const onVideoPlay = () => {
-    setChannelLive(true);
     getMetadata();
   };
 
   const onVideoError = () => {
-    setChannelLive(false);
     setMetadata({
       audioType: "N/A",
       audioRate: "0 kbps",
@@ -116,9 +130,9 @@ const Home = () => {
     });
   };
 
-  const rebootServer = async () => {
+  const _rebootServer = async () => {
     if (channels !== null && channels.length > 0) {
-      await channelservice.rebootServer(channels[0]);
+      await rebootServer(channels[0]);
       setOpenRebootDialog(false);
       actions.logout();
     }
@@ -151,7 +165,19 @@ const Home = () => {
               </Button>
             </Grid>
           </Grid>
-          <Grid
+          <div style={{ width: "57%" }}>
+            <ScrollMenu
+              scrollToSelected={true}
+              arrowRight={<ArrowRightIcon fontSize="small" />}
+              arrowLeft={<ArrowLeftIcon fontSize="small" />}
+              data={chlist.map((chl) => (
+                <Chip key={chl.name} label={chl.name} />
+              ))}
+              selected={selectedChip}
+              onSelect={_changeActiveChannel}
+            />
+          </div>
+          {/* <Grid
             item
             lg={12}
             container
@@ -184,20 +210,7 @@ const Home = () => {
             onVideoPlay={onVideoPlay}
           />
           <StreamMetadata metadata={metadata} />
-          <StreamUserInfo ch={ch} />
-          <Menu
-            id="switch-channel-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={closeMenu}
-          >
-            {chlist.map((channel, index) => (
-              <MenuItem key={channel.name} onClick={() => changeRtmp(index)}>
-                {channel.name}
-              </MenuItem>
-            ))}
-          </Menu>
+          <StreamUserInfo ch={ch} /> */}
         </Grid>
       )}
       <CreateNewChannel
@@ -220,7 +233,7 @@ const Home = () => {
       <RebootConfirmationDialog
         openForm={openRebootDialog}
         closeForm={() => setOpenRebootDialog(false)}
-        onYes={rebootServer}
+        onYes={_rebootServer}
       />
     </div>
   );

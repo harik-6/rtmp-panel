@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
-import channelService from "../service/channel.service";
+import { getChannelDetailsByName } from "../service/channel.service";
 
 const Preview = (props) => {
   const [httpLink, setHttpLink] = useState(
@@ -10,16 +10,16 @@ const Preview = (props) => {
 
   const _redirectToHome = () => {
     window.location.href = process.env.REACT_APP_APPURL;
-  }
+  };
 
   const setHlsLink = async () => {
-    const channelName = props.match.params.channel
+    const channelName = props.match.params.channel;
     if ((channelName || "").length === 0) {
       _redirectToHome();
     }
-    const hlsLink = await channelService.getChannelDetailsByName(channelName);
+    const hlsLink = await getChannelDetailsByName(channelName);
     if (hlsLink === null) {
-       _redirectToHome();
+      _redirectToHome();
     }
     setHttpLink(hlsLink);
   };
