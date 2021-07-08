@@ -72,8 +72,6 @@ const getChannels = async (user) => {
     const cachkey = CACHEKEYS.FETCH_CHANNELS;
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
-    console.log("Channles in cache",cachevalue);
-    console.log("Calling backend");
     const response = await axios.post(
       `${API}/get`,
       {

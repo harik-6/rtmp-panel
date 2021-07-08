@@ -81,7 +81,6 @@ const checkChannelHealth = async (list,forceCheck=false) => {
     }
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
-    console.log("going fopr backedn");
     let healthMap = {};
     for (let i = 0; i < list.length; i++) {
       const channel = list[i];

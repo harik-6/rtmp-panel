@@ -93,7 +93,6 @@ const Home = () => {
   const _checkChannelHealth = async (allchannels) => {
     const healthMap = await checkChannelHealth(allchannels);
     setHealthMap(healthMap);
-    // console.log(healthMap);
   };
 
   const closeCreatepop = () => {

@@ -62,10 +62,12 @@ const _xaxisFormat = (usagearr) => {
     "Nov",
     "Dec",
   ];
-  return (usagearr || []).map(({ date }) => {
-    const dateid = new Date(date);
-    return months[dateid.getUTCMonth()] + " " + dateid.getUTCDate();
-  }).slice(1);
+  return (usagearr || [])
+    .map(({ date }) => {
+      const dateid = new Date(date);
+      return months[dateid.getUTCMonth()] + " " + dateid.getUTCDate();
+    })
+    .slice(1);
 };
 
 const _totalConsumption = (arr) => {
@@ -81,7 +83,7 @@ const _totalConsumption = (arr) => {
       subtotal = arr[i];
     }
   }
-  return (subtotal + total - arr[0]);
+  return subtotal + total - arr[0];
 };
 
 const _averageConsumption = (dataarr) => {
