@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) =>
       width: "100%",
       display: "flex",
       flexDirection: "row",
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.down("md")]: {
         width: "100vw",
         overflowX: "hidden",
       },
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) =>
     navlist: {
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(1),
-      [theme.breakpoints.down("md")]: {
+      [theme.breakpoints.down("sm")]: {
         display: "none",
       },
     },
@@ -102,7 +102,6 @@ const useStyles = makeStyles((theme) =>
       [theme.breakpoints.down("md")]: {
         marginTop: "20px",
         display: "block",
-        justifyContent: "space-evenly",
       },
     },
     bottomnavItemActive: {
