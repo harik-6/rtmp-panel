@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) =>
     },
     bottomnav: {
       display: "none",
-      [theme.breakpoints.down("md")]: {
+      [theme.breakpoints.down("sm")]: {
         marginTop: "20px",
         display: "block",
       },
