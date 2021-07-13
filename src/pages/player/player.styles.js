@@ -3,6 +3,7 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     home: {
       width: "100%",
+      minHeight:"100vh",
       padding: theme.spacing(2),
       backgroundColor: "#ebe9e9",
       [theme.breakpoints.down("sm")]: {

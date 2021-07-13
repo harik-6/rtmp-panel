@@ -39,8 +39,9 @@ const Usage = () => {
     const usage = await getUsageData({ user, settings });
     if (usage === null) {
       setNoData(true);
+    } else {
+      formatVizData(usage);
     }
-    formatVizData(usage);
     setLoading(false);
   };
 

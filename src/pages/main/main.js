@@ -1,37 +1,21 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Switch, Route, Redirect, Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
-import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
-import HomeIcon from "@material-ui/icons/HomeRounded";
-import ChannelIcon from "@material-ui/icons/VideocamRounded";
-import UsersIcon from "@material-ui/icons/SupervisorAccount";
-import LogoutIcon from "@material-ui/icons/ExitToApp";
-import UsageIcon from "@material-ui/icons/DataUsage";
+import { Switch, Route, Redirect } from "react-router-dom";
+import AppContext from "../../context/context";
+import NavigationMenu from "./navigation";
 import Usage from "../usage/usage";
 import Player from "../player/player";
 import Channels from "../channels/channels";
 import useStyles from "./main.styles";
-import AppContext from "../../context/context";
 import Users from "../users/users";
 
 const Main = () => {
   const classes = useStyles();
-  const history = useHistory();
-  const { user, actions, settings, appName } = useContext(AppContext);
-  const [activeTab, setActiveTab] = useState(1);
+  const { user, settings, appName } = useContext(AppContext);
   const [isAdmin, setAdmin] = useState(false);
-
-  const changePage = (page) => {
-    setActiveTab(page);
-  };
-
-  const logoutUser = () => {
-    actions.logout();
-  };
 
   useEffect(() => {
     if (user === null || settings === null) {
-      history.replace("/login");
+      setAdmin(false);
     } else {
       setAdmin(user["_id"] === process.env.REACT_APP_ADMINID);
     }
@@ -42,115 +26,7 @@ const Main = () => {
     <div className={classes.appmain}>
       <div className={classes.sidenav}>
         <p className={classes.appname}>{appName}</p>
-        <List className={classes.navlist} aria-label="navigation-list">
-          <Link to="/player">
-            <ListItem
-              disableGutters={true}
-              onClick={() => changePage(1)}
-              button
-              className={classes.mobilenav}
-            >
-              <ListItemIcon
-                className={activeTab === 1 ? classes.iconactive : classes.icon}
-              >
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText
-                disableTypography={true}
-                className={
-                  activeTab === 1 ? classes.navtextactive : classes.navtext
-                }
-                primary="Home"
-              />
-            </ListItem>
-          </Link>
-          <Link to="/channels">
-            <ListItem
-              disableGutters={true}
-              onClick={() => changePage(2)}
-              button
-              className={classes.mobilenav}
-            >
-              <ListItemIcon
-                className={activeTab === 2 ? classes.iconactive : classes.icon}
-              >
-                <ChannelIcon />
-              </ListItemIcon>
-              <ListItemText
-                disableTypography={true}
-                className={
-                  activeTab === 2 ? classes.navtextactive : classes.navtext
-                }
-                primary="Channels"
-              />
-            </ListItem>
-          </Link>
-          {(settings || { usage: false }).usage && (
-            <Link to="/usage">
-              <ListItem
-                disableGutters={true}
-                onClick={() => changePage(3)}
-                button
-                className={classes.mobilenav}
-              >
-                <ListItemIcon
-                  className={
-                    activeTab === 3 ? classes.iconactive : classes.icon
-                  }
-                >
-                  <UsageIcon />
-                </ListItemIcon>
-                <ListItemText
-                  disableTypography={true}
-                  className={
-                    activeTab === 3 ? classes.navtextactive : classes.navtext
-                  }
-                  primary="Usage"
-                />
-              </ListItem>
-            </Link>
-          )}
-          {isAdmin && (
-            <Link to="/users">
-              <ListItem
-                disableGutters={true}
-                onClick={() => changePage(4)}
-                button
-                className={classes.mobilenav}
-              >
-                <ListItemIcon
-                  className={
-                    activeTab === 4 ? classes.iconactive : classes.icon
-                  }
-                >
-                  <UsersIcon />
-                </ListItemIcon>
-                <ListItemText
-                  disableTypography={true}
-                  className={
-                    activeTab === 4 ? classes.navtextactive : classes.navtext
-                  }
-                  primary="Users"
-                />
-              </ListItem>
-            </Link>
-          )}
-          <ListItem
-            disableGutters={true}
-            onClick={logoutUser}
-            button
-            className={classes.mobilenav}
-          >
-            <ListItemIcon className={classes.icon}>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText
-              disableTypography={true}
-              className={classes.navtext}
-              primary="Logout"
-            />
-          </ListItem>
-        </List>
+        <NavigationMenu isAdmin={isAdmin} />
       </div>
       <div className={classes.routes}>
         <Switch>

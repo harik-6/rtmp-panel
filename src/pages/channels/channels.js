@@ -59,7 +59,7 @@ const Channels = () => {
     );
     setSnack({
       open: true,
-      message: "Channel health rechecked.",
+      message: "Channel Health Rechecked.",
     });
   };
 

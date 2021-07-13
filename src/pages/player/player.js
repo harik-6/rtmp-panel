@@ -55,7 +55,7 @@ const Home = () => {
       setSelectedChip(chs[0].name);
       _checkChannelHealth(chs);
     } else {
-      _changeActiveChannel(null);
+      setActiveChannel(null);
     }
     setloading(false);
   };
@@ -159,7 +159,6 @@ const Home = () => {
   if (loading) {
     return <Preloader message={"Loading channels..."} />;
   }
-
   return (
     <div className={classes.home}>
       {activeChannel === null ? (
