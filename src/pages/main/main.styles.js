@@ -25,11 +25,11 @@ const useStyles = makeStyles((theme) =>
       overflow: "hidden",
       top: "0",
       bottom: "0",
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.down("md")]: {
         position: "absolute",
         backgroundColor: "transparent",
-        width: "100%",
         maxHeight: "60px",
+        width: "100%",
       },
     },
     routes: {
@@ -47,13 +47,8 @@ const useStyles = makeStyles((theme) =>
     navlist: {
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(1),
-      [theme.breakpoints.down("sm")]: {
-        marginLeft: theme.spacing(0),
-        display: "flex",
-        flexDirection: "row",
-        backgroundColor: "#ffffff",
-        maxHeight: "80px",
-        justiyContent: "space-evenly",
+      [theme.breakpoints.down("md")]: {
+        display: "none",
       },
     },
     mobilenav: {
@@ -101,6 +96,17 @@ const useStyles = makeStyles((theme) =>
       [theme.breakpoints.down("sm")]: {
         marginTop: "-52px",
       },
+    },
+    bottomnav: {
+      display: "none",
+      [theme.breakpoints.down("md")]: {
+        marginTop: "20px",
+        display: "block",
+        justifyContent: "space-evenly",
+      },
+    },
+    bottomnavItemActive: {
+      color: theme.palette.secondary.main,
     },
   })
 );

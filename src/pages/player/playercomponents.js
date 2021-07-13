@@ -129,13 +129,7 @@ const StreamMetadata = ({ metadata }) => {
   );
 };
 
-const StreamPlayer = ({
-  ch,
-  onVideoError,
-  onVideoStart,
-  onVideoPlay,
-  isLive,
-}) => {
+const StreamPlayer = ({ ch, onVideoError, onVideoStart, onVideoPlay }) => {
   const classes = useStyles();
   return (
     <Grid item lg={12} xs={12} sm={12} container justify="center">

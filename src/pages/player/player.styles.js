@@ -15,9 +15,9 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: "#000000",
       display: "flex",
       flexDirection: "column",
-      [theme.breakpoints.down("sm")]: {
-        width: "98vw",
+      [theme.breakpoints.down("md")]: {
         flexDirection: "column",
+        justifyContent:"center"
       },
     },
     iconlive: {

@@ -42,16 +42,22 @@ const NavigationMenu = ({ isAdmin }) => {
   return (
     <>
       <BottomNavigation
-        value={1}
-        onChange={(event, newValue) => changePage(newValue)}
+        value={activeTab}
         showLabels
+        className={classes.bottomnav}
       >
         {navigations.map((nav) => (
-          <BottomNavigationAction
-            label={nav.name}
-            value={nav.tabIndex}
-            icon={nav.icon}
-          />
+          <Link to={nav.path}>
+            <BottomNavigationAction
+              onClick={() => changePage(nav.tabIndex)}
+              label={nav.name}
+              value={nav.tabIndex}
+              icon={nav.icon}
+              className={
+                activeTab === nav.tabIndex ? classes.bottomnavItemActive : ""
+              }
+            />
+          </Link>
         ))}
       </BottomNavigation>
       <List className={classes.navlist} aria-label="navigation-list">
