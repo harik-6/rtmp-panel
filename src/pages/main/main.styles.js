@@ -47,8 +47,12 @@ const useStyles = makeStyles((theme) =>
     navlist: {
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(1),
-      [theme.breakpoints.down("sm")]: {
-        display: "none",
+      [theme.breakpoints.down("md")]: {
+        display: "flex",
+        justifyContent:"space-around",
+        backgroundColor: "#ffffff",
+        overflowX: "scroll",
+        marginLeft: "-2px",
       },
     },
     mobilenav: {
@@ -58,6 +62,7 @@ const useStyles = makeStyles((theme) =>
       [theme.breakpoints.down("sm")]: {
         display: "flex",
         flexDirection: "row",
+        overflowX: "scroll",
       },
     },
     navtextactive: {
@@ -96,16 +101,6 @@ const useStyles = makeStyles((theme) =>
       [theme.breakpoints.down("sm")]: {
         marginTop: "-52px",
       },
-    },
-    bottomnav: {
-      display: "none",
-      [theme.breakpoints.down("sm")]: {
-        marginTop: "20px",
-        display: "block",
-      },
-    },
-    bottomnavItemActive: {
-      color: theme.palette.secondary.main,
     },
   })
 );

@@ -4,8 +4,6 @@ import { useHistory } from "react-router-dom";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import useStyles from "./main.styles";
 import AppContext from "../../context/context";
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import { userNavigations, adminNavigations } from "./navigation.config";
 
 const NavigationMenu = ({ isAdmin }) => {
@@ -41,25 +39,6 @@ const NavigationMenu = ({ isAdmin }) => {
 
   return (
     <>
-      <BottomNavigation
-        value={activeTab}
-        showLabels
-        className={classes.bottomnav}
-      >
-        {navigations.map((nav) => (
-          <Link to={nav.path}>
-            <BottomNavigationAction
-              onClick={() => changePage(nav.tabIndex)}
-              label={nav.name}
-              value={nav.tabIndex}
-              icon={nav.icon}
-              className={
-                activeTab === nav.tabIndex ? classes.bottomnavItemActive : ""
-              }
-            />
-          </Link>
-        ))}
-      </BottomNavigation>
       <List className={classes.navlist} aria-label="navigation-list">
         {navigations.map((nav) => (
           <Link to={nav.path}>
