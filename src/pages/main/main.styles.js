@@ -25,11 +25,12 @@ const useStyles = makeStyles((theme) =>
       overflow: "hidden",
       top: "0",
       bottom: "0",
-      [theme.breakpoints.down("md")]: {
-        position: "absolute",
-        backgroundColor: "transparent",
-        maxHeight: "60px",
-        width: "100%",
+      [theme.breakpoints.down("sm")]: {
+        position : "absolute",
+        zIndex : 1,
+        height:"56px",
+        width:"100%",
+        overflowX:"scroll"
       },
     },
     routes: {
@@ -47,12 +48,8 @@ const useStyles = makeStyles((theme) =>
     navlist: {
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(1),
-      [theme.breakpoints.down("md")]: {
-        display: "flex",
-        justifyContent:"space-around",
-        backgroundColor: "#ffffff",
-        overflowX: "scroll",
-        marginLeft: "-2px",
+      [theme.breakpoints.down("sm")]: {
+        display : "flex"
       },
     },
     mobilenav: {

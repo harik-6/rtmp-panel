@@ -5,6 +5,22 @@ import CACHEKEYS from "../cacheKeys";
 const API = `${process.env.REACT_APP_API}/api/user`;
 
 const isAdmin = (id) => id === process.env.REACT_APP_ADMINID;
+const getEditUserPayload = (editeduserandsettings, newpass) => {
+  const { username, server, port } = editeduserandsettings;
+  let basic = {
+    _id: editeduserandsettings["_id"],
+    username,
+    server,
+    port,
+  };
+  if (newpass.length !== 0) {
+    return {
+      ...basic,
+      password: sha1(newpass),
+    };
+  }
+  return basic;
+};
 
 const UserService = {
   getUser: async (username, password) => {
@@ -73,9 +89,10 @@ const UserService = {
     }
     return null;
   },
-  editUser: async (adminUser, editeduserandsettings) => {
+  editUser: async (adminUser, editeduserandsettings, newpassword = "") => {
     if (isAdmin(adminUser["_id"])) {
       try {
+        console.log("came here");
         editeduserandsettings["billingDate"] = parseInt(
           editeduserandsettings["billingDate"]
         );
@@ -83,25 +100,12 @@ const UserService = {
           editeduserandsettings["limit"]
         );
         editeduserandsettings["port"] = parseInt(editeduserandsettings["port"]);
-        const {
-          username,
-          server,
-          port,
-          limit,
-          stub,
-          bitrate,
-          usage,
-          billingDate,
-        } = editeduserandsettings;
+        const { limit, stub, bitrate, usage, billingDate } =
+          editeduserandsettings;
         const response = await axios.post(
           `${API}/edit`,
           {
-            user: {
-              _id: editeduserandsettings["_id"],
-              username,
-              server,
-              port,
-            },
+            user: getEditUserPayload(editeduserandsettings,newpassword),
             settings: {
               limit,
               stub,

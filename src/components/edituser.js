@@ -45,6 +45,7 @@ const EditUser = ({
     ...userToEdit.user,
     port : userToEdit.user.port.toString()
   });
+  const [password,setPassword] = useState("");
 
   const handleChange = (e) => {
     setUserObj({
@@ -60,7 +61,7 @@ const EditUser = ({
       .map((user) => user.username)
       .filter((name) => name !== userObj.username);
     if (allnames.indexOf(userObj.username) === -1) {
-      await service.editUser(user, userObj);
+      await service.editUser(user, userObj,password);
       closePopup();
       successCallback();
     } else {
@@ -98,6 +99,16 @@ const EditUser = ({
             onChange={handleChange}
             error={err}
             helperText={err}
+          />
+          <TextField
+            className={classes.txtfield}
+            fullWidth
+            id="password"
+            name="password"
+            label="Password"
+            value={password}
+            disabled={creating}
+            onChange={(ev) => setPassword(ev.target.value)}
           />
           <TextField
             className={classes.txtfield}
