@@ -72,7 +72,8 @@ const ChannelTable = ({
                 {channel.httpLink}
               </TableCell>
               <TableCell className={classes.tbcell} align="center">
-                {viewCount[channel.name] === undefined
+                {viewCount[channel.name] === undefined ||
+                !healthStatus[channel.name]
                   ? 0
                   : viewCount[channel.name].rtmpCount}
               </TableCell>
