@@ -8,20 +8,14 @@ const Preview = (props) => {
   );
   const previewPlayer = useRef();
 
-  const _redirectToHome = () => {
-    window.location.href = process.env.REACT_APP_APPURL;
-  };
-
   const setHlsLink = async () => {
     const channelName = props.match.params.channel;
-    if ((channelName || "").length === 0) {
-      _redirectToHome();
+    if ((channelName || "").length > 0) {
+      const hlsLink = await getChannelDetailsByName(channelName);
+      if (hlsLink !== null) {
+        setHttpLink(hlsLink);
+      }
     }
-    const hlsLink = await getChannelDetailsByName(channelName);
-    if (hlsLink === null) {
-      _redirectToHome();
-    }
-    setHttpLink(hlsLink);
   };
   useEffect(() => {
     setHlsLink();
