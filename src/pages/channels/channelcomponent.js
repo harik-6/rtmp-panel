@@ -14,7 +14,6 @@ import {
 import EditIcon from "@material-ui/icons/EditRounded";
 import DeleteIcon from "@material-ui/icons/Delete";
 import HealthIcon from "../../components/healthicon";
-import PreviewIcon from "@material-ui/icons/PlayArrow";
 import useStyles from "./channels.styles";
 
 const Insights = ({ channels, activeChannelCount }) => {

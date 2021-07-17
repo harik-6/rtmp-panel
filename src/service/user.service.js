@@ -92,7 +92,6 @@ const UserService = {
   editUser: async (adminUser, editeduserandsettings, newpassword = "") => {
     if (isAdmin(adminUser["_id"])) {
       try {
-        console.log("came here");
         editeduserandsettings["billingDate"] = parseInt(
           editeduserandsettings["billingDate"]
         );

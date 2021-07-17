@@ -14,7 +14,6 @@ const CopyIcon = ({ onClick }) => {
 };
 
 const StreamUserInfo = ({ ch, showPlayUrl, isLive }) => {
-  console.log(showPlayUrl);
   const [snack, setSnack] = useState(false);
   const onCopy = (text) => {
     navigator.clipboard.writeText(text).then(function () {
