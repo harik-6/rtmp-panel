@@ -3,6 +3,7 @@ import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `${process.env.REACT_APP_API}/api/channel`;
 const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
+const API_VIEW = `${process.env.REACT_APP_API}/api/view`;
 
 const getUsageData = async (usersetting) => {
   const { settings, user } = usersetting;
@@ -73,10 +74,48 @@ const rebootServer = async (channel) => {
   }
 };
 
-const checkChannelHealth = async (list,forceCheck=false) => {
+const getRtmpCount = async (livechannels = []) => {
+  let countmap = {};
+  try {
+    const cachkey = CACHEKEYS.FETCH_VIEW_COUNT;
+    const cachevalue = CacheService.get(cachkey);
+    if (cachevalue !== null) return cachevalue;
+    const response = await axios.post(API_VIEW, {
+      channels: livechannels,
+    });
+    const data = response.data;
+    if (data.status === "failed") {
+      livechannels.forEach((chname) => {
+        countmap[chname] = {
+          rtmpCount: 0,
+          hlsCount: 0,
+        };
+      });
+    }
+    data.payload.forEach((viewcount) => {
+      const { rtmpCount, hlsCount } = viewcount;
+      countmap[viewcount.channelName] = {
+        rtmpCount,
+        hlsCount,
+      };
+    });
+    CacheService.set(cachkey, countmap);
+    return countmap;
+  } catch (error) {
+    livechannels.forEach((chname) => {
+      countmap[chname] = {
+        rtmpCount: 0,
+        hlsCount: 0,
+      };
+    });
+    return countmap;
+  }
+};
+
+const checkChannelHealth = async (list, forceCheck = false) => {
   try {
     const cachkey = CACHEKEYS.FETCH_CHANNEL_HEALTH;
-    if(forceCheck) {
+    if (forceCheck) {
       CacheService.remove(cachkey);
     }
     const cachevalue = CacheService.get(cachkey);
@@ -107,4 +146,5 @@ export {
   rebootServer,
   getBitrateMedata,
   checkChannelHealth,
+  getRtmpCount,
 };

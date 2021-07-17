@@ -44,6 +44,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     stub: "live",
     server: "",
     port: "8080",
+    playUrl : false
   });
 
   const handleChange = (e) => {
@@ -76,9 +77,10 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
       limit: 1,
       stub: "live",
       server: "",
-      port: 8080,
+      port: "8080",
       billingDate: 15,
       usage: true,
+      playUrl : false
     });
     closeCreatepop();
   };
@@ -187,7 +189,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
           <RadioGroup
             aria-label="usage"
             name="usage"
-            value={userObj.usage ? "show" : "false"}
+            value={userObj.usage ? "show" : "hide"}
             onChange={(e) => {
               handleChange({
                 target: {
@@ -211,17 +213,17 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
               disabled={creating}
             />
           </RadioGroup>
-          {/* <FormLabel style={{ marginTop: "8px" }} component="legend">
-            Bitrate
+          <FormLabel style={{ marginTop: "8px" }} component="legend">
+            PlayUrl
           </FormLabel>
           <RadioGroup
-            aria-label="bitrate"
-            name="bitrate"
-            value={userObj.bitrate ? "show" : "false"}
+            aria-label="playUrl"
+            name="playUrl"
+            value={userObj.playUrl ? "show" : "hide"}
             onChange={(e) => {
               handleChange({
                 target: {
-                  name: "bitrate",
+                  name: "playUrl",
                   value: e.target.value === "show" ? true : false,
                 },
               });
@@ -240,7 +242,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
               label="Hide"
               disabled={creating}
             />
-          </RadioGroup> */}
+          </RadioGroup>
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

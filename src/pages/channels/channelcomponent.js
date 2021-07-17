@@ -47,8 +47,8 @@ const ChannelTable = ({
   setActiveChanel,
   openActionDialog,
   askConfirmation,
-  openPreview,
   setOpenStatusDialog,
+  viewCount,
 }) => {
   const classes = useStyles();
   return (
@@ -57,7 +57,7 @@ const ChannelTable = ({
         <TableRow>
           <TableCell align="left">Name</TableCell>
           <TableCell align="left">Hls</TableCell>
-          <TableCell align="left">{""}</TableCell>
+          <TableCell align="center">Rtmp Count</TableCell>
           <TableCell align="left">{""}</TableCell>
           <TableCell align="left">{""}</TableCell>
           <TableCell align="left">{""}</TableCell>
@@ -71,6 +71,11 @@ const ChannelTable = ({
               </TableCell>
               <TableCell className={classes.tbcell} align="left">
                 {channel.httpLink}
+              </TableCell>
+              <TableCell className={classes.tbcell} align="center">
+                {viewCount[channel.name] === undefined
+                  ? 0
+                  : viewCount[channel.name].rtmpCount}
               </TableCell>
               <TableCell className={classes.tbcell} align="left">
                 <IconButton size="small">
@@ -95,21 +100,6 @@ const ChannelTable = ({
                   }}
                 >
                   <DeleteIcon fontSize="small" />
-                </IconButton>
-              </TableCell>
-              <TableCell className={classes.tbcell} align="left">
-                <IconButton
-                  disabled={!healthStatus[channel.name]}
-                  onClick={() => {
-                    openPreview(channel);
-                  }}
-                >
-                  <PreviewIcon
-                    style={{
-                      color: healthStatus[channel.name] ? "#32CD32" : "grey",
-                    }}
-                    fontSize="small"
-                  />
                 </IconButton>
               </TableCell>
               <TableCell className={classes.tbcell} align="left">

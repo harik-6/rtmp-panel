@@ -3,6 +3,7 @@ import { Grid, Paper, Snackbar, IconButton } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import useStyles from "./player.styles";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
+import PreviewIcon from "@material-ui/icons/PlayArrow";
 
 const CopyIcon = ({ onClick }) => {
   return (
@@ -12,7 +13,8 @@ const CopyIcon = ({ onClick }) => {
   );
 };
 
-const StreamUserInfo = ({ ch }) => {
+const StreamUserInfo = ({ ch, showPlayUrl, isLive }) => {
+  console.log(showPlayUrl);
   const [snack, setSnack] = useState(false);
   const onCopy = (text) => {
     navigator.clipboard.writeText(text).then(function () {
@@ -20,8 +22,12 @@ const StreamUserInfo = ({ ch }) => {
     });
   };
   const classes = useStyles();
-  // const previewUrl = `${process.env.REACT_APP_APPURL}/play/${ch.name}`;
   const previewUrl = `https://${ch.server}/play/${ch.name}`;
+
+  const openPreview = () => {
+    window.open(previewUrl);
+  };
+
   return (
     <Grid
       className={classes.rtmpinfo}
@@ -65,15 +71,29 @@ const StreamUserInfo = ({ ch }) => {
           <CopyIcon onClick={() => onCopy(ch.httpLink)} />
         </Paper>
       </Grid>
-      <Grid item lg={12} xs={12} className={classes.urls}>
-        <Paper elevation={0} square className={classes.paper}>
-          <div>
-            <p className={classes.urlheader}>Player URL</p>
-            <p className={classes.urlvalue}>{previewUrl}</p>
-          </div>
-          <CopyIcon onClick={() => onCopy(previewUrl)} />
-        </Paper>
-      </Grid>
+      {showPlayUrl && (
+        <Grid item lg={12} xs={12} className={classes.urls}>
+          <Paper elevation={0} square className={classes.paper}>
+            <div>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <p className={classes.urlheader}>Player URL</p>
+                <IconButton
+                  disabled={!isLive}
+                  onClick={openPreview}
+                >
+                  <PreviewIcon
+                    style={{
+                      color: isLive ? "#32CD32" : "grey",
+                    }}
+                  />
+                </IconButton>
+              </div>
+              <p className={classes.urlvalue}>{previewUrl}</p>
+            </div>
+            <CopyIcon onClick={() => onCopy(previewUrl)} />
+          </Paper>
+        </Grid>
+      )}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={snack}

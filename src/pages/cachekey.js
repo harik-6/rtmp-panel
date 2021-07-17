@@ -2,6 +2,7 @@ const keys = {
   FETCH_CHANNELS: "FETCH_CHANNELS",
   FETCH_USERS: "FETCH_USERS",
   FETCH_USAGE: "FETCH_USAGE",
+  FETCH_RTMP_COUTN : "FETCH_RTMP_COUNT"
 };
 
 export default keys;

@@ -100,7 +100,7 @@ const UserService = {
           editeduserandsettings["limit"]
         );
         editeduserandsettings["port"] = parseInt(editeduserandsettings["port"]);
-        const { limit, stub, bitrate, usage, billingDate } =
+        const { limit, stub, bitrate, usage, billingDate,playUrl } =
           editeduserandsettings;
         const response = await axios.post(
           `${API}/edit`,
@@ -112,6 +112,7 @@ const UserService = {
               bitrate,
               usage,
               billingDate,
+              playUrl,
               userid: editeduserandsettings["_id"],
             },
           },

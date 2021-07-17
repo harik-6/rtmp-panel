@@ -16,6 +16,7 @@ import {
   rebootServer,
   checkChannelHealth,
   changeRtmpStatus,
+  getRtmpCount,
 } from "../../service/rtmp.service";
 
 const Channels = () => {
@@ -24,6 +25,7 @@ const Channels = () => {
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
+  const [viewMap, setViewMap] = useState({});
   const [healthCount, setHealthCount] = useState(-1);
   const [msg, setMsg] = useState("Loading channels...");
   const [isAdmin, setAdmin] = useState(false);
@@ -48,6 +50,7 @@ const Channels = () => {
     }
     setLoading(false);
     _checkHealthStatus(chs);
+    _countTotalRtmp(chs);
   };
 
   const _checkHealthStatus = async (allchannels = [], recheck = false) => {
@@ -61,6 +64,12 @@ const Channels = () => {
       open: true,
       message: "Channel Health Rechecked.",
     });
+  };
+
+  const _countTotalRtmp = async (allchannels = []) => {
+    const channelnames = allchannels.map((ch) => ch.name);
+    const countmap = await getRtmpCount(channelnames);
+    setViewMap(countmap);
   };
 
   const openSnack = () => {
@@ -109,11 +118,6 @@ const Channels = () => {
       message: "Channel successfully deleted.",
     });
     loadChannels();
-  };
-
-  const openPreview = (chnllll) => {
-    // window.open(`${process.env.REACT_APP_APPURL}/play/${chnllll.name}`);
-    window.open(`https://${chnllll.server}/play/${chnllll.name}`);
   };
 
   const _changeRtmpStatus = async () => {
@@ -203,10 +207,10 @@ const Channels = () => {
           <ChannelTable
             spliceddata={filtereddata}
             healthStatus={healthMap}
+            viewCount={viewMap}
             setActiveChanel={setActiveChannel}
             openActionDialog={openActionDialog}
             askConfirmation={askConfirmation}
-            openPreview={openPreview}
             setOpenStatusDialog={setOpenStatusDialog}
           />
         </Grid>

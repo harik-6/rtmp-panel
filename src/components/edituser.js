@@ -43,9 +43,9 @@ const EditUser = ({
   const [userObj, setUserObj] = useState({
     ...userToEdit.settings,
     ...userToEdit.user,
-    port : userToEdit.user.port.toString()
+    port: userToEdit.user.port.toString(),
   });
-  const [password,setPassword] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleChange = (e) => {
     setUserObj({
@@ -61,7 +61,7 @@ const EditUser = ({
       .map((user) => user.username)
       .filter((name) => name !== userObj.username);
     if (allnames.indexOf(userObj.username) === -1) {
-      await service.editUser(user, userObj,password);
+      await service.editUser(user, userObj, password);
       closePopup();
       successCallback();
     } else {
@@ -184,6 +184,36 @@ const EditUser = ({
               handleChange({
                 target: {
                   name: "usage",
+                  value: e.target.value === "show" ? true : false,
+                },
+              });
+            }}
+            style={{ display: "flex", flexDirection: "row" }}
+          >
+            <FormControlLabel
+              value={"show"}
+              control={<Radio />}
+              label="Show"
+              disabled={creating}
+            />
+            <FormControlLabel
+              value={"hide"}
+              control={<Radio />}
+              label="Hide"
+              disabled={creating}
+            />
+          </RadioGroup>
+          <FormLabel style={{ marginTop: "8px" }} component="legend">
+            PlayUrl
+          </FormLabel>
+          <RadioGroup
+            aria-label="playUrl"
+            name="playUrl"
+            value={userObj.playUrl ? "show" : "hide"}
+            onChange={(e) => {
+              handleChange({
+                target: {
+                  name: "playUrl",
                   value: e.target.value === "show" ? true : false,
                 },
               });

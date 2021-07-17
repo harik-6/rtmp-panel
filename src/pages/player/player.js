@@ -71,7 +71,7 @@ const Home = () => {
     const style = {
       marginRight: "8px",
       border: "1px solid grey",
-      fontWeight:"bold"
+      fontWeight: "bold",
     };
     return channelList.map((chnl) => {
       const { name } = chnl;
@@ -80,11 +80,17 @@ const Home = () => {
       }
       if (!healthMap[name])
         return (
-          <Chip color="primary" variant="outlined" style={style} key={name} label={name} />
+          <Chip
+            color="primary"
+            variant="outlined"
+            style={style}
+            key={name}
+            label={name}
+          />
         );
       return (
         <Chip
-        color="primary"
+          color="primary"
           variant="outlined"
           style={style}
           key={name}
@@ -179,7 +185,7 @@ const Home = () => {
               <ScrollMenu
                 scrollToSelected={true}
                 arrowRight={<ArrowRightIcon fontSize="large" />}
-                arrowLeft={<ArrowLeftIcon fontSize="large"  />}
+                arrowLeft={<ArrowLeftIcon fontSize="large" />}
                 data={_renderChipItems()}
                 selected={selectedChip}
                 onSelect={_changeActiveChannel}
@@ -194,7 +200,11 @@ const Home = () => {
             isLive={healthMap[activeChannel.name]}
           />
           <StreamMetadata metadata={metadata} />
-          <StreamUserInfo ch={activeChannel} />
+          <StreamUserInfo
+            ch={activeChannel}
+            showPlayUrl={settings !== null ? settings.playUrl : false}
+            isLive={healthMap[activeChannel.name]}
+          />
         </>
       )}
       <CreateNewChannel
