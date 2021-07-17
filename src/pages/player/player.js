@@ -150,7 +150,7 @@ const Home = () => {
 
   const _rebootServer = async () => {
     if (channelList !== null && channelList.length > 0) {
-      await rebootServer(channelList[0]);
+      await rebootServer(channelList);
       setOpenRebootDialog(false);
       actions.logout();
     }
