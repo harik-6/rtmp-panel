@@ -64,9 +64,13 @@ const getBitrateMedata = async (httplink) => {
   }
 };
 
-const rebootServer = async (channel) => {
+const rebootServer = async (channellist) => {
+  const channel = channellist[0];
   const url = `https://${channel.server}/sys_reboot?psk=${channel.key}&token=${channel.key}`;
   try {
+    await axios.post(`${API_VIEW}/reset`,{
+       channels : channellist
+    });
     await fetch(url);
     return;
   } catch (error) {
