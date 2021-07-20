@@ -69,7 +69,7 @@ const rebootServer = async (channellist) => {
   const url = `https://${channel.server}/sys_reboot?psk=${channel.key}&token=${channel.key}`;
   try {
     await axios.post(`${API_VIEW}/reset`,{
-       channels : channellist
+       channels : channellist.map(ch => ch.name)
     });
     await fetch(url);
     return;
