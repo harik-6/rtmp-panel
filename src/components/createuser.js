@@ -43,6 +43,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     owner: user["_id"],
     usage: false,
     bitrate: false,
+    preview: false
   });
 
   const handleChange = (e) => {
@@ -77,6 +78,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
       owner: user["_id"],
       usage: false,
       bitrate: false,
+      preview: false
     });
     closeCreatepop();
   };
@@ -197,17 +199,17 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
               disabled={creating}
             />
           </RadioGroup>
-          {/* <FormLabel style={{ marginTop: "8px" }} component="legend">
+          <FormLabel style={{ marginTop: "8px" }} component="legend">
             PlayUrl
           </FormLabel>
           <RadioGroup
-            aria-label="playUrl"
-            name="playUrl"
-            value={userObj.playUrl ? "show" : "hide"}
+            aria-label="preview"
+            name="preview"
+            value={userObj.preview ? "show" : "hide"}
             onChange={(e) => {
               handleChange({
                 target: {
-                  name: "playUrl",
+                  name: "preview",
                   value: e.target.value === "show" ? true : false,
                 },
               });
@@ -226,7 +228,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
               label="Hide"
               disabled={creating}
             />
-          </RadioGroup> */}
+          </RadioGroup>
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

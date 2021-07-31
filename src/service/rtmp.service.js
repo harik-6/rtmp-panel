@@ -124,7 +124,7 @@ const checkChannelHealth = async (list, forceCheck = false) => {
     for (let i = 0; i < list.length; i++) {
       const channel = list[i];
       try {
-        const response = await fetch(channel.httpLink);
+        const response = await fetch(channel.hls);
         if (response.status >= 200 && response.status <= 205) {
           healthMap[channel.name] = true;
         } else {

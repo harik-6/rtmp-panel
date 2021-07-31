@@ -130,6 +130,7 @@ const Users = () => {
                       <TableCell align="left">Limit</TableCell>
                       <TableCell align="left">Usage</TableCell>
                       <TableCell align="left">Bitrate</TableCell>
+                      <TableCell align="left">PlayUrl</TableCell>
                       <TableCell align="left">Edit</TableCell>
                       <TableCell align="left">Delete</TableCell>
                     </TableRow>
@@ -156,6 +157,9 @@ const Users = () => {
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             {user.bitrate ? _TickIcon() : _NoTickIcon()}
+                          </TableCell>
+                          <TableCell className={classes.tbcell} align="left">
+                            {user.preview ? _TickIcon() : _NoTickIcon()}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton

@@ -185,7 +185,7 @@ const Home = () => {
           {user.bitrate && <StreamMetadata metadata={metadata} />}
           <StreamUserInfo
             ch={activeChannel}
-            showPlayUrl={false}
+            showPlayUrl={user.preview || false}
             isLive={healthMap[activeChannel.name]}
           />
         </>

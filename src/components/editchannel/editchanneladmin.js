@@ -116,30 +116,30 @@ const EditChannelAdmin = ({
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="displayStreamLink"
-            name="displayStreamLink"
+            id="stream"
+            name="stream"
             label="Stream url"
-            value={chnl.displayStreamLink}
+            value={chnl.stream}
             disabled={creating}
             onChange={handleChange}
           />
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="rtmpLink"
-            name="rtmpLink"
+            id="rtmp"
+            name="rtmp"
             label="Rtmp play url"
-            value={chnl.rtmpLink}
+            value={chnl.rtmp}
             disabled={creating}
             onChange={handleChange}
           />
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="httpLink"
-            name="httpLink"
+            id="hls"
+            name="hls"
             label="Hls play url"
-            value={chnl.httpLink}
+            value={chnl.hls}
             disabled={creating}
             onChange={handleChange}
           />
@@ -150,6 +150,16 @@ const EditChannelAdmin = ({
             name="token"
             label="Token"
             value={chnl.token}
+            disabled={creating}
+            onChange={handleChange}
+          />
+          <TextField
+            className={classes.txtfield}
+            fullWidth
+            id="preview"
+            name="preview"
+            label="Preview play url"
+            value={chnl.preview}
             disabled={creating}
             onChange={handleChange}
           />
