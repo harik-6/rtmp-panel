@@ -60,8 +60,8 @@ const ChannelTable = ({
           <TableCell align="center">Rtmp Count</TableCell>
           <TableCell align="left">Health</TableCell>
           {isSuperAdmin && <TableCell align="left">Edit</TableCell>}
-          <TableCell align="left">Delete</TableCell>
           <TableCell align="left">On/Off</TableCell>
+          <TableCell align="left">Delete</TableCell>
         </TableRow>
         <TableBody>
           {spliceddata.map((channel, index) => (
@@ -70,7 +70,7 @@ const ChannelTable = ({
                 {channel.name}
               </TableCell>
               <TableCell className={classes.tbcell} align="left">
-                {channel.httpLink}
+                {channel.hls}
               </TableCell>
               <TableCell className={classes.tbcell} align="center">
                 {viewCount[channel.name] === undefined ||
@@ -96,16 +96,6 @@ const ChannelTable = ({
                 </TableCell>
               )}
               <TableCell className={classes.tbcell} align="left">
-                <IconButton
-                  onClick={() => {
-                    setActiveChanel(channel);
-                    askConfirmation();
-                  }}
-                >
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              </TableCell>
-              <TableCell className={classes.tbcell} align="left">
                 <Switch
                   size="small"
                   checked={channel.status}
@@ -115,6 +105,16 @@ const ChannelTable = ({
                   }}
                   name="Channel on-off"
                 />
+              </TableCell>
+              <TableCell className={classes.tbcell} align="left">
+                <IconButton
+                  onClick={() => {
+                    setActiveChanel(channel);
+                    askConfirmation();
+                  }}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}

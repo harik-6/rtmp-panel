@@ -21,7 +21,7 @@ import {
 
 const Channels = () => {
   const classes = useStyles();
-  const { user } = useContext(AppContext);
+  const { user,superAdmin } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
@@ -191,7 +191,7 @@ const Channels = () => {
             openActionDialog={openActionDialog}
             askConfirmation={askConfirmation}
             setOpenStatusDialog={setOpenStatusDialog}
-            isSuperAdmin={user["_id"] === process.env.REACT_APP_ADMINID}
+            isSuperAdmin={superAdmin}
           />
         </Grid>
       )}

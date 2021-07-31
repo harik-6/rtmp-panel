@@ -3,13 +3,14 @@ import AppReducer from "./reducer";
 import AppContext from "./context";
 import CacheService from "../service/cache.service";
 const initialState = {
-  appName : "StreamWell",
-  appDesc : "Dedicated streaming server provider.",
+  appName: "StreamWell",
+  appDesc: "Dedicated streaming server provider.",
   user: null,
   channels: null,
   healthList: null,
   allUsers: [],
   usageData: null,
+  superAdmin: false,
 };
 
 const AppState = (props) => {
@@ -20,6 +21,11 @@ const AppState = (props) => {
       type: "setlogin",
       payload: user,
     });
+    if (user["_id"] === process.env.REACT_APP_ADMINID) {
+      dispatch({
+        type: "superadmin",
+      });
+    }
   };
 
   const setChannles = (channels) => {
@@ -30,7 +36,7 @@ const AppState = (props) => {
   };
 
   const logout = () => {
-    CacheService.clear()
+    CacheService.clear();
     dispatch({
       type: "logout",
       payload: null,
@@ -76,7 +82,7 @@ const AppState = (props) => {
           setHealth,
           setAllUsers,
           setUsageData,
-          setAppName
+          setAppName,
         },
       }}
     >

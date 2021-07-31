@@ -9,6 +9,7 @@ const AppReducer = (state, action) => {
         healthList: null,
         allUsers: [],
         usageData: null,
+        superAdmin: false,
       };
     case "setlogin":
       return {
@@ -40,6 +41,12 @@ const AppReducer = (state, action) => {
         ...state,
         appName: payload.name,
         appDesc: payload.desc,
+      };
+    case "superadmin":
+      console.log("Super admin logged in");
+      return {
+        ...state,
+        superAdmin: true,
       };
     default:
       return state;

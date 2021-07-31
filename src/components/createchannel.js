@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
-  const { user, actions, settings } = useContext(AppContext);
+  const { user, actions } = useContext(AppContext);
   const [chname, setchname] = useState("");
   const [chkey, setchkey] = useState("");
   const [creating, setcreating] = useState(false);
@@ -47,6 +47,7 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
   const createNewChannel = async () => {
     if (chname.length > 0 && chkey.length > 0) {
       const alltokens = await getAllTokens();
+      console.log("all tokens",alltokens);
       if (alltokens.length > 0) {
         if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
           setchnameerror(true);
@@ -54,7 +55,7 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
         }
       }
       setcreating(true);
-      const channel = await createChannel(user, chname, settings);
+      const channel = await createChannel(user, chname);
       if (channel !== null) {
         actions.setChannles([]);
         setcreating(false);

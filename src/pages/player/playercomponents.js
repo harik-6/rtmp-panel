@@ -21,7 +21,7 @@ const StreamUserInfo = ({ ch, showPlayUrl, isLive }) => {
     });
   };
   const classes = useStyles();
-  const previewUrl = `https://${ch.server}/play/${ch.name}`;
+  const previewUrl = ch.preview;
 
   const openPreview = () => {
     window.open(previewUrl);
@@ -40,9 +40,9 @@ const StreamUserInfo = ({ ch, showPlayUrl, isLive }) => {
         <Paper elevation={0} square className={classes.paper}>
           <div>
             <p className={classes.urlheader}>Stream URL</p>
-            <p className={classes.urlvalue}>{ch.displayStreamLink}</p>
+            <p className={classes.urlvalue}>{ch.stream}</p>
           </div>
-          <CopyIcon onClick={() => onCopy(ch.displayStreamLink)} />
+          <CopyIcon onClick={() => onCopy(ch.stream)} />
         </Paper>
         <Paper elevation={0} square className={classes.paper}>
           <div>
@@ -56,18 +56,18 @@ const StreamUserInfo = ({ ch, showPlayUrl, isLive }) => {
         <Paper elevation={0} square className={classes.paper}>
           <div>
             <p className={classes.urlheader}>RTMP Play URL</p>
-            <p className={classes.urlvalue}>{ch.rtmpLink}</p>
+            <p className={classes.urlvalue}>{ch.rtmp}</p>
           </div>
-          <CopyIcon onClick={() => onCopy(ch.rtmpLink)} />
+          <CopyIcon onClick={() => onCopy(ch.rtmp)} />
         </Paper>
       </Grid>
       <Grid item lg={12} xs={12} className={classes.urls}>
         <Paper elevation={0} square className={classes.paper}>
           <div>
             <p className={classes.urlheader}>HLS</p>
-            <p className={classes.urlvalue}>{ch.httpLink}</p>
+            <p className={classes.urlvalue}>{ch.hls}</p>
           </div>
-          <CopyIcon onClick={() => onCopy(ch.httpLink)} />
+          <CopyIcon onClick={() => onCopy(ch.hls)} />
         </Paper>
       </Grid>
       {showPlayUrl && (
@@ -155,7 +155,7 @@ const StreamPlayer = ({ ch, onVideoError, onVideoStart, onVideoPlay }) => {
       <div className={classes.videoplayer}>
         <ReactPlayer
           id="player-video-player-id"
-          url={ch.httpLink}
+          url={ch.hls}
           controls={true}
           playing={true}
           onError={onVideoError}

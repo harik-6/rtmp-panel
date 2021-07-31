@@ -3,31 +3,27 @@ import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `${process.env.REACT_APP_API}/api/channel`;
 
-const _constructChannel = (user, channelname, settings) => {
-  channelname = channelname.toLowerCase().replace(" ", "");
-  const { server, port } = user;
-  let httpLink = `https://${server}/hls/${channelname}.m3u8`;
-  if (port !== 443) {
-    httpLink = `http://${server}:8080/hls/${channelname}.m3u8`;
-  }
+const _constructChannel = (user, channelname) => {
+  const chname = channelname.toLowerCase().replace(" ", "");
+  const server = user.server;
   const newchannel = {
-    name: channelname,
-    key: channelname,
-    owner: user.username,
+    name: chname,
+    key: chname,
     ownerid: user["_id"],
     server,
-    displayStreamLink: `rtmp://${server}/${settings.stub}`,
-    rtmpLink: `rtmp://${server}/${settings.stub}/${channelname}`,
-    httpLink,
-    token: `${channelname}?psk=${channelname}&token=${channelname}`,
+    rtmp: `rtmp://${server}/live/${chname}`,
+    hls: `https://${server}/hls/${chname}.m3u8`,
+    preview: `https://${server}/play/${chname}`,
+    token: `${chname}?psk=${chname}&token=${chname}`,
+    stream : `rtmp://${server}/live`,
     status: true,
   };
   return newchannel;
 };
 
-const createChannel = async (user, channelname, settings) => {
+const createChannel = async (user, channelname) => {
   try {
-    const newchannel = _constructChannel(user, channelname, settings);
+    const newchannel = _constructChannel(user, channelname);
     const response = await axios.post(`${API}/create`, {
       channel: newchannel,
     });
@@ -40,23 +36,26 @@ const createChannel = async (user, channelname, settings) => {
     return null;
   }
 };
-const editchannel = async (channel, user, settings) => {
-  try {
-    const chconstructed = _constructChannel(user, channel.name, settings);
-    const channeltoedit = {
-      ...chconstructed,
-      _id: channel["_id"],
-    };
-    const response = await axios.post(`${API}/edit`, {
-      channel: channeltoedit,
-    });
-    const data = response.data;
-    CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
-    if (data.payload.status === "failed") return null;
-    return channeltoedit["_id"];
-  } catch (error) {
-    return null;
+const editchannel = async (channel, user) => {
+  if (user["_id"] === process.env.REACT_APP_ADMINID) {
+    try {
+      const channeltoedit = {
+        ...channel,
+        _id: channel["_id"],
+      };
+      console.log("channel to edit", channeltoedit);
+      // const response = await axios.post(`${API}/edit`, {
+      //   channel: channeltoedit,
+      // });
+      // const data = response.data;
+      // CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
+      // if (data.payload.status === "failed") return null;
+      return channeltoedit["_id"];
+    } catch (error) {
+      return null;
+    }
   }
+  return null;
 };
 const getAllTokens = async () => {
   try {
