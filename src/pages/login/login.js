@@ -20,8 +20,8 @@ import CacheService from "../../service/cache.service";
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [username, setusername] = useState("");
-  const [password, setpassword] = useState("");
+  const [username, setusername] = useState("manikandan");
+  const [password, setpassword] = useState("iptelevision@2021");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -39,13 +39,13 @@ const Login = () => {
     setloginin(true);
     CacheService.clear();
     if (username.length > 0 && password.length > 0) {
-      const userAndSettings = await service.getUser(username, password);
-      if (userAndSettings == null) {
+      const userdetails = await service.getUser(username, password);
+      if (userdetails === null) {
         setloginin(false);
         seterror(true);
         return;
       } else {
-        actions.loginUser(userAndSettings);
+        actions.loginUser(userdetails);
         history.push("/");
       }
     }

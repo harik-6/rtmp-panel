@@ -7,7 +7,6 @@ const initialState = {
   appDesc : "Dedicated streaming server provider.",
   user: null,
   channels: null,
-  settings: null,
   healthList: null,
   allUsers: [],
   usageData: null,

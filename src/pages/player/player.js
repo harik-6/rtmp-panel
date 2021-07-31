@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Snackbar, Chip } from "@material-ui/core";
+import { Button, Chip } from "@material-ui/core";
 import AppContext from "../../context/context";
 //icons
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 //components
-import CreateNewChannel from "../../components/createchannel";
 import RebootConfirmationDialog from "../../components/rebootconfirm";
-import FabAddButton from "../../components/fabaddbutton";
 import Preloader from "../../components/preloader";
 import Nodataloader from "../../components/nodataloader";
 import ScrollMenu from "react-horizontal-scrolling-menu";
@@ -27,7 +25,7 @@ import {
 import useStyles from "./player.styles";
 
 const Home = () => {
-  const { user, actions, settings } = useContext(AppContext);
+  const { user, actions } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
@@ -40,9 +38,7 @@ const Home = () => {
     resolution: "N/A",
   });
   // preloaders and errors
-  const [openForm, setOpenForm] = useState(false);
   const [loading, setloading] = useState(false);
-  const [errorsnack, seterrorsnack] = useState(false);
   const [openRebootDialog, setOpenRebootDialog] = useState(false);
   const [selectedChip, setSelectedChip] = useState(0);
 
@@ -105,19 +101,6 @@ const Home = () => {
   const _checkChannelHealth = async (allchannels) => {
     const healthMap = await checkChannelHealth(allchannels);
     setHealthMap(healthMap);
-  };
-
-  const closeCreatepop = () => {
-    setOpenForm(false);
-  };
-
-  const openCreateChannelForm = () => {
-    if (settings.limit === channelList.length) {
-      seterrorsnack(true);
-      return;
-    } else {
-      setOpenForm(true);
-    }
   };
 
   const getMetadata = async () => {
@@ -202,28 +185,11 @@ const Home = () => {
           <StreamMetadata metadata={metadata} />
           <StreamUserInfo
             ch={activeChannel}
-            showPlayUrl={settings !== null ? settings.playUrl : false}
+            showPlayUrl={false}
             isLive={healthMap[activeChannel.name]}
           />
         </>
       )}
-      <CreateNewChannel
-        openForm={openForm}
-        closeCreatepop={closeCreatepop}
-        successCallback={() => {
-          closeCreatepop();
-          loadChannels(true);
-        }}
-      />
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={errorsnack}
-        onClose={() => seterrorsnack(false)}
-        autoHideDuration={5000}
-        message="Channel limit exceeded"
-        key={"err-snack"}
-      />
-      <FabAddButton onClickAction={openCreateChannelForm} />
       <RebootConfirmationDialog
         openForm={openRebootDialog}
         closeForm={() => setOpenRebootDialog(false)}
