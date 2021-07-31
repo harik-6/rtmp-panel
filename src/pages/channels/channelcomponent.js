@@ -48,6 +48,7 @@ const ChannelTable = ({
   askConfirmation,
   setOpenStatusDialog,
   viewCount,
+  isSuperAdmin,
 }) => {
   const classes = useStyles();
   return (
@@ -57,10 +58,10 @@ const ChannelTable = ({
           <TableCell align="left">Name</TableCell>
           <TableCell align="left">Hls</TableCell>
           <TableCell align="center">Rtmp Count</TableCell>
-          <TableCell align="left">{""}</TableCell>
-          <TableCell align="left">{""}</TableCell>
-          <TableCell align="left">{""}</TableCell>
-          <TableCell align="left">{""}</TableCell>
+          <TableCell align="left">Health</TableCell>
+          {isSuperAdmin && <TableCell align="left">Edit</TableCell>}
+          <TableCell align="left">Delete</TableCell>
+          <TableCell align="left">On/Off</TableCell>
         </TableRow>
         <TableBody>
           {spliceddata.map((channel, index) => (
@@ -82,16 +83,18 @@ const ChannelTable = ({
                   <HealthIcon status={healthStatus[channel.name]} />
                 </IconButton>
               </TableCell>
-              <TableCell className={classes.tbcell} align="left">
-                <IconButton
-                  onClick={() => {
-                    setActiveChanel(channel);
-                    openActionDialog("edit");
-                  }}
-                >
-                  <EditIcon />
-                </IconButton>
-              </TableCell>
+              {isSuperAdmin && (
+                <TableCell className={classes.tbcell} align="left">
+                  <IconButton
+                    onClick={() => {
+                      setActiveChanel(channel);
+                      openActionDialog("edit");
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
+              )}
               <TableCell className={classes.tbcell} align="left">
                 <IconButton
                   onClick={() => {

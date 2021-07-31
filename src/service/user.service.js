@@ -4,22 +4,16 @@ import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `${process.env.REACT_APP_API}/api/user`;
 
-const isAdmin = (id) => id === process.env.REACT_APP_ADMINID;
-const getEditUserPayload = (editeduserandsettings, newpass) => {
-  const { username, server, port } = editeduserandsettings;
-  let basic = {
-    _id: editeduserandsettings["_id"],
-    username,
-    server,
-    port,
-  };
+const isSuperAdmin = (id) => id === process.env.REACT_APP_ADMINID;
+const getEditUserPayload = (editedUser, newpass) => {
   if (newpass.length !== 0) {
     return {
-      ...basic,
+      ...editedUser,
+      _id: editedUser["_id"],
       password: sha1(newpass),
     };
   }
-  return basic;
+  return editedUser;
 };
 
 const UserService = {
@@ -38,14 +32,16 @@ const UserService = {
     }
   },
   getAllUsers: async (user) => {
-    if (!isAdmin(user["_id"])) return [];
+    if (!user.admin) return [];
     try {
       const cachkey = CACHEKEYS.FETCH_USERS;
       const cachevalue = CacheService.get(cachkey);
       if (cachevalue !== null) return cachevalue;
       const response = await axios.post(
-        `${API}/get`,
-        {},
+        `${API}/getall`,
+        {
+          userId: user["_id"],
+        },
         {
           headers: {
             "x-auth-id": user["_id"],
@@ -61,18 +57,15 @@ const UserService = {
     }
   },
   createUser: async (adminUser, newuser) => {
-    if (isAdmin(adminUser["_id"])) {
+    if (adminUser.admin || false) {
       try {
-        const { password, billingDate, limit, port } = newuser;
+        const { password, limit } = newuser;
         newuser["password"] = sha1(password);
-        newuser["billingDate"] = parseInt(billingDate);
         newuser["limit"] = parseInt(limit);
-        newuser["port"] = parseInt(port);
         const response = await axios.post(
           `${API}/create`,
           {
             user: newuser,
-            settings: newuser,
           },
           {
             headers: {
@@ -89,31 +82,14 @@ const UserService = {
     }
     return null;
   },
-  editUser: async (adminUser, editeduserandsettings, newpassword = "") => {
-    if (isAdmin(adminUser["_id"])) {
+  editUser: async (adminUser, editedUser, newpassword = "") => {
+    if (adminUser.admin) {
       try {
-        editeduserandsettings["billingDate"] = parseInt(
-          editeduserandsettings["billingDate"]
-        );
-        editeduserandsettings["limit"] = parseInt(
-          editeduserandsettings["limit"]
-        );
-        editeduserandsettings["port"] = parseInt(editeduserandsettings["port"]);
-        const { limit, stub, bitrate, usage, billingDate,playUrl } =
-          editeduserandsettings;
+        editedUser["limit"] = parseInt(editedUser["limit"]);
         const response = await axios.post(
           `${API}/edit`,
           {
-            user: getEditUserPayload(editeduserandsettings,newpassword),
-            settings: {
-              limit,
-              stub,
-              bitrate,
-              usage,
-              billingDate,
-              playUrl,
-              userid: editeduserandsettings["_id"],
-            },
+            user: getEditUserPayload(editedUser, newpassword),
           },
           {
             headers: {
@@ -123,7 +99,7 @@ const UserService = {
         );
         CacheService.remove(CACHEKEYS.FETCH_USERS);
         if (response.data.status === "failed") return null;
-        return editeduserandsettings;
+        return editedUser;
       } catch (error) {
         return null;
       }
@@ -131,7 +107,7 @@ const UserService = {
     return null;
   },
   deleteUser: async (adminUser, usertoDelete) => {
-    if (isAdmin(adminUser["_id"])) {
+    if (adminUser.admin) {
       try {
         await axios.post(
           `${API}/delete`,

@@ -21,13 +21,15 @@ import DeleteConfirmationDialog from "../../components/deletechannel";
 import Preloader from "../../components/preloader";
 import Nodataloader from "../../components/nodataloader";
 import FabAddButton from "../../components/fabaddbutton";
+import TickIcon from "@material-ui/icons/Check";
+import NoTickIcon from "@material-ui/icons/ClearOutlined";
 
 const Users = () => {
   const classes = useStyles();
   const { user, actions, allUsers } = useContext(AppContext);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const [userAndSettings, setuserAndSettings] = useState(null);
+  const [activeUser, setActiveUser] = useState(null);
   // loaders and errors
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
@@ -39,7 +41,7 @@ const Users = () => {
 
   const closeActionDialog = () => {
     setAction(null);
-    setuserAndSettings(null);
+    setActiveUser(null);
   };
 
   const askConfirmation = () => {
@@ -57,20 +59,25 @@ const Users = () => {
   const loadAllUsers = async (forceLoad) => {
     if (forceLoad || allUsers.length === 0) {
       setLoading(true);
-      const userandsett = await userservice.getAllUsers(user);
-      actions.setAllUsers(userandsett);
+      const users = await userservice.getAllUsers(user);
+      actions.setAllUsers(users);
       setLoading(false);
     }
   };
 
   const deleteUser = async () => {
     setDeleteConfirm(false);
-    await userservice.deleteUser(user, userAndSettings.user);
+    await userservice.deleteUser(user, activeUser);
     loadAllUsers(true);
   };
 
   const offSet = page * pageSize;
   const spliceddata = allUsers.slice(offSet, (page + 1) * pageSize);
+
+  const _TickIcon = () => (
+    <TickIcon fontSize="small" style={{ color: "green" }} />
+  );
+  const _NoTickIcon = () => <NoTickIcon fontSize="small" color="secondary" />;
 
   useEffect(() => {
     loadAllUsers();
@@ -121,13 +128,14 @@ const Users = () => {
                       <TableCell align="left">Name</TableCell>
                       <TableCell align="left">Server</TableCell>
                       <TableCell align="left">Limit</TableCell>
-                      <TableCell align="left">{""}</TableCell>
-                      <TableCell align="left">{""}</TableCell>
+                      <TableCell align="left">Usage</TableCell>
+                      <TableCell align="left">Bitrate</TableCell>
+                      <TableCell align="left">Edit</TableCell>
+                      <TableCell align="left">Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {spliceddata.map((us, index) => {
-                      const { user, settings } = us;
+                    {spliceddata.map((user, index) => {
                       return (
                         <TableRow key={user.username + " " + index}>
                           <TableCell
@@ -141,13 +149,19 @@ const Users = () => {
                             {user.server}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
-                            {settings.limit}
+                            {user.limit}
+                          </TableCell>
+                          <TableCell className={classes.tbcell} align="left">
+                            {user.usage ? _TickIcon() : _NoTickIcon()}
+                          </TableCell>
+                          <TableCell className={classes.tbcell} align="left">
+                            {user.bitrate ? _TickIcon() : _NoTickIcon()}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
                               size="small"
                               onClick={() => {
-                                setuserAndSettings(us);
+                                setActiveUser(user);
                                 openActionDialog("edit");
                               }}
                             >
@@ -157,7 +171,7 @@ const Users = () => {
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
                               onClick={(event) => {
-                                setuserAndSettings(us);
+                                setActiveUser(user);
                                 askConfirmation();
                               }}
                             >
@@ -180,21 +194,21 @@ const Users = () => {
         closeCreatepop={closeActionDialog}
         successCallback={() => loadAllUsers(true)}
       />
-      {userAndSettings !== null && (
+      {activeUser !== null && (
         <EditUser
           openForm={action === "edit"}
           closeCreatepop={closeActionDialog}
           successCallback={() => loadAllUsers(true)}
-          userToEdit={userAndSettings}
+          userToEdit={activeUser}
         />
       )}
-      {userAndSettings !== null && (
+      {activeUser !== null && (
         <DeleteConfirmationDialog
           openForm={openDeleteConfirm}
           closeForm={() => setDeleteConfirm(false)}
           onDeleteYes={deleteUser}
           channel={{
-            name: userAndSettings.user.username,
+            name: activeUser.username,
           }}
         />
       )}

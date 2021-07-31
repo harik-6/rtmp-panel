@@ -21,18 +21,15 @@ import {
 
 const Channels = () => {
   const classes = useStyles();
-  const { user, settings } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
   const [viewMap, setViewMap] = useState({});
   const [healthCount, setHealthCount] = useState(-1);
   const [msg, setMsg] = useState("Loading channels...");
-  const [isAdmin, setAdmin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [activeOwnerId, setActiveOwnerId] = useState(
-    process.env.REACT_APP_ADMINSERVER
-  );
+  const [activeOwnerId, setActiveOwnerId] = useState("");
   // loaders and errors
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
@@ -47,6 +44,8 @@ const Channels = () => {
     setChannelList(chs);
     if (chs.length === 0) {
       setActiveChannel(null);
+    } else {
+      setActiveOwnerId(chs[0].server);
     }
     setLoading(false);
     _checkHealthStatus(chs);
@@ -87,7 +86,7 @@ const Channels = () => {
   };
 
   const openCreateChannelForm = () => {
-    if (settings.limit === channelList.length) {
+    if (user.limit === channelList.length) {
       openSnack();
       return;
     } else {
@@ -136,9 +135,6 @@ const Channels = () => {
 
   useEffect(() => {
     loadChannels();
-    if (user !== null) {
-      setAdmin(user["_id"] === process.env.REACT_APP_ADMINID);
-    }
     //eslint-disable-next-line
   }, []);
 
@@ -146,14 +142,8 @@ const Channels = () => {
     return <Preloader message={msg} />;
   }
 
-  let filtereddata = [];
-  if (isAdmin) {
-    filtereddata =
-      channelList.filter((ch) => ch.server === activeOwnerId) || [];
-  } else {
-    filtereddata = channelList || [];
-  }
-  // filtereddata.sort((a, b) => a.name.localeCompare(b.name));
+  let filtereddata =
+    channelList.filter((ch) => ch.server === activeOwnerId) || [];
 
   return (
     <div className={classes.channels}>
@@ -177,33 +167,22 @@ const Channels = () => {
                 Health check
               </Button>
             </Grid>
-            {/* <Grid item lg={2}>
-              <Button
-                // onClick={recheckChannelHealth}
-                variant="contained"
-                color="primary"
-              >
-                Backup channels
-              </Button>
-            </Grid> */}
           </Grid>
           <Insights channels={channelList} activeChannelCount={healthCount} />
-          {isAdmin && (
-            <Grid container justify="flex-end">
-              <Grid sm={12} xs={12} lg={3}>
-                <Button
-                  aria-controls="change-ownwer-menu"
-                  aria-haspopup="true"
-                  onClick={(event) => setAnchorEl(event.currentTarget)}
-                  disableElevation
-                  style={{ marginTop: "16px", marginBottom: "-16px" }}
-                >
-                  {activeOwnerId}
-                  <DownArrowIcon />
-                </Button>
-              </Grid>
+          <Grid container justify="flex-end">
+            <Grid sm={12} xs={12} lg={3}>
+              <Button
+                aria-controls="change-ownwer-menu"
+                aria-haspopup="true"
+                onClick={(event) => setAnchorEl(event.currentTarget)}
+                disableElevation
+                style={{ marginTop: "16px", marginBottom: "-16px" }}
+              >
+                {activeOwnerId}
+                <DownArrowIcon />
+              </Button>
             </Grid>
-          )}
+          </Grid>
           <ChannelTable
             spliceddata={filtereddata}
             healthStatus={healthMap}
@@ -212,10 +191,10 @@ const Channels = () => {
             openActionDialog={openActionDialog}
             askConfirmation={askConfirmation}
             setOpenStatusDialog={setOpenStatusDialog}
+            isSuperAdmin={user["_id"] === process.env.REACT_APP_ADMINID}
           />
         </Grid>
       )}
-
       <CreateNewChannel
         openForm={action === "add"}
         closeCreatepop={closeActionDialog}
@@ -259,26 +238,24 @@ const Channels = () => {
         key={"snack"}
       />
       <FabAddButton onClickAction={openCreateChannelForm} />
-      {isAdmin && channelList.length > 0 && (
-        <Menu
-          id="switch-channel-admin-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={() => setAnchorEl(null)}
-        >
-          {[...new Set([...channelList.map((ch) => ch.server)])].map(
-            (servername) => (
-              <MenuItem
-                key={servername}
-                onClick={() => filterChannel_Admin(servername)}
-              >
-                {servername}
-              </MenuItem>
-            )
-          )}
-        </Menu>
-      )}
+      <Menu
+        id="switch-channel-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+      >
+        {[...new Set([...channelList.map((ch) => ch.server)])].map(
+          (servername) => (
+            <MenuItem
+              key={servername}
+              onClick={() => filterChannel_Admin(servername)}
+            >
+              {servername}
+            </MenuItem>
+          )
+        )}
+      </Menu>
     </div>
   );
 };

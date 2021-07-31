@@ -41,9 +41,7 @@ const EditUser = ({
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
   const [userObj, setUserObj] = useState({
-    ...userToEdit.settings,
-    ...userToEdit.user,
-    port: userToEdit.user.port.toString(),
+    ...userToEdit,
   });
   const [password, setPassword] = useState("");
 
@@ -123,16 +121,6 @@ const EditUser = ({
           <TextField
             className={classes.txtfield}
             fullWidth
-            id="stub"
-            name="stub"
-            label="Stream sufffux"
-            value={userObj.stub}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
             id="limit"
             name="limit"
             label="Limit"
@@ -141,38 +129,6 @@ const EditUser = ({
             disabled={creating}
             onChange={handleChange}
           />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
-            id="billingDate"
-            name="billingDate"
-            label="Billing Date"
-            value={userObj.billingDate}
-            type="number"
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <FormLabel component="legend">Security</FormLabel>
-          <RadioGroup
-            aria-label="port"
-            name="port"
-            value={userObj.port}
-            onChange={handleChange}
-            style={{ display: "flex", flexDirection: "row" }}
-          >
-            <FormControlLabel
-              value="8080"
-              control={<Radio />}
-              label="HTTP"
-              disabled={creating}
-            />
-            <FormControlLabel
-              value="443"
-              control={<Radio />}
-              label="HTTPS"
-              disabled={creating}
-            />
-          </RadioGroup>
           <FormLabel style={{ marginTop: "8px" }} component="legend">
             Usage
           </FormLabel>
@@ -204,6 +160,36 @@ const EditUser = ({
             />
           </RadioGroup>
           <FormLabel style={{ marginTop: "8px" }} component="legend">
+            Bitrate
+          </FormLabel>
+          <RadioGroup
+            aria-label="bitrate"
+            name="bitrate"
+            value={userObj.bitrate ? "show" : "hide"}
+            onChange={(e) => {
+              handleChange({
+                target: {
+                  name: "bitrate",
+                  value: e.target.value === "show" ? true : false,
+                },
+              });
+            }}
+            style={{ display: "flex", flexDirection: "row" }}
+          >
+            <FormControlLabel
+              value={"show"}
+              control={<Radio />}
+              label="Show"
+              disabled={creating}
+            />
+            <FormControlLabel
+              value={"hide"}
+              control={<Radio />}
+              label="Hide"
+              disabled={creating}
+            />
+          </RadioGroup>
+          {/* <FormLabel style={{ marginTop: "8px" }} component="legend">
             PlayUrl
           </FormLabel>
           <RadioGroup
@@ -232,7 +218,7 @@ const EditUser = ({
               label="Hide"
               disabled={creating}
             />
-          </RadioGroup>
+          </RadioGroup> */}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>
