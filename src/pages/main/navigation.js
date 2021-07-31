@@ -32,7 +32,7 @@ const NavigationMenu = ({ isAdmin }) => {
   }, [user, isAdmin]);
 
   let navigations = isAdmin ? adminNavigations : userNavigations;
-  const isUsageAvail = (settings || { usage: false }).usage;
+  const isUsageAvail = user.usage || false;
   if (!isUsageAvail) {
     navigations = navigations.filter((nav) => nav.name !== "Usage");
   }

@@ -4,7 +4,6 @@ import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `${process.env.REACT_APP_API}/api/user`;
 
-const isSuperAdmin = (id) => id === process.env.REACT_APP_ADMINID;
 const getEditUserPayload = (editedUser, newpass) => {
   if (newpass.length !== 0) {
     return {

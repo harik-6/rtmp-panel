@@ -131,7 +131,7 @@ const Users = () => {
                       <TableCell align="left">Usage</TableCell>
                       <TableCell align="left">Bitrate</TableCell>
                       <TableCell align="left">Edit</TableCell>
-                      <TableCell align="left">Actions</TableCell>
+                      <TableCell align="left">Delete</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
