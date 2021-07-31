@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Chip } from "@material-ui/core";
+import { Chip } from "@material-ui/core";
 import AppContext from "../../context/context";
 //icons
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 //components
-import RebootConfirmationDialog from "../../components/rebootconfirm";
 import Preloader from "../../components/preloader";
 import Nodataloader from "../../components/nodataloader";
 import ScrollMenu from "react-horizontal-scrolling-menu";
@@ -19,13 +18,12 @@ import {
 import { getChannels } from "../../service/channel.service";
 import {
   getBitrateMedata,
-  rebootServer,
   checkChannelHealth,
 } from "../../service/rtmp.service";
 import useStyles from "./player.styles";
 
 const Home = () => {
-  const { user, actions } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
@@ -39,7 +37,6 @@ const Home = () => {
   });
   // preloaders and errors
   const [loading, setloading] = useState(false);
-  const [openRebootDialog, setOpenRebootDialog] = useState(false);
   const [selectedChip, setSelectedChip] = useState(0);
 
   const loadChannels = async () => {
@@ -131,14 +128,6 @@ const Home = () => {
     });
   };
 
-  const _rebootServer = async () => {
-    if (channelList !== null && channelList.length > 0) {
-      await rebootServer(channelList[0]);
-      setOpenRebootDialog(false);
-      actions.logout();
-    }
-  };
-
   useEffect(() => {
     loadChannels();
     //eslint-disable-next-line
@@ -154,15 +143,6 @@ const Home = () => {
         <Nodataloader message="You don't have any channel.Create one" />
       ) : (
         <>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              onClick={() => setOpenRebootDialog(true)}
-              variant="contained"
-              color="primary"
-            >
-              Reboot
-            </Button>
-          </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div className={classes.carousel}>
               <ScrollMenu
@@ -190,11 +170,6 @@ const Home = () => {
           />
         </>
       )}
-      <RebootConfirmationDialog
-        openForm={openRebootDialog}
-        closeForm={() => setOpenRebootDialog(false)}
-        onYes={_rebootServer}
-      />
     </div>
   );
 };

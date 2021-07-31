@@ -43,7 +43,6 @@ const editchannel = async (channel, user) => {
   //       ...channel,
   //       _id: channel["_id"],
   //     };
-  //     console.log("channeltoedit",channeltoedit);
   //     const response = await axios.post(`${API}/edit`, {
   //       channel: channeltoedit,
   //     });
@@ -130,11 +129,9 @@ const editchannelAdmin = async (channel, user) => {
       });
       const data = response.data;
       CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
-      console.log(data.payload);
       if (data.payload.status === "failed") return null;
       return channeltoedit["_id"];
     } catch (error) {
-      console.log(error)
       return null;
     }
   }
