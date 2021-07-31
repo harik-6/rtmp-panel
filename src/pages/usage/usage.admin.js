@@ -41,22 +41,19 @@ const useStyles = makeStyles((theme) =>
 );
 
 const UsageAdmin = () => {
-  const { user, settings, allUsers } = useContext(AppContext);
+  const { user, allUsers } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [usagelist, setUsageList] = useState([]);
 
   const loadUsageData = async () => {
     setLoading(true);
-    let alldata = await getUsageData({
-      user,
-      settings,
-    });
+    let alldata = await getUsageData(user);
     alldata = alldata || [];
     const allids = [...new Set(alldata.map((obj) => obj.usageId))];
     let list = [];
     const idtoservernamp = {};
-    allUsers.forEach((obj) => {
-      idtoservernamp[obj.settings.usageid] = obj.user.server;
+    allUsers.forEach((usr) => {
+      idtoservernamp[usr.usageid] = usr.server;
     });
     allids.forEach((id) => {
       const filtered = alldata.filter((obj) => obj["usageId"] === id);

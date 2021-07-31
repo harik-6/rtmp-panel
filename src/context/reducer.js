@@ -43,7 +43,6 @@ const AppReducer = (state, action) => {
         appDesc: payload.desc,
       };
     case "superadmin":
-      console.log("Super admin logged in");
       return {
         ...state,
         superAdmin: true,

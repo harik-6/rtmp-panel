@@ -11,6 +11,7 @@ const initialState = {
   allUsers: [],
   usageData: null,
   superAdmin: false,
+  avatarApi:"https://avatars.dicebear.com/api/initials/"
 };
 
 const AppState = (props) => {

@@ -1,15 +1,16 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import useStyles from "./main.styles";
 import AppContext from "../../context/context";
 import { userNavigations, adminNavigations } from "./navigation.config";
 
-const NavigationMenu = ({ isAdmin }) => {
+const NavigationMenu = ({ isAdmin, logoutUser }) => {
   const classes = useStyles();
   const history = useHistory();
-  const { user, actions, settings } = useContext(AppContext);
+  const location = useLocation();
+  const { user, settings } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(1);
 
   const changePage = (page) => {
@@ -20,16 +21,19 @@ const NavigationMenu = ({ isAdmin }) => {
     }
   };
 
-  const logoutUser = () => {
-    actions.logout();
-  };
+  const changeActiveTab = () => {
+    if(location.pathname==="/profile") {
+      changePage(isAdmin?5:4);
+    }
+  }
 
   useEffect(() => {
     if (user === null || settings === null) {
       history.replace("/login");
     }
+    changeActiveTab()
     // eslint-disable-next-line
-  }, [user, isAdmin]);
+  }, [user, isAdmin,location]);
 
   let navigations = isAdmin ? adminNavigations : userNavigations;
   const isUsageAvail = user.usage || false;

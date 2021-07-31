@@ -9,7 +9,7 @@ import { getUsageData } from "../../service/rtmp.service";
 import { formatDataFormVizualisation } from "./usage.utils";
 
 const Usage = () => {
-  const { user, settings } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const [nodata, setNoData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [graphData, setGraphData] = useState([]);
@@ -36,7 +36,7 @@ const Usage = () => {
 
   const loadUsageData = async () => {
     setLoading(true);
-    const usage = await getUsageData({ user, settings });
+    const usage = await getUsageData(user);
     if (usage === null) {
       setNoData(true);
     } else {

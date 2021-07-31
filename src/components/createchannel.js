@@ -47,7 +47,6 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
   const createNewChannel = async () => {
     if (chname.length > 0 && chkey.length > 0) {
       const alltokens = await getAllTokens();
-      console.log("all tokens",alltokens);
       if (alltokens.length > 0) {
         if (alltokens.indexOf(chname.toLowerCase()) !== -1) {
           setchnameerror(true);

@@ -15,7 +15,7 @@ const _constructChannel = (user, channelname) => {
     hls: `https://${server}/hls/${chname}.m3u8`,
     preview: `https://${server}/play/${chname}`,
     token: `${chname}?psk=${chname}&token=${chname}`,
-    stream : `rtmp://${server}/live`,
+    stream: `rtmp://${server}/live`,
     status: true,
   };
   return newchannel;
@@ -37,24 +37,24 @@ const createChannel = async (user, channelname) => {
   }
 };
 const editchannel = async (channel, user) => {
-  if (user["_id"] === process.env.REACT_APP_ADMINID) {
-    try {
-      const channeltoedit = {
-        ...channel,
-        _id: channel["_id"],
-      };
-      console.log("channel to edit", channeltoedit);
-      // const response = await axios.post(`${API}/edit`, {
-      //   channel: channeltoedit,
-      // });
-      // const data = response.data;
-      // CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
-      // if (data.payload.status === "failed") return null;
-      return channeltoedit["_id"];
-    } catch (error) {
-      return null;
-    }
-  }
+  // if (user["_id"] === process.env.REACT_APP_ADMINID) {
+  //   try {
+  //     const channeltoedit = {
+  //       ...channel,
+  //       _id: channel["_id"],
+  //     };
+  //     console.log("channeltoedit",channeltoedit);
+  //     const response = await axios.post(`${API}/edit`, {
+  //       channel: channeltoedit,
+  //     });
+  //     const data = response.data;
+  //     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
+  //     if (data.payload.status === "failed") return null;
+  //     return channeltoedit["_id"];
+  //   } catch (error) {
+  //     return null;
+  //   }
+  // }
   return null;
 };
 const getAllTokens = async () => {
@@ -114,17 +114,29 @@ const getChannelDetailsByName = async (channelName) => {
   }
 };
 
-const editchannelAdmin = async (channel) => {
-  try {
-    const response = await axios.post(`${API}/edit`, {
-      channel,
-    });
-    const data = response.data;
-    CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
-    if (data.payload.status === "failed") return null;
-    return channel["_id"];
-  } catch (error) {
-    return null;
+const editchannelAdmin = async (channel, user) => {
+  if (user["_id"] === process.env.REACT_APP_ADMINID) {
+    try {
+      const channeltoedit = {
+        ...channel,
+        _id: channel["_id"],
+      };
+      const response = await axios.post(`${API}/edit`, {
+        channel: channeltoedit,
+      },{
+        headers : {
+          "x-auth-id" : user["_id"]
+        }
+      });
+      const data = response.data;
+      CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
+      console.log(data.payload);
+      if (data.payload.status === "failed") return null;
+      return channeltoedit["_id"];
+    } catch (error) {
+      console.log(error)
+      return null;
+    }
   }
 };
 

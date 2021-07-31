@@ -5,17 +5,16 @@ const API = `${process.env.REACT_APP_API}/api/channel`;
 const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
 const API_VIEW = `${process.env.REACT_APP_API}/api/view`;
 
-const getUsageData = async (usersetting) => {
-  const { settings, user } = usersetting;
-  if (settings !== undefined) {
-    const cachkey = CACHEKEYS.FETCH_USAGE + "#" + settings["usageid"];
+const getUsageData = async (user) => {
+  if (user.usageid !== undefined && user.usageid.length > 0) {
+    const cachkey = CACHEKEYS.FETCH_USAGE + "#" + user["usageid"];
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
     try {
       const response = await axios.post(
         `${API_RTMP}/usage`,
         {
-          usageId: settings["usageid"],
+          usageId: user["usageid"],
         },
         {
           headers: {

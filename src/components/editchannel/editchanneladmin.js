@@ -33,7 +33,7 @@ const EditChannelAdmin = ({
   successCallback,
   channel,
 }) => {
-  const { actions } = useContext(AppContext);
+  const { actions,user } = useContext(AppContext);
   const [chnl, setChnl] = useState(channel);
   const [chnameerror, setchnameerror] = useState(false);
   const [creating, setcreating] = useState(false);
@@ -64,7 +64,7 @@ const EditChannelAdmin = ({
         ...chnl,
         key: chnl.name,
       };
-      const editedchannel = await editchannelAdmin(toedit);
+      const editedchannel = await editchannelAdmin(toedit,user);
       if (editedchannel !== null) {
         actions.setChannles([]);
         successCallback();

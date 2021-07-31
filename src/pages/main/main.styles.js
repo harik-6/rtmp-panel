@@ -26,11 +26,11 @@ const useStyles = makeStyles((theme) =>
       top: "0",
       bottom: "0",
       [theme.breakpoints.down("sm")]: {
-        position : "absolute",
-        zIndex : 1,
-        height:"56px",
-        width:"100%",
-        overflowX:"scroll"
+        position: "absolute",
+        zIndex: 1,
+        height: "56px",
+        width: "100%",
+        overflowX: "scroll",
       },
     },
     routes: {
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) =>
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(1),
       [theme.breakpoints.down("sm")]: {
-        display : "flex"
+        display: "flex",
       },
     },
     mobilenav: {
@@ -98,6 +98,21 @@ const useStyles = makeStyles((theme) =>
       [theme.breakpoints.down("sm")]: {
         marginTop: "-52px",
       },
+    },
+    appbarroot: {
+      flex: 1,
+    },
+    appbarmenubtn: {
+      marginRight: theme.spacing(2),
+    },
+    appbartitle: {
+      color: "#000000",
+      flexGrow: 1,
+      textTransform: "capitalize",
+    },
+    appbaravatar: {
+      color: theme.palette.primary.main,
+      background: "#ebe9e9"
     },
   })
 );
