@@ -43,7 +43,7 @@ const CreateNewChannel = ({
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [server, serServer] = useState(channelSet[0]);
+  const [server, serServer] = useState(user.server);
 
   const handleChName = (e) => {
     setchname(e.target.value);
@@ -115,10 +115,13 @@ const CreateNewChannel = ({
             onClose={() => setAnchorEl(null)}
           >
             {channelSet.map((servername) => (
-              <MenuItem key={servername} onClick={() => {
-                serServer(servername);
-                setAnchorEl(null);
-              }}>
+              <MenuItem
+                key={servername}
+                onClick={() => {
+                  serServer(servername);
+                  setAnchorEl(null);
+                }}
+              >
                 {servername}
               </MenuItem>
             ))}

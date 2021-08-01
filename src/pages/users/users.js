@@ -98,7 +98,7 @@ const Users = () => {
     return <Preloader message={"Loading users..."} />;
   }
 
-  if (allUsers.length <= 0) {
+  if (allUsers.length <= 0 && action!=="add") {
     return (
       <>
         <Nodataloader message={"You don't have any users.Create one"} />
@@ -106,6 +106,7 @@ const Users = () => {
       </>
     );
   }
+
 
   return (
     <div className={classes.users}>
