@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) =>
       flexGrow: 1,
       marginLeft: "32px",
       display: "flex",
+      cursor:"pointer",
       alignItems: "center",
     },
     navlink: {

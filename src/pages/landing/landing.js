@@ -49,16 +49,16 @@ const Landing = () => {
           <Toolbar className={classes.toolbar}>
             <Typography variant="h6" className={classes.title}>
               <img
-                src="logotrans.png"
-                alt=""
-                width="36"
-                height="36"
+                src="logo.png"
+                alt="streamwell-logo"
+                width="180"
+                height="42"
                 style={{
                   marginRight: "8px",
                   marginTop: "4px",
                 }}
               />
-              StreamWell
+              {/* StreamWell */}
             </Typography>
             <div className={classes.navbar}>
               <Typography
