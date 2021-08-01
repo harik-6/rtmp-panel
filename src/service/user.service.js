@@ -43,7 +43,7 @@ const UserService = {
         },
         {
           headers: {
-            "x-auth-id": user["_id"],
+            Authorization: `Bearer ${user["_id"]}`,
           },
         }
       );
@@ -68,7 +68,7 @@ const UserService = {
           },
           {
             headers: {
-              "x-auth-id": adminUser["_id"],
+              Authorization: `Bearer ${adminUser["_id"]}`,
             },
           }
         );
@@ -92,7 +92,7 @@ const UserService = {
           },
           {
             headers: {
-              "x-auth-id": adminUser["_id"],
+              Authorization: `Bearer ${adminUser["_id"]}`,
             },
           }
         );
@@ -115,7 +115,7 @@ const UserService = {
           },
           {
             headers: {
-              "x-auth-id": adminUser["_id"],
+              Authorization: `Bearer ${adminUser["_id"]}`,
             },
           }
         );

@@ -18,7 +18,7 @@ const getUsageData = async (user) => {
         },
         {
           headers: {
-            "x-auth-id": user["_id"],
+            Authorization: `Bearer ${user["_id"]}`,
           },
         }
       );

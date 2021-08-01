@@ -24,9 +24,17 @@ const _constructChannel = (user, channelname) => {
 const createChannel = async (user, channelname) => {
   try {
     const newchannel = _constructChannel(user, channelname);
-    const response = await axios.post(`${API}/create`, {
-      channel: newchannel,
-    });
+    const response = await axios.post(
+      `${API}/create`,
+      {
+        channel: newchannel,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${user["_id"]}`,
+        },
+      }
+    );
     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
     if (response.data.status === "success") {
       return response.data.payload["_id"];
@@ -56,9 +64,17 @@ const editchannel = async (channel, user) => {
   // }
   return null;
 };
-const getAllTokens = async () => {
+const getAllTokens = async (user) => {
   try {
-    const response = await axios.post(`${API}/keys`);
+    const response = await axios.post(
+      `${API}/keys`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${user["_id"]}`,
+        },
+      }
+    );
     if (response.data.status === "success") return response.data.payload;
     return null;
   } catch (error) {
@@ -77,7 +93,7 @@ const getChannels = async (user) => {
       },
       {
         headers: {
-          "x-auth-id": user["_id"],
+          Authorization: `Bearer ${user["_id"]}`,
         },
       }
     );
@@ -89,11 +105,19 @@ const getChannels = async (user) => {
     return null;
   }
 };
-const deleteChannel = async (channel) => {
+const deleteChannel = async (channel, user) => {
   try {
-    const response = await axios.post(`${API}/delete`, {
-      channelId: channel["_id"],
-    });
+    const response = await axios.post(
+      `${API}/delete`,
+      {
+        channelId: channel["_id"],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${user["_id"]}`,
+        },
+      }
+    );
     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
     if (response.data.status === "success") return true;
     return false;
@@ -120,13 +144,17 @@ const editchannelAdmin = async (channel, user) => {
         ...channel,
         _id: channel["_id"],
       };
-      const response = await axios.post(`${API}/edit`, {
-        channel: channeltoedit,
-      },{
-        headers : {
-          "x-auth-id" : user["_id"]
+      const response = await axios.post(
+        `${API}/edit`,
+        {
+          channel: channeltoedit,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user["_id"]}`,
+          },
         }
-      });
+      );
       const data = response.data;
       CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
       if (data.payload.status === "failed") return null;

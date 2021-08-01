@@ -111,7 +111,7 @@ const Channels = () => {
     setDeleteConfirm(false);
     setMsg("Deleting channel " + activeChannel.name);
     setLoading(true);
-    await deleteChannel(activeChannel);
+    await deleteChannel(activeChannel,user);
     setSnack({
       open: true,
       message: "Channel successfully deleted.",
