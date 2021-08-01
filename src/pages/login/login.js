@@ -60,7 +60,7 @@ const Login = () => {
     if (location.includes("localhost")) {
       actions.setAppName({
         name: "Localhost",
-        desc: `Dedicated Streaming Server Provider.<n>For contact +91 97154 42908.`,
+        desc: `Dedicated Streaming Server Provider.<n>For contact +91 79040 37932.`,
       });
       return;
     }
@@ -68,6 +68,13 @@ const Login = () => {
       actions.setAppName({
         name: "IPtelevision",
         desc: `Dedicated Streaming Server Provider.<n>For contact +91 97154 42908.`,
+      });
+      return;
+    }
+    if (location.includes("teluguwebsolutions")) {
+      actions.setAppName({
+        name: "Telugu Web Solutions",
+        desc: `Dedicated Streaming Server Provider.<n>For contact +91 70757 57910.`,
       });
       return;
     }
