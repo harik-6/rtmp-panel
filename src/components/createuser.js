@@ -35,6 +35,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
   const { user, allUsers } = useContext(AppContext);
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
+  const [chLimitErr, setChLimitErr] = useState(null);
   const [userObj, setUserObj] = useState({
     username: "",
     password: "",
@@ -43,7 +44,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     owner: user["_id"],
     usage: false,
     bitrate: false,
-    preview: false
+    preview: false,
   });
 
   const handleChange = (e) => {
@@ -57,6 +58,17 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     setCreating(true);
     setErr(null);
     const allnames = allUsers.map((user) => user.username);
+    const chCountsofar = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
+    if (parseInt(user.limit) <= 0) {
+      setChLimitErr("Channel limit cannot be negative");
+      setCreating(false);
+      return;
+    }
+    if (chCountsofar + userObj.limit > user.limit) {
+      setChLimitErr("Channel limit exceeded.");
+      setCreating(false);
+      return;
+    }
     if (allnames.indexOf(userObj.username) === -1) {
       await service.createUser(user, userObj);
       closePopup();
@@ -70,6 +82,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
   const closePopup = () => {
     setCreating(false);
     setErr(null);
+    setChLimitErr(null);
     setUserObj({
       username: "",
       password: "",
@@ -78,7 +91,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
       owner: user["_id"],
       usage: false,
       bitrate: false,
-      preview: false
+      preview: false,
     });
     closeCreatepop();
   };
@@ -138,6 +151,8 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
             type="number"
             disabled={creating}
             onChange={handleChange}
+            error={chLimitErr}
+            helperText={chLimitErr}
           />
           <FormLabel style={{ marginTop: "8px" }} component="legend">
             Usage
