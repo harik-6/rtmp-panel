@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Switch, Route, Redirect, useLocation, Link } from "react-router-dom";
+import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 import NavigationMenu from "./navigation";
 import {
   AppBar,
@@ -18,13 +18,19 @@ import useStyles from "./main.styles";
 import Users from "../users/users";
 import Login from "../login/login";
 import Profile from "../profile/profile";
+import RebootConfirmationDialog from "../../components/rebootconfirm";
 
 const Main = () => {
   const classes = useStyles();
   const { user, appName, avatarApi, actions } = useContext(AppContext);
+  const [openReboot, setOpenReboot] = useState(false);
 
   const logoutUser = () => {
     actions.logout();
+  };
+
+  const toggleReboot = (status) => {
+    setOpenReboot(status);
   };
 
   if (user === null) return <Login />;
@@ -36,7 +42,12 @@ const Main = () => {
         <NavigationMenu isAdmin={user.admin || false} logoutUser={logoutUser} />
       </div>
       <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-        <MenuAppBar user={user} avatarApi={avatarApi} logoutUser={logoutUser} />
+        <MenuAppBar
+          user={user}
+          avatarApi={avatarApi}
+          logoutUser={logoutUser}
+          rebootServer={toggleReboot}
+        />
         <div className={classes.routes}>
           <Switch>
             <Route path="/player" component={Player} />
@@ -50,12 +61,18 @@ const Main = () => {
             </Route>
           </Switch>
         </div>
+        <RebootConfirmationDialog
+          openForm={openReboot}
+          closeForm={() => {
+            toggleReboot(false);
+          }}
+        />
       </div>
     </div>
   );
 };
 
-function MenuAppBar({ user, avatarApi, logoutUser }) {
+function MenuAppBar({ user, avatarApi, logoutUser, rebootServer }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const location = useLocation();
@@ -108,12 +125,23 @@ function MenuAppBar({ user, avatarApi, logoutUser }) {
               >
                 {user.username}
               </MenuItem>
-              {/* <MenuItem onClick={handleClose}>Reboot</MenuItem> */}
-
-              <Link to={`${process.env.PUBLIC_URL}/profile`} style={{color:"#000000"}} >
+              {/* <Link
+                to={`${process.env.PUBLIC_URL}/profile`}
+                style={{ color: "#000000" }}
+              >
                 {" "}
                 <MenuItem onClick={handleClose}>My Account</MenuItem>
-              </Link>
+              </Link> */}
+              {user.admin && (
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    rebootServer(true);
+                  }}
+                >
+                  Reboot
+                </MenuItem>
+              )}
               <MenuItem onClick={logoutUser}>Logout</MenuItem>
             </Menu>
           </div>

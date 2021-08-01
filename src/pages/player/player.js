@@ -23,7 +23,7 @@ import {
 import useStyles from "./player.styles";
 
 const Home = () => {
-  const { user } = useContext(AppContext);
+  const { user,actions } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
@@ -47,6 +47,7 @@ const Home = () => {
       setActiveChannel(chs[0]);
       setSelectedChip(chs[0].name);
       _checkChannelHealth(chs);
+      actions.setChannles(chs);
     } else {
       setActiveChannel(null);
     }

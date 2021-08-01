@@ -9,10 +9,14 @@ import {
   DialogTitle,
   TextField,
   CircularProgress,
+  Menu,
+  MenuItem,
+  FormLabel,
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 import AppContext from "../context/context";
 import { createChannel, getAllTokens } from "../service/channel.service";
+import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -27,13 +31,19 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
+const CreateNewChannel = ({
+  openForm,
+  closeCreatepop,
+  successCallback,
+  channelSet,
+}) => {
   const { user, actions } = useContext(AppContext);
   const [chname, setchname] = useState("");
   const [chkey, setchkey] = useState("");
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
-  // const [chkeyerror, setchkeyerror] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [server, serServer] = useState(channelSet[0]);
 
   const handleChName = (e) => {
     setchname(e.target.value);
@@ -54,7 +64,7 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
         }
       }
       setcreating(true);
-      const channel = await createChannel(user, chname);
+      const channel = await createChannel(user, chname, server);
       if (channel !== null) {
         actions.setChannles([]);
         setcreating(false);
@@ -86,6 +96,33 @@ const CreateNewChannel = ({ openForm, closeCreatepop, successCallback }) => {
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="create-channel-form-title-description">
+          <FormLabel component="legend">Choose server</FormLabel>
+          <Button
+            aria-controls="change-ownwer-menu"
+            aria-haspopup="true"
+            onClick={(event) => setAnchorEl(event.currentTarget)}
+            disableElevation
+            style={{ marginTop: "16px", marginBottom: "-16px" }}
+          >
+            {server}
+            <DownArrowIcon />
+          </Button>
+          <Menu
+            id="choose-server-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)}
+          >
+            {channelSet.map((servername) => (
+              <MenuItem key={servername} onClick={() => {
+                serServer(servername);
+                setAnchorEl(null);
+              }}>
+                {servername}
+              </MenuItem>
+            ))}
+          </Menu>
           <TextField
             className={classes.txtfield}
             fullWidth

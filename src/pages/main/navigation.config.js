@@ -4,7 +4,7 @@ import ChannelIcon from "@material-ui/icons/VideocamRounded";
 import UsersIcon from "@material-ui/icons/SupervisorAccount";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import UsageIcon from "@material-ui/icons/DataUsage";
-import PersonIcon from "@material-ui/icons/Person";
+// import PersonIcon from "@material-ui/icons/Person";
 
 const userNavigations = [
   {
@@ -25,12 +25,12 @@ const userNavigations = [
     tabIndex: 3,
     icon: <UsageIcon />,
   },
-  {
-    name: "Profile",
-    path: "/profile",
-    tabIndex: 4,
-    icon: <PersonIcon />,
-  },
+  // {
+  //   name: "Profile",
+  //   path: "/profile",
+  //   tabIndex: 4,
+  //   icon: <PersonIcon />,
+  // },
   {
     name: "Logout",
     path: "/logout",
@@ -64,12 +64,12 @@ const adminNavigations = [
     tabIndex: 4,
     icon: <UsersIcon />,
   },
-  {
-    name: "Profile",
-    path: "/profile",
-    tabIndex: 5,
-    icon: <PersonIcon />,
-  },
+  // {
+  //   name: "Profile",
+  //   path: "/profile",
+  //   tabIndex: 5,
+  //   icon: <PersonIcon />,
+  // },
   {
     name: "Logout",
     path: "/logout",

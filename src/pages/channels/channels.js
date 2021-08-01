@@ -142,9 +142,9 @@ const Channels = () => {
     return <Preloader message={msg} />;
   }
 
-  let filtereddata =
-    channelList.filter((ch) => ch.server === activeOwnerId) || [];
-
+  const filtereddata = channelList.filter((ch) => ch.server === activeOwnerId) || [];
+  const channelSet = [...new Set([...channelList.map((ch) => ch.server)])]||[];
+  
   return (
     <div className={classes.channels}>
       {channelList.length <= 0 ? (
@@ -202,6 +202,7 @@ const Channels = () => {
           closeActionDialog();
           loadChannels();
         }}
+        channelSet={channelSet}
       />
       <EditChannel
         openForm={action === "edit"}
@@ -245,7 +246,7 @@ const Channels = () => {
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        {[...new Set([...channelList.map((ch) => ch.server)])].map(
+        {channelSet.map(
           (servername) => (
             <MenuItem
               key={servername}

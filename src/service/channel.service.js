@@ -3,9 +3,8 @@ import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `${process.env.REACT_APP_API}/api/channel`;
 
-const _constructChannel = (user, channelname) => {
+const _constructChannel = (user, channelname, server) => {
   const chname = channelname.toLowerCase().replace(" ", "");
-  const server = user.server;
   const newchannel = {
     name: chname,
     key: chname,
@@ -21,9 +20,9 @@ const _constructChannel = (user, channelname) => {
   return newchannel;
 };
 
-const createChannel = async (user, channelname) => {
+const createChannel = async (user, channelname, server) => {
   try {
-    const newchannel = _constructChannel(user, channelname);
+    const newchannel = _constructChannel(user, channelname, server);
     const response = await axios.post(
       `${API}/create`,
       {
