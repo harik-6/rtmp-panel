@@ -26,7 +26,7 @@ import NoTickIcon from "@material-ui/icons/ClearOutlined";
 
 const Users = () => {
   const classes = useStyles();
-  const { user, actions, allUsers } = useContext(AppContext);
+  const { user, actions, allUsers, superAdmin } = useContext(AppContext);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [activeUser, setActiveUser] = useState(null);
@@ -62,6 +62,16 @@ const Users = () => {
       const users = await userservice.getAllUsers(user);
       actions.setAllUsers(users);
       setLoading(false);
+    }
+  };
+
+  const changeAdminStatus = async (usertochange) => {
+    const us = await userservice.promoteDemoteAdmin(user,{
+      ...usertochange,
+      admin : !usertochange.admin
+    });
+    if(us!==null) {
+      loadAllUsers(true);
     }
   };
 
@@ -133,6 +143,7 @@ const Users = () => {
                       <TableCell align="left">PlayUrl</TableCell>
                       <TableCell align="left">Edit</TableCell>
                       <TableCell align="left">Delete</TableCell>
+                      {superAdmin && <TableCell align="left">Admin</TableCell>}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -182,6 +193,20 @@ const Users = () => {
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>
+                          {superAdmin && (
+                            <TableCell
+                              onClick={() => {
+                                changeAdminStatus(user);
+                              }}
+                              className={classes.tbcell}
+                              align="left"
+                              style={{
+                                cursor: "pointer",
+                              }}
+                            >
+                              {user.admin ? _TickIcon() : _NoTickIcon()}
+                            </TableCell>
+                          )}
                         </TableRow>
                       );
                     })}

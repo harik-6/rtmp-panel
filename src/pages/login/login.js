@@ -20,8 +20,8 @@ import CacheService from "../../service/cache.service";
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [username, setusername] = useState("manikandan");
-  const [password, setpassword] = useState("iptelevision@2021");
+  const [username, setusername] = useState("admin@streamwell");
+  const [password, setpassword] = useState("@dm1n@$tream248well");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);

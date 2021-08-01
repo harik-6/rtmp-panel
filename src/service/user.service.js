@@ -105,6 +105,26 @@ const UserService = {
     }
     return null;
   },
+  promoteDemoteAdmin: async (superAdmin, user) => {
+    try {
+      const response = await axios.post(
+        `${API}/edit`,
+        {
+          user: user,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${superAdmin["_id"]}`,
+          },
+        }
+      );
+      CacheService.remove(CACHEKEYS.FETCH_USERS);
+      if (response.data.status === "failed") return null;
+      return user;
+    } catch (error) {
+      return null;
+    }
+  },
   deleteUser: async (adminUser, usertoDelete) => {
     if (adminUser.admin) {
       try {
