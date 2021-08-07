@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.scss";
@@ -9,8 +9,10 @@ import Main from "./pages/main/main";
 import Login from "./pages/login/login";
 import Preview from "./pages/preview";
 import Landing from "./pages/landing/landing";
+import MaintanencePage from "./pages/maintainance";
+const maintanence = true;
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: "#050f66",
@@ -22,17 +24,21 @@ const theme = createMuiTheme({
 });
 
 const Apppanel = () => {
-  return (
-    <AppState>
-      <Router>
-        <Switch>
-          <Route exact path="/play/:channel" component={Preview} />
-          <Route exact path="/login" component={Login} />
-          <Route path="" component={Main} />
-        </Switch>
-      </Router>
-    </AppState>
-  );
+  if (maintanence) {
+    return <MaintanencePage />
+  } else {
+    return (
+      <AppState>
+        <Router>
+          <Switch>
+            <Route exact path="/play/:channel" component={Preview} />
+            <Route exact path="/login" component={Login} />
+            <Route path="" component={Main} />
+          </Switch>
+        </Router>
+      </AppState>
+    );
+  }
 };
 
 const Appmarketing = () => {
