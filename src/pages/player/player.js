@@ -103,7 +103,8 @@ const Home = () => {
 
   const getMetadata = async () => {
     try {
-      const bitratemetadata = await getBitrateMedata(activeChannel.httpLink);
+      const bitratemetadata = await getBitrateMedata(activeChannel.hls
+);
       if (bitratemetadata !== null) {
         setMetadata(bitratemetadata);
       }
