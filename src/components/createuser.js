@@ -58,27 +58,27 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     setCreating(true);
     setErr(null);
     const allnames = allUsers.map((user) => user.username);
-    const chCountsofar = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
-    if (parseInt(user.limit) <= 0) {
+    const consumed = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
+    const entered = parseInt(userObj.limit);
+    if (entered <= 0) {
       setChLimitErr("Invalid channel limit");
       setCreating(false);
       return;
     }
-    console.log("Consumed overall limit",chCountsofar);
-    console.log("Current limit",userObj.limit);
-    console.log("Maximum allowed",user.limit);
-    if (chCountsofar + userObj.limit > user.limit) {
+    const total = consumed + entered;
+    if (total > parseInt(user.limit)) {
       setChLimitErr("Channel limit exceeded.");
       setCreating(false);
       return;
-    }
-    if (allnames.indexOf(userObj.username) === -1) {
-      await service.createUser(user, userObj);
-      closePopup();
-      successCallback();
     } else {
-      setErr("User alerady exists");
-      setCreating(false);
+      if (allnames.indexOf(userObj.username) === -1) {
+        await service.createUser(user, userObj);
+        closePopup();
+        successCallback();
+      } else {
+        setErr("User alerady exists");
+        setCreating(false);
+      }
     }
   };
 

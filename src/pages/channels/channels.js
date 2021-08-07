@@ -121,8 +121,9 @@ const Channels = () => {
 
   const _changeRtmpStatus = async () => {
     setOpenStatusDialog(false);
-    await changeRtmpStatus(activeChannel);
-    await rebootServer(activeChannel);
+    await changeRtmpStatus(activeChannel,user);
+    const channelstoreboot = channelList.filter(ch => ch.server===activeChannel.server);
+    await rebootServer(channelstoreboot);
     setMsg("Loading channels...");
     setLoading(true);
     setTimeout(() => loadChannels(), 2000);

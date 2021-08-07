@@ -34,14 +34,19 @@ const getUsageData = async (user) => {
   }
 };
 
-const changeRtmpStatus = async (channel) => {
+const changeRtmpStatus = async (channel, user) => {
   try {
-    const response = await axios.post(`${API}/edit`, {
-      channel: {
-        ...channel,
-        status: !channel.status,
+    const response = await axios.post(
+      `${API}/edit/status`,
+      {
+        channelId: channel["_id"],
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${user["_id"]}`,
+        },
+      }
+    );
     const data = response.data;
     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
     if (data.payload.status === "failed") return false;
@@ -67,11 +72,12 @@ const getBitrateMedata = async (httplink) => {
 const rebootServer = async (channellist) => {
   const channel = channellist[0];
   const url = `https://${channel.server}/sys_reboot?psk=${channel.key}&token=${channel.key}`;
+  const resetlist = channellist.map((ch) => ch.name);
   try {
     await axios.post(`${API_VIEW}/reset`, {
-      channels: channellist.map((ch) => ch.name),
+      channels: resetlist,
     });
-    await fetch(url);
+    await axios.get(url);
     return;
   } catch (error) {
     return;
