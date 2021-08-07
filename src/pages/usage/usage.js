@@ -9,6 +9,7 @@ import { getUsageData } from "../../service/rtmp.service";
 import { formatDataFormVizualisation } from "./usage.utils";
 
 const Usage = () => {
+  const classes = useStyles();
   const { user } = useContext(AppContext);
   const [nodata, setNoData] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,19 +47,17 @@ const Usage = () => {
   };
 
   useEffect(() => {
-    loadUsageData();
+    if (!(user || { admin: false }).admin) {
+      loadUsageData();
+    }
     //eslint-disable-next-line
   }, []);
-
-  const classes = useStyles();
-  const isAdmin =
-    user === null ? false : user["_id"] === process.env.REACT_APP_ADMINID;
 
   if (loading) {
     return <Preloader message={"Loading data..."} />;
   }
 
-  return isAdmin ? (
+  return (user || { admin: false }).admin ? (
     <UsageAdmin />
   ) : (
     <>

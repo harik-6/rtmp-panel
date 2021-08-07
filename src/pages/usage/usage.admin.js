@@ -11,12 +11,13 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import AppContext from "../../context/context";
 import { formatDataFormVizualisationAdmin } from "./usage.utils";
 import { getUsageData } from "../../service/rtmp.service";
+import userservice from "../../service/user.service";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     usageadmin: {
-      flex : 1,
-      minHeight:"100vh",
+      flex: 1,
+      minHeight: "100vh",
       padding: theme.spacing(2),
       backgroundColor: "#ebe9e9",
       [theme.breakpoints.down("sm")]: {
@@ -41,18 +42,28 @@ const useStyles = makeStyles((theme) =>
 );
 
 const UsageAdmin = () => {
-  const { user, allUsers } = useContext(AppContext);
+  const { user, allUsers,actions } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [usagelist, setUsageList] = useState([]);
 
-  const loadUsageData = async () => {
+  const checkUsersLoaded = async () => {
     setLoading(true);
+    let alls = allUsers;
+    if (alls === null || alls.length === 0) {
+      const users = await userservice.getAllUsers(user);
+      actions.setAllUsers(users);
+      alls = users;
+    }
+    loadUsageData(alls)
+  };
+
+  const loadUsageData = async (usersall=[]) => {
     let alldata = await getUsageData(user);
     alldata = alldata || [];
     const allids = [...new Set(alldata.map((obj) => obj.usageId))];
     let list = [];
     const idtoservernamp = {};
-    allUsers.forEach((usr) => {
+    usersall.forEach((usr) => {
       idtoservernamp[usr.usageid] = usr.server;
     });
     allids.forEach((id) => {
@@ -68,7 +79,7 @@ const UsageAdmin = () => {
   };
 
   useEffect(() => {
-    loadUsageData();
+    checkUsersLoaded();
     //eslint-disable-next-line
   }, []);
 

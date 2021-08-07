@@ -6,7 +6,8 @@ const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
 const API_VIEW = `${process.env.REACT_APP_API}/api/view`;
 
 const getUsageData = async (user) => {
-  if (user.usageid !== undefined && user.usageid.length > 0) {
+  const userid = user["_id"];
+  if (userid !== undefined && userid.length > 0) {
     const cachkey = CACHEKEYS.FETCH_USAGE + "#" + user["usageid"];
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
@@ -14,11 +15,11 @@ const getUsageData = async (user) => {
       const response = await axios.post(
         `${API_RTMP}/usage`,
         {
-          usageId: user["usageid"],
+          userId: userid,
         },
         {
           headers: {
-            Authorization: `Bearer ${user["_id"]}`,
+            Authorization: `Bearer ${userid}`,
           },
         }
       );
@@ -67,8 +68,8 @@ const rebootServer = async (channellist) => {
   const channel = channellist[0];
   const url = `https://${channel.server}/sys_reboot?psk=${channel.key}&token=${channel.key}`;
   try {
-    await axios.post(`${API_VIEW}/reset`,{
-       channels : channellist.map(ch => ch.name)
+    await axios.post(`${API_VIEW}/reset`, {
+      channels: channellist.map((ch) => ch.name),
     });
     await fetch(url);
     return;

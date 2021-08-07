@@ -21,17 +21,7 @@ const MaintanencePage = () => {
       <p style={{ textAlign: "center", fontSize: "18px", marginBottom: "8px" }}>
         Panel is getting updated with features under maintanence.
       </p>
-      <p>
-        In case of urgent queries contact admin at
-        <a
-          style={{ color: "#050f66", marginLeft: "8px" }}
-          href="https://streamwell.in"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Streamwell.
-        </a>
-      </p>
+      <p>In case of urgent queries contact admin.</p>
     </div>
   );
 };

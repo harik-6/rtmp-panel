@@ -9,14 +9,11 @@ import {
   DialogTitle,
   TextField,
   CircularProgress,
-  Menu,
-  MenuItem,
-  FormLabel,
 } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 import AppContext from "../context/context";
 import { createChannel, getAllTokens } from "../service/channel.service";
-import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
+import ServerSelect from "./serverselect";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -42,8 +39,7 @@ const CreateNewChannel = ({
   const [chkey, setchkey] = useState("");
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [server, serServer] = useState(user.server);
+  const [server, setSelectedServer] = useState(user.server);
 
   const handleChName = (e) => {
     setchname(e.target.value);
@@ -96,36 +92,11 @@ const CreateNewChannel = ({
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="create-channel-form-title-description">
-          <FormLabel component="legend">Choose server</FormLabel>
-          <Button
-            aria-controls="change-ownwer-menu"
-            aria-haspopup="true"
-            onClick={(event) => setAnchorEl(event.currentTarget)}
-            disableElevation
-            style={{ marginTop: "16px", marginBottom: "-16px" }}
-          >
-            {server}
-            <DownArrowIcon />
-          </Button>
-          <Menu
-            id="choose-server-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={() => setAnchorEl(null)}
-          >
-            {channelSet.map((servername) => (
-              <MenuItem
-                key={servername}
-                onClick={() => {
-                  serServer(servername);
-                  setAnchorEl(null);
-                }}
-              >
-                {servername}
-              </MenuItem>
-            ))}
-          </Menu>
+          <ServerSelect
+            selectedServer={server}
+            serverNames={channelSet}
+            onSelect={setSelectedServer}
+          />
           <TextField
             className={classes.txtfield}
             fullWidth

@@ -60,10 +60,13 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     const allnames = allUsers.map((user) => user.username);
     const chCountsofar = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
     if (parseInt(user.limit) <= 0) {
-      setChLimitErr("Channel limit cannot be negative");
+      setChLimitErr("Invalid channel limit");
       setCreating(false);
       return;
     }
+    console.log("Consumed overall limit",chCountsofar);
+    console.log("Current limit",userObj.limit);
+    console.log("Maximum allowed",user.limit);
     if (chCountsofar + userObj.limit > user.limit) {
       setChLimitErr("Channel limit exceeded.");
       setCreating(false);
