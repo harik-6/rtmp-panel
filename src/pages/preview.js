@@ -3,9 +3,7 @@ import ReactPlayer from "react-player";
 import { getChannelDetailsByName } from "../service/channel.service";
 
 const Preview = (props) => {
-  const [httpLink, setHttpLink] = useState(
-    "https://rtmp.streamwell.in/novideo.m3u8"
-  );
+  const [httpLink, setHttpLink] = useState();
   const previewPlayer = useRef();
 
   const setHlsLink = async () => {
