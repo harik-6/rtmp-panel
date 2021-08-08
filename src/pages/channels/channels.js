@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Grid, Snackbar, Button, Menu, MenuItem } from "@material-ui/core";
+import { Grid, Snackbar, Button } from "@material-ui/core";
 import { ChannelTable, Insights } from "./channelcomponent";
 import AppContext from "../../context/context";
 import CreateNewChannel from "../../components/createchannel";
@@ -7,7 +7,6 @@ import DeleteConfirmationDialog from "../../components/deletechannel";
 import useStyles from "./channels.styles";
 import EditChannel from "../../components/editchannel/index";
 import RtmpStatusConfirmationDialog from "../../components/rtmpstatusconfirm";
-import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import Preloader from "../../components/preloader";
 import Nodataloader from "../../components/nodataloader";
 import FabAddButton from "../../components/fabaddbutton";
@@ -18,18 +17,20 @@ import {
   changeRtmpStatus,
   getRtmpCount,
 } from "../../service/rtmp.service";
+import ServerSelect from "../../components/serverselect";
+const allSelections = "All servers";
 
 const Channels = () => {
   const classes = useStyles();
-  const { user,superAdmin } = useContext(AppContext);
+  const { user, superAdmin } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
   const [viewMap, setViewMap] = useState({});
-  const [healthCount, setHealthCount] = useState(-1);
   const [msg, setMsg] = useState("Loading channels...");
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [activeOwnerId, setActiveOwnerId] = useState("");
+  const [activeOwnerId, setActiveOwnerId] = useState(allSelections);
+  const [healthLoading, setHealthLoading] = useState(false);
+  const [channelSet, setChannelSet] = useState([allSelections]);
   // loaders and errors
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
@@ -45,7 +46,9 @@ const Channels = () => {
     if (chs.length === 0) {
       setActiveChannel(null);
     } else {
-      setActiveOwnerId(chs[0].server);
+      setActiveOwnerId(allSelections);
+      const namesset = [...new Set([...chs.map((ch) => ch.server)])] || [];
+      setChannelSet([allSelections, ...namesset]);
     }
     setLoading(false);
     _checkHealthStatus(chs);
@@ -53,12 +56,10 @@ const Channels = () => {
   };
 
   const _checkHealthStatus = async (allchannels = [], recheck = false) => {
-    setHealthCount(-1);
+    setHealthLoading(true);
     const hmap = await checkChannelHealth(allchannels, recheck);
     setHealthMap(hmap);
-    setHealthCount(
-      allchannels.filter((channel) => hmap[channel.name] === true).length
-    );
+    setHealthLoading(false);
     setSnack({
       open: true,
       message: "Channel Health Rechecked.",
@@ -111,7 +112,7 @@ const Channels = () => {
     setDeleteConfirm(false);
     setMsg("Deleting channel " + activeChannel.name);
     setLoading(true);
-    await deleteChannel(activeChannel,user);
+    await deleteChannel(activeChannel, user);
     setSnack({
       open: true,
       message: "Channel successfully deleted.",
@@ -121,8 +122,10 @@ const Channels = () => {
 
   const _changeRtmpStatus = async () => {
     setOpenStatusDialog(false);
-    await changeRtmpStatus(activeChannel,user);
-    const channelstoreboot = channelList.filter(ch => ch.server===activeChannel.server);
+    await changeRtmpStatus(activeChannel, user);
+    const channelstoreboot = channelList.filter(
+      (ch) => ch.server === activeChannel.server
+    );
     await rebootServer(channelstoreboot);
     setMsg("Loading channels...");
     setLoading(true);
@@ -130,7 +133,6 @@ const Channels = () => {
   };
 
   const filterChannel_Admin = (ownerinfo) => {
-    setAnchorEl(null);
     setActiveOwnerId(ownerinfo);
   };
 
@@ -143,9 +145,17 @@ const Channels = () => {
     return <Preloader message={msg} />;
   }
 
-  const filtereddata = channelList.filter((ch) => ch.server === activeOwnerId) || [];
-  const channelSet = [...new Set([...channelList.map((ch) => ch.server)])]||[];
-  
+  let filtereddata = [];
+  if (activeOwnerId === allSelections) {
+    filtereddata = channelList;
+  } else {
+    filtereddata =
+      channelList.filter((ch) => ch.server === activeOwnerId) || [];
+  }
+  const filteredHealthCount = filtereddata.filter(
+    (ch) => healthMap[ch.name]
+  ).length;
+
   return (
     <div className={classes.channels}>
       {channelList.length <= 0 ? (
@@ -169,19 +179,19 @@ const Channels = () => {
               </Button>
             </Grid>
           </Grid>
-          <Insights channels={channelList} activeChannelCount={healthCount} />
+          <Insights
+            channels={filtereddata}
+            activeChannelCount={filteredHealthCount}
+            loading={healthLoading}
+          />
           <Grid container justify="flex-end">
             <Grid sm={12} xs={12} lg={3}>
-              <Button
-                aria-controls="change-ownwer-menu"
-                aria-haspopup="true"
-                onClick={(event) => setAnchorEl(event.currentTarget)}
-                disableElevation
-                style={{ marginTop: "16px", marginBottom: "-16px" }}
-              >
-                {activeOwnerId}
-                <DownArrowIcon />
-              </Button>
+              <ServerSelect
+                serverNames={channelSet}
+                onSelect={filterChannel_Admin}
+                selectedServer={activeOwnerId}
+                labelVisible={false}
+              />
             </Grid>
           </Grid>
           <ChannelTable
@@ -240,24 +250,6 @@ const Channels = () => {
         key={"snack"}
       />
       <FabAddButton onClickAction={openCreateChannelForm} />
-      <Menu
-        id="switch-channel-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={() => setAnchorEl(null)}
-      >
-        {channelSet.map(
-          (servername) => (
-            <MenuItem
-              key={servername}
-              onClick={() => filterChannel_Admin(servername)}
-            >
-              {servername}
-            </MenuItem>
-          )
-        )}
-      </Menu>
     </div>
   );
 };

@@ -2,12 +2,18 @@ import React, { useState } from "react";
 import { Button, Menu, MenuItem, FormLabel } from "@material-ui/core";
 import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 
-const ServerSelect = ({ serverNames, onSelect, selectedServer }) => {
+const ServerSelect = ({
+  serverNames,
+  onSelect,
+  selectedServer,
+  labelVisible,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const visible = labelVisible ===false? false : true;
 
   return (
     <React.Fragment>
-      <FormLabel component="legend">Choose server</FormLabel>
+      {visible && <FormLabel component="legend">Choose server</FormLabel>}
       <Button
         aria-controls="change-ownwer-menu"
         aria-haspopup="true"

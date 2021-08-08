@@ -16,7 +16,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import HealthIcon from "../../components/healthicon";
 import useStyles from "./channels.styles";
 
-const Insights = ({ channels, activeChannelCount }) => {
+const Insights = ({ channels, activeChannelCount, loading }) => {
   const classes = useStyles();
   return (
     <Grid container>
@@ -28,11 +28,7 @@ const Insights = ({ channels, activeChannelCount }) => {
         <Grid className={classes.countCnt} item sm={5} xs={5} lg={5}>
           <p className={classes.countHeader}>Active channels</p>
           <p className={classes.countValue}>
-            {activeChannelCount === -1 ? (
-              <CircularProgress />
-            ) : (
-              activeChannelCount
-            )}
+            {loading ? <CircularProgress /> : activeChannelCount}
           </p>
         </Grid>
       </Grid>
