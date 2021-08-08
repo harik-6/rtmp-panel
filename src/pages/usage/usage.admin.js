@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const UsageAdmin = () => {
-  const { user, allUsers,actions } = useContext(AppContext);
+  const { user, allUsers, actions, superAdmin } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [usagelist, setUsageList] = useState([]);
 
@@ -54,15 +54,16 @@ const UsageAdmin = () => {
       actions.setAllUsers(users);
       alls = users;
     }
-    loadUsageData(alls)
+    loadUsageData(alls);
   };
 
-  const loadUsageData = async (usersall=[]) => {
+  const loadUsageData = async (usersall = []) => {
     let alldata = await getUsageData(user);
     alldata = alldata || [];
     const allids = [...new Set(alldata.map((obj) => obj.usageId))];
     let list = [];
     const idtoservernamp = {};
+    idtoservernamp[user.usageid] = user.server;
     usersall.forEach((usr) => {
       idtoservernamp[usr.usageid] = usr.server;
     });
@@ -99,8 +100,13 @@ const UsageAdmin = () => {
         <Table aria-label="channel-list">
           <TableRow>
             <TableCell align="left">Server</TableCell>
-            <TableCell align="left">Inbound Usage</TableCell>
-            <TableCell align="left">Outbound Usage</TableCell>
+            <TableCell align="left">Total Usage</TableCell>
+            {superAdmin && (
+              <>
+                <TableCell align="left">Inbound Usage</TableCell>
+                <TableCell align="left">Outbound Usage</TableCell>
+              </>
+            )}
             <TableCell align="left">Inbound Transfer(Mbps)</TableCell>
             <TableCell align="left">Outbound Transfer(Mbps)</TableCell>
           </TableRow>
@@ -111,11 +117,21 @@ const UsageAdmin = () => {
                   {usage.usageId}
                 </TableCell>
                 <TableCell className={classes.tbcell} align="left">
-                  {formatDisplayTotal(usage.total.intotal)}
+                  {formatDisplayTotal(
+                    parseFloat(usage.total.intotal) +
+                      parseFloat(usage.total.outtotal)
+                  )}
                 </TableCell>
-                <TableCell className={classes.tbcell} align="left">
-                  {formatDisplayTotal(usage.total.outtotal)}
-                </TableCell>
+                {superAdmin && (
+                  <>
+                    <TableCell className={classes.tbcell} align="left">
+                      {formatDisplayTotal(usage.total.intotal)}
+                    </TableCell>
+                    <TableCell className={classes.tbcell} align="left">
+                      {formatDisplayTotal(usage.total.outtotal)}
+                    </TableCell>
+                  </>
+                )}
                 <TableCell className={classes.tbcell} align="left">
                   {usage.inBand.value}
                 </TableCell>
