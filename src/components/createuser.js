@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
-  const { user, allUsers } = useContext(AppContext);
+  const { user, allUsers, superAdmin } = useContext(AppContext);
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
   const [chLimitErr, setChLimitErr] = useState(null);
@@ -66,7 +66,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
       return;
     }
     const total = consumed + entered;
-    if (total > parseInt(user.limit)) {
+    if (!superAdmin && total > parseInt(user.limit)) {
       setChLimitErr("Channel limit exceeded.");
       setCreating(false);
       return;
