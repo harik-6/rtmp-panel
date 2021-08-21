@@ -66,11 +66,12 @@ const Users = () => {
   };
 
   const changeAdminStatus = async (usertochange) => {
-    const us = await userservice.promoteDemoteAdmin(user,{
-      ...usertochange,
-      admin : !usertochange.admin
-    });
-    if(us!==null) {
+    const us = await userservice.promoteDemoteAdmin(
+      user,
+      usertochange.usertype==="a",
+      usertochange.token
+    );
+    if (us !== null) {
       loadAllUsers(true);
     }
   };
@@ -98,7 +99,7 @@ const Users = () => {
     return <Preloader message={"Loading users..."} />;
   }
 
-  if (allUsers.length <= 0 && action!=="add") {
+  if (allUsers.length <= 0 && action !== "add") {
     return (
       <>
         <Nodataloader message={"You don't have any users.Create one"} />
@@ -106,7 +107,6 @@ const Users = () => {
       </>
     );
   }
-
 
   return (
     <div className={classes.users}>
@@ -144,40 +144,42 @@ const Users = () => {
                       <TableCell align="left">PlayUrl</TableCell>
                       <TableCell align="left">Edit</TableCell>
                       <TableCell align="left">Delete</TableCell>
-                      {(user.usertype==="s") && <TableCell align="left">Admin</TableCell>}
+                      {user.usertype === "s" && (
+                        <TableCell align="left">Admin</TableCell>
+                      )}
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {spliceddata.map((user, index) => {
+                    {spliceddata.map((u, index) => {
                       return (
-                        <TableRow key={user.username + " " + index}>
+                        <TableRow key={u.username + " " + index}>
                           <TableCell
                             className={classes.tbcell}
                             align="left"
                           >{`${offSet + index + 1}.`}</TableCell>
                           <TableCell className={classes.tbcell} align="left">
-                            {user.username}
+                            {u.username}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
-                            {user.server}
+                            {u.server}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
-                            {user.limit}
+                            {u.limit}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
-                            {user.usage ? _TickIcon() : _NoTickIcon()}
+                            {u.usage ? _TickIcon() : _NoTickIcon()}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
-                            {user.bitrate ? _TickIcon() : _NoTickIcon()}
+                            {u.bitrate ? _TickIcon() : _NoTickIcon()}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
-                            {user.preview ? _TickIcon() : _NoTickIcon()}
+                            {u.preview ? _TickIcon() : _NoTickIcon()}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
                               size="small"
                               onClick={() => {
-                                setActiveUser(user);
+                                setActiveUser(u);
                                 openActionDialog("edit");
                               }}
                             >
@@ -187,17 +189,17 @@ const Users = () => {
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
                               onClick={(event) => {
-                                setActiveUser(user);
+                                setActiveUser(u);
                                 askConfirmation();
                               }}
                             >
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>
-                          {(user.usertype==="s") && (
+                          {user.usertype === "s" && (
                             <TableCell
                               onClick={() => {
-                                changeAdminStatus(user);
+                                changeAdminStatus(u);
                               }}
                               className={classes.tbcell}
                               align="left"
@@ -205,7 +207,7 @@ const Users = () => {
                                 cursor: "pointer",
                               }}
                             >
-                              {user.admin ? _TickIcon() : _NoTickIcon()}
+                              {u.usertype === "a" ? _TickIcon() : _NoTickIcon()}
                             </TableCell>
                           )}
                         </TableRow>

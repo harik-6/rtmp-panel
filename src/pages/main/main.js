@@ -41,7 +41,7 @@ const Main = () => {
       <div className={classes.sidenav}>
         <p className={classes.appname}>{appName}</p>
         <NavigationMenu
-          isAdmin={user.usertype === "a"}
+          isAdmin={user.usertype !== "u"}
           logoutUser={logoutUser}
         />
       </div>
@@ -58,7 +58,7 @@ const Main = () => {
             <Route path="/channels" component={Channels} />
             <Route path="/profile" component={Profile} />
             {settings.usage && <Route path="/usage" component={Usage} />}
-            {user.usertype === "a" && <Route path="/users" component={Users} />}
+            {user.usertype !== "u" && <Route path="/users" component={Users} />}
             <Route path="" exact>
               {" "}
               <Redirect to="/player" />{" "}

@@ -45,7 +45,6 @@ const EditUser = ({
     ...userToEdit,
   });
   const [password, setPassword] = useState("");
-
   const handleChange = (e) => {
     setUserObj({
       ...userObj,

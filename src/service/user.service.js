@@ -119,22 +119,25 @@ const UserService = {
       return null;
     }
   },
-  promoteDemoteAdmin: async (superAdmin, user) => {
+  promoteDemoteAdmin: async (admin, status, token) => {
+    // console.log(admin,token);
     try {
       const response = await axios.post(
         `${API}/edit`,
         {
-          user: user,
+          user: {
+            admin: !status,
+          },
+          settings: {},
+          token,
         },
         {
-          headers: {
-            Authorization: `Bearer ${superAdmin["_id"]}`,
-          },
+          headers: _headers(admin),
         }
       );
       CacheService.remove(CACHEKEYS.FETCH_USERS);
       if (response.data.status === "failed") return null;
-      return user;
+      return token;
     } catch (error) {
       return null;
     }
