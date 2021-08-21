@@ -44,7 +44,6 @@ const UserService = {
       );
       const settings_data = settings_response.data;
       if (settings_data.status === "failed") return null;
-      console.log(settings_data);
       return {
         user: userdata.payload,
         settings: settings_data.payload.settings,
@@ -109,7 +108,6 @@ const UserService = {
         },
         token,
       };
-      // console.log("Request body",body);
       // return null;
       const response = await axios.post(`${API}/edit`, body, {
         headers: _headers(admin),
@@ -120,7 +118,6 @@ const UserService = {
     } catch (error) {
       return null;
     }
-    return null;
   },
   promoteDemoteAdmin: async (superAdmin, user) => {
     try {

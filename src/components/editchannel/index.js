@@ -10,7 +10,7 @@ const EditChannel = ({
   user,
 }) => {
   if (channel === null || user === null) return <></>;
-  if (user["_id"] === process.env.REACT_APP_ADMINID) {
+  if (user.usertype==="s") {
     return (
       <EditChannelAdmin
         openForm={openForm}

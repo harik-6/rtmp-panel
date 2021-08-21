@@ -22,7 +22,7 @@ const allSelections = "All servers";
 
 const Channels = () => {
   const classes = useStyles();
-  const { user, superAdmin,settings } = useContext(AppContext);
+  const { user,settings } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
@@ -202,7 +202,7 @@ const Channels = () => {
             openActionDialog={openActionDialog}
             askConfirmation={askConfirmation}
             setOpenStatusDialog={setOpenStatusDialog}
-            isSuperAdmin={superAdmin}
+            isSuperAdmin={user.usertype==="s"}
           />
         </Grid>
       )}

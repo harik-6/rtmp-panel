@@ -15,7 +15,6 @@ const AppReducer = (state, action) => {
         },
       };
     case "setlogin":
-      console.log("payload",payload)
       return {
         ...state,
         user: payload.user,

@@ -54,10 +54,6 @@ const EditChannelAdmin = ({
           setchnameerror(true);
           return;
         }
-        // if (alltokens.indexOf(chkey.toLowerCase()) !== -1) {
-        //   setchkeyerror(true);
-        //   return;
-        // }
       }
       setcreating(true);
       const toedit = {

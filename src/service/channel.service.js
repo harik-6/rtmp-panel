@@ -74,7 +74,6 @@ const getChannels = async (user) => {
       }
     );
     const data = response.data.payload || [];
-    console.log("channels data",data)
     data.sort((a, b) => a.name.localeCompare(b.name));
     CacheService.set(cachkey, data);
     return data;
@@ -113,7 +112,7 @@ const getChannelDetailsByName = async (channelName) => {
 };
 
 const editchannelAdmin = async (channel, user) => {
-  if (user["_id"] === process.env.REACT_APP_ADMINID) {
+  if (user.usertype==="s") {
     try {
       const channeltoedit = {
         ...channel,
@@ -125,9 +124,7 @@ const editchannelAdmin = async (channel, user) => {
           channel: channeltoedit,
         },
         {
-          headers: {
-            Authorization: `Bearer ${user["_id"]}`,
-          },
+          headers: _headers(user)
         }
       );
       const data = response.data;
