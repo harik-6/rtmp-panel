@@ -120,7 +120,6 @@ const UserService = {
     }
   },
   promoteDemoteAdmin: async (admin, status, token) => {
-    // console.log(admin,token);
     try {
       const response = await axios.post(
         `${API}/edit`,
