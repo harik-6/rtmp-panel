@@ -37,9 +37,10 @@ const EditUser = ({
   successCallback,
   userToEdit,
 }) => {
-  const { user, allUsers } = useContext(AppContext);
+  const { user, allUsers, settings } = useContext(AppContext);
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
+  const [chLimitErr, setChLimitErr] = useState(null);
   const [userObj, setUserObj] = useState({
     ...userToEdit,
   });
@@ -58,14 +59,29 @@ const EditUser = ({
     const allnames = allUsers
       .map((user) => user.username)
       .filter((name) => name !== userObj.username);
-    if (allnames.indexOf(userObj.username) === -1) {
-      await service.editUser(user, userObj, password);
-      closePopup();
-      successCallback();
-    } else {
+    if (allnames.indexOf(userObj.username) !== -1) {
       setErr("User alerady exists");
       setCreating(false);
+      return;
     }
+    const entered = parseInt(userObj.limit);
+    if (entered <= 0) {
+      setChLimitErr("Invalid channel limit");
+      setCreating(false);
+      return;
+    }
+    if (user.usertype === "a") {
+      const consumed = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
+      const total = consumed + entered;
+      if (total > parseInt(settings.limit)) {
+        setChLimitErr("Channel limit exceeded.");
+        setCreating(false);
+        return;
+      }
+    }
+    await service.editUser(user, userObj, password);
+    closePopup();
+    successCallback();
   };
 
   const closePopup = () => {
@@ -128,6 +144,8 @@ const EditUser = ({
             type="number"
             disabled={creating}
             onChange={handleChange}
+            error={chLimitErr}
+            helperText={chLimitErr}
           />
           <FormLabel style={{ marginTop: "8px" }} component="legend">
             Usage

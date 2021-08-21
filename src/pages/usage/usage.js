@@ -47,7 +47,7 @@ const Usage = () => {
   };
 
   useEffect(() => {
-    if (!(user || { admin: false }).admin) {
+    if (!(user.usertype === "a" || user.usertype === "s")) {
       loadUsageData();
     }
     //eslint-disable-next-line
@@ -57,7 +57,7 @@ const Usage = () => {
     return <Preloader message={"Loading data..."} />;
   }
 
-  return (user || { admin: false }).admin ? (
+  return user.usertype === "a" || user.usertype === "s" ? (
     <UsageAdmin />
   ) : (
     <>

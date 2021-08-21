@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Button,
@@ -32,19 +32,13 @@ const useStyles = makeStyles((theme) =>
 );
 
 const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
-  const { user, allUsers, superAdmin } = useContext(AppContext);
+  const { user, allUsers, settings } = useContext(AppContext);
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
-  const [chLimitErr, setChLimitErr] = useState(null);
   const [userObj, setUserObj] = useState({
     username: "",
     password: "",
-    limit: 1,
     server: "",
-    owner: user["_id"],
-    usage: false,
-    bitrate: false,
-    preview: false,
   });
 
   const handleChange = (e) => {
@@ -58,46 +52,30 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     setCreating(true);
     setErr(null);
     const allnames = allUsers.map((user) => user.username);
-    const consumed = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
-    const entered = parseInt(userObj.limit);
-    if (entered <= 0) {
-      setChLimitErr("Invalid channel limit");
-      setCreating(false);
-      return;
-    }
-    const total = consumed + entered;
-    if (!superAdmin && total > parseInt(user.limit)) {
-      setChLimitErr("Channel limit exceeded.");
-      setCreating(false);
-      return;
+    if (allnames.indexOf(userObj.username) === -1) {
+      await service.createUser(user, userObj);
+      closePopup();
+      successCallback();
     } else {
-      if (allnames.indexOf(userObj.username) === -1) {
-        await service.createUser(user, userObj);
-        closePopup();
-        successCallback();
-      } else {
-        setErr("User alerady exists");
-        setCreating(false);
-      }
+      setErr("User alerady exists");
+      setCreating(false);
     }
   };
 
   const closePopup = () => {
     setCreating(false);
     setErr(null);
-    setChLimitErr(null);
     setUserObj({
       username: "",
       password: "",
-      limit: 1,
       server: "",
-      owner: user["_id"],
-      usage: false,
-      bitrate: false,
-      preview: false,
     });
     closeCreatepop();
   };
+
+  const consumed = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
+  const max = settings.limit;
+  const chLimitErr = max - consumed < 1;
 
   const classes = useStyles();
   return (
@@ -112,141 +90,48 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
       <DialogTitle id="create-user-form-title">{"Create new user"}</DialogTitle>
       <DialogContent>
         <DialogContentText id="create-user-form-title-description">
-          <TextField
-            className={classes.txtfield}
-            fullWidth
-            id="username"
-            label="Name"
-            name="username"
-            value={userObj.username}
-            disabled={creating}
-            onChange={handleChange}
-            error={err}
-            helperText={err}
-          />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
-            id="password"
-            name="password"
-            label="Password"
-            value={userObj.password}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
-            id="server"
-            name="server"
-            label="Server"
-            value={userObj.server}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
-            id="limit"
-            name="limit"
-            label="Limit"
-            value={userObj.limit}
-            type="number"
-            disabled={creating}
-            onChange={handleChange}
-            error={chLimitErr}
-            helperText={chLimitErr}
-          />
-          <FormLabel style={{ marginTop: "8px" }} component="legend">
-            Usage
-          </FormLabel>
-          <RadioGroup
-            aria-label="usage"
-            name="usage"
-            value={userObj.usage ? "show" : "hide"}
-            onChange={(e) => {
-              handleChange({
-                target: {
-                  name: "usage",
-                  value: e.target.value === "show" ? true : false,
-                },
-              });
-            }}
-            style={{ display: "flex", flexDirection: "row" }}
-          >
-            <FormControlLabel
-              value={"show"}
-              control={<Radio />}
-              label="Show"
-              disabled={creating}
-            />
-            <FormControlLabel
-              value={"hide"}
-              control={<Radio />}
-              label="Hide"
-              disabled={creating}
-            />
-          </RadioGroup>
-          <FormLabel style={{ marginTop: "8px" }} component="legend">
-            Bitrate
-          </FormLabel>
-          <RadioGroup
-            aria-label="bitrate"
-            name="bitrate"
-            value={userObj.bitrate ? "show" : "hide"}
-            onChange={(e) => {
-              handleChange({
-                target: {
-                  name: "bitrate",
-                  value: e.target.value === "show" ? true : false,
-                },
-              });
-            }}
-            style={{ display: "flex", flexDirection: "row" }}
-          >
-            <FormControlLabel
-              value={"show"}
-              control={<Radio />}
-              label="Show"
-              disabled={creating}
-            />
-            <FormControlLabel
-              value={"hide"}
-              control={<Radio />}
-              label="Hide"
-              disabled={creating}
-            />
-          </RadioGroup>
-          <FormLabel style={{ marginTop: "8px" }} component="legend">
-            PlayUrl
-          </FormLabel>
-          <RadioGroup
-            aria-label="preview"
-            name="preview"
-            value={userObj.preview ? "show" : "hide"}
-            onChange={(e) => {
-              handleChange({
-                target: {
-                  name: "preview",
-                  value: e.target.value === "show" ? true : false,
-                },
-              });
-            }}
-            style={{ display: "flex", flexDirection: "row" }}
-          >
-            <FormControlLabel
-              value={"show"}
-              control={<Radio />}
-              label="Show"
-              disabled={creating}
-            />
-            <FormControlLabel
-              value={"hide"}
-              control={<Radio />}
-              label="Hide"
-              disabled={creating}
-            />
-          </RadioGroup>
+          {chLimitErr ? (
+            <>
+              <DialogTitle id="limit-excedded">
+                {"Channel limit exceeded."}
+              </DialogTitle>
+            </>
+          ) : (
+            <>
+              <TextField
+                className={classes.txtfield}
+                fullWidth
+                id="username"
+                label="Name"
+                name="username"
+                value={userObj.username}
+                disabled={creating}
+                onChange={handleChange}
+                error={err}
+                helperText={err}
+              />
+              <TextField
+                className={classes.txtfield}
+                fullWidth
+                id="password"
+                name="password"
+                label="Password"
+                value={userObj.password}
+                disabled={creating}
+                onChange={handleChange}
+              />
+              <TextField
+                className={classes.txtfield}
+                fullWidth
+                id="server"
+                name="server"
+                label="Server"
+                value={userObj.server}
+                disabled={creating}
+                onChange={handleChange}
+              />
+            </>
+          )}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

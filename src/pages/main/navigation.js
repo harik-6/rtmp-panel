@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link,useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import useStyles from "./main.styles";
@@ -22,21 +22,21 @@ const NavigationMenu = ({ isAdmin, logoutUser }) => {
   };
 
   const changeActiveTab = () => {
-    if(location.pathname==="/profile") {
-      changePage(isAdmin?5:4);
+    if (location.pathname === "/profile") {
+      changePage(isAdmin ? 5 : 4);
     }
-  }
+  };
 
   useEffect(() => {
-    if (user === null || settings === null) {
+    if (user.token === null) {
       history.replace("/login");
     }
-    changeActiveTab()
+    changeActiveTab();
     // eslint-disable-next-line
-  }, [user, isAdmin,location]);
+  }, [user, isAdmin, location]);
 
   let navigations = isAdmin ? adminNavigations : userNavigations;
-  const isUsageAvail = user.usage || false;
+  const isUsageAvail = settings.usage || false;
   if (!isUsageAvail) {
     navigations = navigations.filter((nav) => nav.name !== "Usage");
   }

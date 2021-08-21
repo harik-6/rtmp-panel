@@ -26,7 +26,7 @@ import NoTickIcon from "@material-ui/icons/ClearOutlined";
 
 const Users = () => {
   const classes = useStyles();
-  const { user, actions, allUsers, superAdmin } = useContext(AppContext);
+  const { user, actions, allUsers } = useContext(AppContext);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [activeUser, setActiveUser] = useState(null);
@@ -144,7 +144,7 @@ const Users = () => {
                       <TableCell align="left">PlayUrl</TableCell>
                       <TableCell align="left">Edit</TableCell>
                       <TableCell align="left">Delete</TableCell>
-                      {superAdmin && <TableCell align="left">Admin</TableCell>}
+                      {(user.usertype==="s") && <TableCell align="left">Admin</TableCell>}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -194,7 +194,7 @@ const Users = () => {
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>
-                          {superAdmin && (
+                          {(user.usertype==="s") && (
                             <TableCell
                               onClick={() => {
                                 changeAdminStatus(user);

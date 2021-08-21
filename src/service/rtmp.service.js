@@ -12,21 +12,16 @@ const _headers = (user) => {
 };
 
 const getUsageData = async (user) => {
-  const userid = user["_id"];
-  if (userid !== undefined && userid.length > 0) {
-    const cachkey = CACHEKEYS.FETCH_USAGE + "#" + user["usageid"];
+  const cachkey = CACHEKEYS.FETCH_USAGE + "#" + user.username;
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
     try {
       const response = await axios.post(
         `${API_RTMP}/usage`,
         {
-          userId: userid,
         },
         {
-          headers: {
-            Authorization: `Bearer ${userid}`,
-          },
+          headers: _headers(user)
         }
       );
       const data = response.data;
@@ -37,7 +32,6 @@ const getUsageData = async (user) => {
     } catch (error) {
       return null;
     }
-  }
 };
 
 const changeRtmpStatus = async (channel, user) => {

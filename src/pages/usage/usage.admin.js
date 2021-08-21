@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const UsageAdmin = () => {
-  const { user, allUsers, actions, superAdmin } = useContext(AppContext);
+  const { user, allUsers, actions, superAdmin,settings } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [usagelist, setUsageList] = useState([]);
 
@@ -63,7 +63,7 @@ const UsageAdmin = () => {
     const allids = [...new Set(alldata.map((obj) => obj.usageId))];
     let list = [];
     const idtoservernamp = {};
-    idtoservernamp[user.usageid] = user.server;
+    idtoservernamp[settings.usageid] = settings.server;
     usersall.forEach((usr) => {
       idtoservernamp[usr.usageid] = usr.server;
     });
