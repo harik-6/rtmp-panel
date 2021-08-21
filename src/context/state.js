@@ -5,28 +5,34 @@ import CacheService from "../service/cache.service";
 const initialState = {
   appName: "StreamWell",
   appDesc: "Dedicated streaming server provider.",
-  user: null,
   channels: null,
   healthList: null,
   allUsers: [],
   usageData: null,
-  superAdmin: false,
-  avatarApi:"https://avatars.dicebear.com/api/initials/"
+  avatarApi: "https://avatars.dicebear.com/api/initials/",
+  user: {
+    username: "streamwell",
+    usertype: "u",
+    token: null,
+  },
+  settings: {
+    usage: false,
+    preview: false,
+    bitrate: false,
+    usageid: null,
+    limit: 0,
+    server : null
+  },
 };
 
 const AppState = (props) => {
   const [state, dispatch] = useReducer(AppReducer, initialState);
 
-  const loginUser = (user) => {
+  const loginUser = (metadata) => {
     dispatch({
       type: "setlogin",
-      payload: user,
+      payload: metadata,
     });
-    if (user["_id"] === process.env.REACT_APP_ADMINID) {
-      dispatch({
-        type: "superadmin",
-      });
-    }
   };
 
   const setChannles = (channels) => {

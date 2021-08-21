@@ -20,8 +20,8 @@ import CacheService from "../../service/cache.service";
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [username, setusername] = useState("");
-  const [password, setpassword] = useState("");
+  const [username, setusername] = useState("sharsolution");
+  const [password, setpassword] = useState("sharsolution");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -39,13 +39,13 @@ const Login = () => {
     setloginin(true);
     CacheService.clear();
     if (username.length > 0 && password.length > 0) {
-      const userdetails = await service.getUser(username, password);
-      if (userdetails === null) {
+      const metadata = await service.getUser(username, password);
+      if (metadata === null) {
         setloginin(false);
         seterror(true);
         return;
       } else {
-        actions.loginUser(userdetails);
+        actions.loginUser(metadata);
         history.push("/");
       }
     }

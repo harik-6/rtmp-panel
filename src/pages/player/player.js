@@ -23,7 +23,7 @@ import {
 import useStyles from "./player.styles";
 
 const Home = () => {
-  const { user,actions } = useContext(AppContext);
+  const { user,actions,settings } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});

@@ -4,17 +4,22 @@ const AppReducer = (state, action) => {
     case "logout":
       return {
         ...state,
-        user: null,
         channels: null,
         healthList: null,
         allUsers: [],
         usageData: null,
-        superAdmin: false,
+        user: {
+          username: "streamwell",
+          usertype: "u",
+          token: null,
+        },
       };
     case "setlogin":
+      console.log("payload",payload)
       return {
         ...state,
-        user: payload,
+        user: payload.user,
+        settings: payload.settings,
       };
     case "setchannels":
       return {

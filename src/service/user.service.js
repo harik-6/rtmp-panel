@@ -4,6 +4,12 @@ import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `${process.env.REACT_APP_API}/api/user`;
 
+const _headers = (user) => {
+  return {
+    Authorization: `Bearer ${user.token}`,
+  };
+};
+
 const getEditUserPayload = (editedUser, newpass) => {
   if (newpass.length !== 0) {
     return {
@@ -17,15 +23,27 @@ const getEditUserPayload = (editedUser, newpass) => {
 
 const UserService = {
   getUser: async (username, password) => {
+    CacheService.clear();
     password = sha1(password);
     try {
-      const response = await axios.post(`${API}/get`, {
+      const response = await axios.post(`${API}/auth`, {
         username,
         password,
       });
-      const data = response.data;
-      if (data.payload.status === "failed") return null;
-      return data.payload;
+      const userdata = response.data;
+      if (userdata.status === "failed") return null;
+      const settings_response = await axios.post(`${API}/settings`,{},{
+        headers : {
+          Authorization: `Bearer ${userdata.payload.token}`,
+        }
+      })
+      const settings_data = settings_response.data;
+      if (settings_data.status === "failed") return null;
+      console.log(settings_data);
+      return {
+        user : userdata.payload,
+        settings : settings_data.payload.settings
+      };
     } catch (error) {
       return null;
     }

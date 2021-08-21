@@ -34,12 +34,12 @@ const CreateNewChannel = ({
   successCallback,
   channelSet,
 }) => {
-  const { user, actions } = useContext(AppContext);
+  const { user, actions,settings } = useContext(AppContext);
   const [chname, setchname] = useState("");
   const [chkey, setchkey] = useState("");
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
-  const [server, setSelectedServer] = useState(user.server);
+  const [server, setSelectedServer] = useState(settings.server);
 
   const handleChName = (e) => {
     setchname(e.target.value);

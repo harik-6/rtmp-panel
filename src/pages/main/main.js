@@ -22,7 +22,8 @@ import RebootConfirmationDialog from "../../components/rebootconfirm";
 
 const Main = () => {
   const classes = useStyles();
-  const { user, appName, avatarApi, actions } = useContext(AppContext);
+  const { user, settings, appName, avatarApi, actions } =
+    useContext(AppContext);
   const [openReboot, setOpenReboot] = useState(false);
 
   const logoutUser = () => {
@@ -33,13 +34,16 @@ const Main = () => {
     setOpenReboot(status);
   };
 
-  if (user === null) return <Login />;
+  if (user.token === null) return <Login />;
 
   return (
     <div className={classes.appmain}>
       <div className={classes.sidenav}>
         <p className={classes.appname}>{appName}</p>
-        <NavigationMenu isAdmin={user.admin || false} logoutUser={logoutUser} />
+        <NavigationMenu
+          isAdmin={user.usertype === "a"}
+          logoutUser={logoutUser}
+        />
       </div>
       <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
         <MenuAppBar
@@ -53,8 +57,8 @@ const Main = () => {
             <Route path="/player" component={Player} />
             <Route path="/channels" component={Channels} />
             <Route path="/profile" component={Profile} />
-            {(user.usage || false) && <Route path="/usage" component={Usage} />}
-            {(user.admin || false) && <Route path="/users" component={Users} />}
+            {settings.usage && <Route path="/usage" component={Usage} />}
+            {user.usertype === "a" && <Route path="/users" component={Users} />}
             <Route path="" exact>
               {" "}
               <Redirect to="/player" />{" "}
@@ -132,7 +136,7 @@ function MenuAppBar({ user, avatarApi, logoutUser, rebootServer }) {
                 {" "}
                 <MenuItem onClick={handleClose}>My Account</MenuItem>
               </Link> */}
-              {user.admin && (
+              {user.usertype === "a" && (
                 <MenuItem
                   onClick={() => {
                     handleClose();

@@ -5,6 +5,12 @@ const API = `${process.env.REACT_APP_API}/api/channel`;
 const API_RTMP = `${process.env.REACT_APP_API}/api/rtmp`;
 const API_VIEW = `${process.env.REACT_APP_API}/api/view`;
 
+const _headers = (user) => {
+  return {
+    Authorization: `Bearer ${user.token}`,
+  };
+};
+
 const getUsageData = async (user) => {
   const userid = user["_id"];
   if (userid !== undefined && userid.length > 0) {
@@ -39,12 +45,10 @@ const changeRtmpStatus = async (channel, user) => {
     const response = await axios.post(
       `${API}/edit/status`,
       {
-        channelId: channel["_id"],
+        channelid: channel["_id"],
       },
       {
-        headers: {
-          Authorization: `Bearer ${user["_id"]}`,
-        },
+        headers: _headers(user),
       }
     );
     const data = response.data;

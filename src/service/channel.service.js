@@ -8,7 +8,6 @@ const _constructChannel = (user, channelname, server) => {
   const newchannel = {
     name: chname,
     key: chname,
-    ownerid: user["_id"],
     server,
     rtmp: `rtmp://${server}/live/${chname}`,
     hls: `https://${server}/hls/${chname}.m3u8`,
@@ -20,6 +19,12 @@ const _constructChannel = (user, channelname, server) => {
   return newchannel;
 };
 
+const _headers = (user) => {
+  return {
+    Authorization: `Bearer ${user.token}`,
+  };
+};
+
 const createChannel = async (user, channelname, server) => {
   try {
     const newchannel = _constructChannel(user, channelname, server);
@@ -29,9 +34,7 @@ const createChannel = async (user, channelname, server) => {
         channel: newchannel,
       },
       {
-        headers: {
-          Authorization: `Bearer ${user["_id"]}`,
-        },
+        headers: _headers(user)
       }
     );
     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
@@ -43,35 +46,13 @@ const createChannel = async (user, channelname, server) => {
     return null;
   }
 };
-const editchannel = async (channel, user) => {
-  // if (user["_id"] === process.env.REACT_APP_ADMINID) {
-  //   try {
-  //     const channeltoedit = {
-  //       ...channel,
-  //       _id: channel["_id"],
-  //     };
-  //     const response = await axios.post(`${API}/edit`, {
-  //       channel: channeltoedit,
-  //     });
-  //     const data = response.data;
-  //     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
-  //     if (data.payload.status === "failed") return null;
-  //     return channeltoedit["_id"];
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
-  return null;
-};
 const getAllTokens = async (user) => {
   try {
     const response = await axios.post(
       `${API}/keys`,
       {},
       {
-        headers: {
-          Authorization: `Bearer ${user["_id"]}`,
-        },
+        headers: _headers(user)
       }
     );
     if (response.data.status === "success") return response.data.payload;
@@ -87,16 +68,13 @@ const getChannels = async (user) => {
     if (cachevalue !== null) return cachevalue;
     const response = await axios.post(
       `${API}/get`,
+      {},
       {
-        ownerid: user["_id"],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${user["_id"]}`,
-        },
+        headers: _headers(user)
       }
     );
     const data = response.data.payload || [];
+    console.log("channels data",data)
     data.sort((a, b) => a.name.localeCompare(b.name));
     CacheService.set(cachkey, data);
     return data;
@@ -109,12 +87,10 @@ const deleteChannel = async (channel, user) => {
     const response = await axios.post(
       `${API}/delete`,
       {
-        channelId: channel["_id"],
+        channelid: channel["_id"],
       },
       {
-        headers: {
-          Authorization: `Bearer ${user["_id"]}`,
-        },
+        headers: _headers(user)
       }
     );
     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
@@ -171,5 +147,4 @@ export {
   deleteChannel,
   getChannelDetailsByName,
   editchannelAdmin,
-  editchannel,
 };
