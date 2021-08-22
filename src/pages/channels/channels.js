@@ -195,7 +195,7 @@ const Channels = () => {
             </Grid>
           </Grid>
           <ChannelTable
-            spliceddata={filtereddata}
+            tabledata={filtereddata}
             healthStatus={healthMap}
             viewCount={viewMap}
             setActiveChanel={setActiveChannel}

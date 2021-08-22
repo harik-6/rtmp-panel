@@ -164,7 +164,7 @@ const Home = () => {
             onVideoPlay={onVideoPlay}
             isLive={healthMap[activeChannel.name]}
           />
-          {user.bitrate && <StreamMetadata metadata={metadata} />}
+          {settings.bitrate && <StreamMetadata metadata={metadata} />}
           <StreamUserInfo
             ch={activeChannel}
             showPlayUrl={settings.preview}

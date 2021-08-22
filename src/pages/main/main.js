@@ -136,7 +136,7 @@ function MenuAppBar({ user, avatarApi, logoutUser, rebootServer }) {
                 {" "}
                 <MenuItem onClick={handleClose}>My Account</MenuItem>
               </Link> */}
-              {user.usertype === "a" && (
+              {user.usertype !== "u" && (
                 <MenuItem
                   onClick={() => {
                     handleClose();

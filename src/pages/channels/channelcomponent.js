@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Table,
@@ -8,7 +8,7 @@ import {
   TableContainer,
   CircularProgress,
   IconButton,
-  // TablePagination,
+  TablePagination,
   Switch,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/EditRounded";
@@ -37,7 +37,7 @@ const Insights = ({ channels, activeChannelCount, loading }) => {
 };
 
 const ChannelTable = ({
-  spliceddata,
+  tabledata,
   healthStatus,
   setActiveChanel,
   openActionDialog,
@@ -46,9 +46,32 @@ const ChannelTable = ({
   viewCount,
   isSuperAdmin,
 }) => {
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(0);
+
+  const handleChangePage = (event, pagenumber) => {
+    setPage(pagenumber);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(event.target.value);
+  };
+
+  const offSet = page * pageSize;
+  const spliceddata = tabledata.slice(offSet, (page + 1) * pageSize);
+
   const classes = useStyles();
   return (
     <TableContainer className={classes.tablecnt}>
+      <TablePagination
+        rowsPerPageOptions={[10, 15, 25]}
+        component="div"
+        count={tabledata.length}
+        rowsPerPage={pageSize}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
       <Table aria-label="channel-list">
         <TableRow>
           <TableCell align="left">Name</TableCell>
