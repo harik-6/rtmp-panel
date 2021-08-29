@@ -40,6 +40,5 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "/",
-  "proxy": "https://rtmp.streamwell.in/api"
+  "homepage": "/"
 }

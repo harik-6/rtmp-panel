@@ -1,7 +1,7 @@
 import axios from "axios";
 import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
-const API = `/channel`;
+const API = `${process.env.REACT_APP_API}/channel`;
 
 const _constructChannel = (user, channelname, server) => {
   const chname = channelname.toLowerCase().replace(" ", "");
