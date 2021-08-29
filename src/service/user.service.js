@@ -2,7 +2,7 @@ import sha1 from "sha1";
 import axios from "axios";
 import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
-const API = `${process.env.REACT_APP_API}/api/user`;
+const API = `/user`;
 
 const _headers = (user) => {
   return {
