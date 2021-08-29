@@ -101,6 +101,9 @@ const useStyles = makeStyles((theme) =>
     },
     appbarroot: {
       flex: 1,
+      [theme.breakpoints.down("sm")]: {
+        flex : 0
+      },
     },
     appbarmenubtn: {
       marginRight: theme.spacing(2),

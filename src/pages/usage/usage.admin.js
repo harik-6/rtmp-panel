@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const UsageAdmin = () => {
-  const { user, allUsers, actions, superAdmin,settings } = useContext(AppContext);
+  const { user, allUsers, actions,settings } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [usagelist, setUsageList] = useState([]);
 
@@ -90,7 +90,7 @@ const UsageAdmin = () => {
     if (value > 1000) return (value / 1000).toFixed(2) + " Tb";
     return value + " Gb";
   };
-
+  // console.log(user);
   if (loading) {
     return <Preloader message={"Loading data..."} />;
   }
@@ -101,7 +101,7 @@ const UsageAdmin = () => {
           <TableRow>
             <TableCell align="left">Server</TableCell>
             <TableCell align="left">Total Usage</TableCell>
-            {superAdmin && (
+            {user.usertype==="s" && (
               <>
                 <TableCell align="left">Inbound Usage</TableCell>
                 <TableCell align="left">Outbound Usage</TableCell>
@@ -122,7 +122,7 @@ const UsageAdmin = () => {
                       parseFloat(usage.total.outtotal)
                   )}
                 </TableCell>
-                {superAdmin && (
+                {user.usertype==="s" && (
                   <>
                     <TableCell className={classes.tbcell} align="left">
                       {formatDisplayTotal(usage.total.intotal)}
