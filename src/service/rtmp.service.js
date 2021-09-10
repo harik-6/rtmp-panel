@@ -73,7 +73,7 @@ const rebootServer = async (channellist,user) => {
     await axios.post(`${API_VIEW}/reset`, {
       server: channel.server,
     },{
-      headers : __headers(user)
+      headers : _headers(user)
     });
     return;
   } catch (error) {
