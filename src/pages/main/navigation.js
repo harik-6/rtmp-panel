@@ -24,6 +24,10 @@ const NavigationMenu = ({ isAdmin, logoutUser }) => {
   const changeActiveTab = () => {
     if (location.pathname === "/profile") {
       changePage(isAdmin ? 5 : 4);
+      return;
+    }
+    if(location.pathname.includes("player")) {
+      changePage(1);
     }
   };
 

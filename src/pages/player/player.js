@@ -44,9 +44,9 @@ const Home = (props) => {
     const chs = (await getChannels(user)) || [];
     if (chs.length > 0) {
       setChannelList(chs);
-      _changeActiveChannel(queryChName||chs[0].name);
-      // setActiveChannel(chs[0]);
-      // setSelectedChip(chs[0].name);
+      const name = queryChName||chs[0].name;
+      setActiveChannel(chs.find((c) => c.name === name));
+      setSelectedChip(name);
       _checkChannelHealth(chs);
       actions.setChannles(chs);
     } else {
@@ -56,7 +56,6 @@ const Home = (props) => {
   };
 
   const _changeActiveChannel = (channelName) => {
-    console.log("changing channel name",channelName);
     setActiveChannel(
       channelList.find((channel) => channel.name === channelName)
     );
@@ -133,7 +132,6 @@ const Home = (props) => {
 
   useEffect(() => {
     const qchName = new URLSearchParams(props.location.search).get("channel");
-    // console.log(qchName);
     loadChannels(qchName);
     //eslint-disable-next-line
   }, []);
@@ -160,19 +158,24 @@ const Home = (props) => {
               />
             </div>
           </div>
-          <StreamPlayer
-            ch={activeChannel}
-            onVideoError={onVideoError}
-            onVideoStart={onVideoStart}
-            onVideoPlay={onVideoPlay}
-            isLive={healthMap[activeChannel.name]}
-          />
+          {activeChannel !== undefined && (
+            <StreamPlayer
+              ch={activeChannel}
+              onVideoError={onVideoError}
+              onVideoStart={onVideoStart}
+              onVideoPlay={onVideoPlay}
+              isLive={healthMap[activeChannel?.name]}
+            />
+          )}
+
           {settings.bitrate && <StreamMetadata metadata={metadata} />}
-          <StreamUserInfo
-            ch={activeChannel}
-            showPlayUrl={settings.preview}
-            isLive={healthMap[activeChannel.name]}
-          />
+          {activeChannel !== undefined && (
+            <StreamUserInfo
+              ch={activeChannel}
+              showPlayUrl={settings.preview}
+              isLive={healthMap[activeChannel?.name]}
+            />
+          )}
         </>
       )}
     </div>

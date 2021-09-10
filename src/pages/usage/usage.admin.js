@@ -90,7 +90,6 @@ const UsageAdmin = () => {
     if (value > 1000) return (value / 1000).toFixed(2) + " Tb";
     return value + " Gb";
   };
-  // console.log(user);
   if (loading) {
     return <Preloader message={"Loading data..."} />;
   }
