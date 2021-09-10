@@ -70,6 +70,7 @@ const Main = () => {
           closeForm={() => {
             toggleReboot(false);
           }}
+          user={user}
         />
       </div>
     </div>

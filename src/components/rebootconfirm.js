@@ -14,7 +14,7 @@ import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import AppContext from "../context/context";
 import { rebootServer } from "../service/rtmp.service";
 
-const RebootConfirmationDialog = ({ openForm, closeForm }) => {
+const RebootConfirmationDialog = ({ openForm, closeForm,user }) => {
   const text = "Choose server to reboot";
   const { actions, channels } = useContext(AppContext);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -22,7 +22,7 @@ const RebootConfirmationDialog = ({ openForm, closeForm }) => {
   const rebootRtmpServer = async () => {
     if (server !== text) {
       const channellist = (channels || []).filter((ch) => ch.server === server);
-      await rebootServer(channellist);
+      await rebootServer(channellist,user);
       closeForm();
       actions.logout();
     }

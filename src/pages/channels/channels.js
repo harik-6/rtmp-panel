@@ -128,7 +128,7 @@ const Channels = () => {
     const channelstoreboot = channelList.filter(
       (ch) => ch.server === activeChannel.server
     );
-    await rebootServer(channelstoreboot);
+    await rebootServer(channelstoreboot,user);
     setMsg("Loading channels...");
     setLoading(true);
     setTimeout(() => loadChannels(), 2000);

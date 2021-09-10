@@ -67,11 +67,13 @@ const getBitrateMedata = async (httplink) => {
   }
 };
 
-const rebootServer = async (channellist) => {
+const rebootServer = async (channellist,user) => {
   const channel = channellist[0];
   try {
     await axios.post(`${API_VIEW}/reset`, {
       server: channel.server,
+    },{
+      headers : __headers(user)
     });
     return;
   } catch (error) {
