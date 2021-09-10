@@ -22,8 +22,8 @@ import {
 } from "../../service/rtmp.service";
 import useStyles from "./player.styles";
 
-const Home = () => {
-  const { user,actions,settings } = useContext(AppContext);
+const Home = (props) => {
+  const { user, actions, settings } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
@@ -39,13 +39,14 @@ const Home = () => {
   const [loading, setloading] = useState(false);
   const [selectedChip, setSelectedChip] = useState(0);
 
-  const loadChannels = async () => {
+  const loadChannels = async (queryChName) => {
     setloading(true);
     const chs = (await getChannels(user)) || [];
     if (chs.length > 0) {
       setChannelList(chs);
-      setActiveChannel(chs[0]);
-      setSelectedChip(chs[0].name);
+      _changeActiveChannel(queryChName||chs[0].name);
+      // setActiveChannel(chs[0]);
+      // setSelectedChip(chs[0].name);
       _checkChannelHealth(chs);
       actions.setChannles(chs);
     } else {
@@ -55,6 +56,7 @@ const Home = () => {
   };
 
   const _changeActiveChannel = (channelName) => {
+    console.log("changing channel name",channelName);
     setActiveChannel(
       channelList.find((channel) => channel.name === channelName)
     );
@@ -103,8 +105,7 @@ const Home = () => {
 
   const getMetadata = async () => {
     try {
-      const bitratemetadata = await getBitrateMedata(activeChannel.hls
-);
+      const bitratemetadata = await getBitrateMedata(activeChannel.hls);
       if (bitratemetadata !== null) {
         setMetadata(bitratemetadata);
       }
@@ -131,7 +132,9 @@ const Home = () => {
   };
 
   useEffect(() => {
-    loadChannels();
+    const qchName = new URLSearchParams(props.location.search).get("channel");
+    // console.log(qchName);
+    loadChannels(qchName);
     //eslint-disable-next-line
   }, []);
   const classes = useStyles();

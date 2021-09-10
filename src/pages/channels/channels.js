@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { Grid, Snackbar, Button } from "@material-ui/core";
 import { ChannelTable, Insights } from "./channelcomponent";
 import AppContext from "../../context/context";
@@ -31,6 +32,7 @@ const Channels = () => {
   const [activeOwnerId, setActiveOwnerId] = useState(allSelections);
   const [healthLoading, setHealthLoading] = useState(false);
   const [channelSet, setChannelSet] = useState([allSelections]);
+  const history = useHistory();
   // loaders and errors
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState(null);
@@ -136,6 +138,10 @@ const Channels = () => {
     setActiveOwnerId(ownerinfo);
   };
 
+  const openPlayerPage = (chName) => {
+    history.push(`/player?channel=${chName}`);
+  }
+
   useEffect(() => {
     loadChannels();
     //eslint-disable-next-line
@@ -203,6 +209,7 @@ const Channels = () => {
             askConfirmation={askConfirmation}
             setOpenStatusDialog={setOpenStatusDialog}
             isSuperAdmin={user.usertype==="s"}
+            onViewClick={openPlayerPage}
           />
         </Grid>
       )}

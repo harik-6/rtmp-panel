@@ -14,6 +14,7 @@ import {
 import EditIcon from "@material-ui/icons/EditRounded";
 import DeleteIcon from "@material-ui/icons/Delete";
 import HealthIcon from "../../components/healthicon";
+import EyeIcon from "@material-ui/icons/VisibilityRounded";
 import useStyles from "./channels.styles";
 
 const Insights = ({ channels, activeChannelCount, loading }) => {
@@ -42,6 +43,7 @@ const ChannelTable = ({
   setActiveChanel,
   openActionDialog,
   askConfirmation,
+  onViewClick,
   setOpenStatusDialog,
   viewCount,
   isSuperAdmin,
@@ -78,6 +80,7 @@ const ChannelTable = ({
           <TableCell align="left">Hls</TableCell>
           <TableCell align="center">Rtmp Count</TableCell>
           <TableCell align="left">Health</TableCell>
+          <TableCell align="left">View</TableCell>
           {isSuperAdmin && <TableCell align="left">Edit</TableCell>}
           <TableCell align="left">On/Off</TableCell>
           <TableCell align="left">Delete</TableCell>
@@ -100,6 +103,15 @@ const ChannelTable = ({
               <TableCell className={classes.tbcell} align="left">
                 <IconButton size="small">
                   <HealthIcon status={healthStatus[channel.name]} />
+                </IconButton>
+              </TableCell>
+              <TableCell className={classes.tbcell} align="left">
+                <IconButton
+                  onClick={() => onViewClick(channel.name)}
+                  disabled={!healthStatus[channel.name]}
+                  size="small"
+                >
+                  <EyeIcon />
                 </IconButton>
               </TableCell>
               {isSuperAdmin && (
