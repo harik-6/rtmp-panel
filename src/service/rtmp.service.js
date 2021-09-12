@@ -1,9 +1,9 @@
 import axios from "axios";
 import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
-const API = `/channel`;
-const API_RTMP = `/rtmp`;
-const API_VIEW = `/view`;
+const API = `/api/channel`;
+const API_RTMP = `/api/rtmp`;
+const API_VIEW = `/api/view`;
 
 const _headers = (user) => {
   return {

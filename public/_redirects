@@ -1,2 +1,2 @@
-/user/* https://api.streamwell.in/api/user/*
+/api/* https://api.streamwell.in/api/:splat
 /* /index.html 200
