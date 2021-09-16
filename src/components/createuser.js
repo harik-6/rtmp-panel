@@ -71,8 +71,12 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
 
   const consumed = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
   const max = settings.limit;
-  const chLimitErr = max - consumed < 1;
-
+  let chLimitErr = false;
+  if(user.type === "s") {
+    chLimitErr = false; 
+  } else {  
+     chLimitErr = max - consumed < 1;
+  }
   const classes = useStyles();
   return (
     <Dialog
