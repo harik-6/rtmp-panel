@@ -4,13 +4,13 @@ import { useHistory } from "react-router-dom";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import useStyles from "./main.styles";
 import AppContext from "../../context/context";
-import { userNavigations, adminNavigations } from "./navigation.config";
+import getNavigationComponent from "./navigation.config";
 
 const NavigationMenu = ({ isAdmin, logoutUser }) => {
   const classes = useStyles();
   const history = useHistory();
   const location = useLocation();
-  const { user, settings } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(1);
 
   const changePage = (page) => {
@@ -26,7 +26,7 @@ const NavigationMenu = ({ isAdmin, logoutUser }) => {
       changePage(isAdmin ? 5 : 4);
       return;
     }
-    if(location.pathname.includes("player")) {
+    if (location.pathname.includes("player")) {
       changePage(1);
     }
   };
@@ -39,7 +39,7 @@ const NavigationMenu = ({ isAdmin, logoutUser }) => {
     // eslint-disable-next-line
   }, [user, isAdmin, location]);
 
-  let navigations = isAdmin ? adminNavigations : userNavigations;
+  let navigations = getNavigationComponent(user.usertype);
 
   return (
     <>

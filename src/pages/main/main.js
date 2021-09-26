@@ -17,11 +17,12 @@ import useStyles from "./main.styles";
 import Users from "../users/users";
 import Login from "../login/login";
 import Profile from "../profile/profile";
+import Stat from "../stat/stat";
 import RebootConfirmationDialog from "../../components/rebootconfirm";
 
 const Main = () => {
   const classes = useStyles();
-  const { user, settings, appName, avatarApi, actions } =
+  const { user, appName, avatarApi, actions } =
     useContext(AppContext);
   const [openReboot, setOpenReboot] = useState(false);
 
@@ -57,6 +58,7 @@ const Main = () => {
             <Route path="/channels" component={Channels} />
             <Route path="/profile" component={Profile} />
             {user.usertype !== "u" && <Route path="/users" component={Users} />}
+            {user.usertype === "s" && <Route path="/stat" component={Stat} />}
             <Route path="" exact>
               {" "}
               <Redirect to="/player" />{" "}

@@ -122,10 +122,31 @@ const checkChannelHealth = async (list, forceCheck = false) => {
     return null;
   }
 };
+
+const getXmlData = async (server, user) => {
+  try {
+    const response = await axios.post(
+      `${API_RTMP}/stat`,
+      {
+        server,
+      },
+      {
+        headers: _headers(user),
+      }
+    );
+    const data = response.data;
+    if (data.status === "success") return data.payload;
+    return "";
+  } catch (error) {
+    console.log(error);
+    return "";
+  }
+};
 export {
   changeRtmpStatus,
   rebootServer,
   getBitrateMedata,
   checkChannelHealth,
   getRtmpCount,
+  getXmlData,
 };

@@ -3,7 +3,7 @@ import HomeIcon from "@material-ui/icons/HomeRounded";
 import ChannelIcon from "@material-ui/icons/VideocamRounded";
 import UsersIcon from "@material-ui/icons/SupervisorAccount";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
-import UsageIcon from "@material-ui/icons/DataUsage";
+import StatIcon from "@material-ui/icons/Assessment";
 // import PersonIcon from "@material-ui/icons/Person";
 
 const userNavigations = [
@@ -19,12 +19,6 @@ const userNavigations = [
     tabIndex: 2,
     icon: <ChannelIcon />,
   },
-  // {
-  //   name: "Profile",
-  //   path: "/profile",
-  //   tabIndex: 4,
-  //   icon: <PersonIcon />,
-  // },
   {
     name: "Logout",
     path: "/logout",
@@ -52,12 +46,6 @@ const adminNavigations = [
     tabIndex: 4,
     icon: <UsersIcon />,
   },
-  // {
-  //   name: "Profile",
-  //   path: "/profile",
-  //   tabIndex: 5,
-  //   icon: <PersonIcon />,
-  // },
   {
     name: "Logout",
     path: "/logout",
@@ -66,4 +54,43 @@ const adminNavigations = [
   },
 ];
 
-export { userNavigations, adminNavigations };
+const superAdminNavigations = [
+  {
+    name: "Home",
+    path: "/player",
+    tabIndex: 1,
+    icon: <HomeIcon />,
+  },
+  {
+    name: "Channels",
+    path: "/channels",
+    tabIndex: 2,
+    icon: <ChannelIcon />,
+  },
+  {
+    name: "Users",
+    path: "/users",
+    tabIndex: 4,
+    icon: <UsersIcon />,
+  },
+  {
+    name: "Stat",
+    path: "/stat",
+    tabIndex: 5,
+    icon: <StatIcon />,
+  },
+  {
+    name: "Logout",
+    path: "/logout",
+    tabIndex: -1,
+    icon: <LogoutIcon />,
+  },
+];
+
+const getNavigationComponent = (usertype) => {
+  if (usertype === "s") return superAdminNavigations;
+  if (usertype === "a") return adminNavigations;
+  return userNavigations;
+};
+
+export default getNavigationComponent;
