@@ -79,6 +79,7 @@ const ChannelTable = ({
           <TableCell align="left">Name</TableCell>
           <TableCell align="left">Hls</TableCell>
           <TableCell align="center">Rtmp Count</TableCell>
+          <TableCell align="center">Hls Count</TableCell>
           <TableCell align="left">Health</TableCell>
           <TableCell align="left">View</TableCell>
           {isSuperAdmin && <TableCell align="left">Edit</TableCell>}
@@ -99,6 +100,12 @@ const ChannelTable = ({
                 !healthStatus[channel.name]
                   ? 0
                   : viewCount[channel.name].rtmpCount}
+              </TableCell>
+              <TableCell className={classes.tbcell} align="center">
+              {viewCount[channel.name] === undefined ||
+                !healthStatus[channel.name]
+                  ? 0
+                  : viewCount[channel.name].hlsCount}
               </TableCell>
               <TableCell className={classes.tbcell} align="left">
                 <IconButton size="small">

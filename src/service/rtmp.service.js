@@ -11,29 +11,6 @@ const _headers = (user) => {
   };
 };
 
-const getUsageData = async (user) => {
-  const cachkey = CACHEKEYS.FETCH_USAGE + "#" + user.username;
-    const cachevalue = CacheService.get(cachkey);
-    if (cachevalue !== null) return cachevalue;
-    try {
-      const response = await axios.post(
-        `${API_RTMP}/usage`,
-        {
-        },
-        {
-          headers: _headers(user)
-        }
-      );
-      const data = response.data;
-      if (data.status === "failed") return null;
-      if (data.payload.length === 0) return null;
-      CacheService.set(cachkey, data.payload);
-      return data.payload;
-    } catch (error) {
-      return null;
-    }
-};
-
 const changeRtmpStatus = async (channel, user) => {
   try {
     const response = await axios.post(
@@ -67,14 +44,12 @@ const getBitrateMedata = async (httplink) => {
   }
 };
 
-const rebootServer = async (channellist,user) => {
+const rebootServer = async (channellist) => {
   const channel = channellist[0];
+  console.log(channel);
   try {
-    await axios.post(`${API_VIEW}/reset`, {
-      server: channel.server,
-    },{
-      headers : _headers(user)
-    });
+    const rebootUrl = `https://${channel.server}/sys_reboot`;
+    await axios.post(rebootUrl);
     return;
   } catch (error) {
     return;
@@ -148,7 +123,6 @@ const checkChannelHealth = async (list, forceCheck = false) => {
   }
 };
 export {
-  getUsageData,
   changeRtmpStatus,
   rebootServer,
   getBitrateMedata,

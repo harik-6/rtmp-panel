@@ -11,7 +11,6 @@ import {
 import Avatar from "@material-ui/core/Avatar";
 import AppContext from "../../context/context";
 import Menu from "@material-ui/core/Menu";
-import Usage from "../usage/usage";
 import Player from "../player/player";
 import Channels from "../channels/channels";
 import useStyles from "./main.styles";
@@ -57,7 +56,6 @@ const Main = () => {
             <Route path="/player" component={Player} />
             <Route path="/channels" component={Channels} />
             <Route path="/profile" component={Profile} />
-            {settings.usage && <Route path="/usage" component={Usage} />}
             {user.usertype !== "u" && <Route path="/users" component={Users} />}
             <Route path="" exact>
               {" "}
@@ -70,7 +68,6 @@ const Main = () => {
           closeForm={() => {
             toggleReboot(false);
           }}
-          user={user}
         />
       </div>
     </div>

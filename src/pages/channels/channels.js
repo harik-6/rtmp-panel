@@ -115,6 +115,7 @@ const Channels = () => {
     setMsg("Deleting channel " + activeChannel.name);
     setLoading(true);
     await deleteChannel(activeChannel, user);
+    await rebootServer([activeChannel]);
     setSnack({
       open: true,
       message: "Channel successfully deleted.",
@@ -128,7 +129,7 @@ const Channels = () => {
     const channelstoreboot = channelList.filter(
       (ch) => ch.server === activeChannel.server
     );
-    await rebootServer(channelstoreboot,user);
+    await rebootServer(channelstoreboot);
     setMsg("Loading channels...");
     setLoading(true);
     setTimeout(() => loadChannels(), 2000);

@@ -14,17 +14,16 @@ import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
 import AppContext from "../context/context";
 import { rebootServer } from "../service/rtmp.service";
 
-const RebootConfirmationDialog = ({ openForm, closeForm,user }) => {
+const RebootConfirmationDialog = ({ openForm, closeForm }) => {
   const text = "Choose server to reboot";
-  const { actions, channels } = useContext(AppContext);
+  const { channels } = useContext(AppContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [server, setServer] = useState(text);
   const rebootRtmpServer = async () => {
     if (server !== text) {
       const channellist = (channels || []).filter((ch) => ch.server === server);
-      await rebootServer(channellist,user);
+      await rebootServer(channellist);
       closeForm();
-      actions.logout();
     }
   };
 
@@ -42,8 +41,8 @@ const RebootConfirmationDialog = ({ openForm, closeForm,user }) => {
       <DialogContent>
         <DialogContentText id="reboot-server-title-description">
           <p>
-            Rebooting server will automatically log you out for security
-            reasons.Please login after 2-3 minutes to continue.
+            Rebooting server will automatically disconnect and reconnect all the
+            live running stream.Would you like to reboot?.
           </p>
         </DialogContentText>
         <FormLabel component="legend">Choose Server</FormLabel>

@@ -19,12 +19,6 @@ const userNavigations = [
     tabIndex: 2,
     icon: <ChannelIcon />,
   },
-  {
-    name: "Usage",
-    path: "/usage",
-    tabIndex: 3,
-    icon: <UsageIcon />,
-  },
   // {
   //   name: "Profile",
   //   path: "/profile",
@@ -51,12 +45,6 @@ const adminNavigations = [
     path: "/channels",
     tabIndex: 2,
     icon: <ChannelIcon />,
-  },
-  {
-    name: "Usage",
-    path: "/usage",
-    tabIndex: 3,
-    icon: <UsageIcon />,
   },
   {
     name: "Users",

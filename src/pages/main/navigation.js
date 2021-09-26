@@ -40,10 +40,6 @@ const NavigationMenu = ({ isAdmin, logoutUser }) => {
   }, [user, isAdmin, location]);
 
   let navigations = isAdmin ? adminNavigations : userNavigations;
-  const isUsageAvail = settings.usage || false;
-  if (!isUsageAvail) {
-    navigations = navigations.filter((nav) => nav.name !== "Usage");
-  }
 
   return (
     <>

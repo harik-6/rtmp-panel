@@ -23,8 +23,7 @@ const RtmpStatusConfirmationDialog = ({ openForm, closeForm, onYes,status }) => 
       <DialogContent>
         <DialogContentText id="rtmp-status-title-description">
           <p>
-            Changing status of the channel will automatically log you out for security
-            reasons.Please login after 2-3 minutes to continue.
+            Changing status of the channel will automatically reboot your server.
           </p>
         </DialogContentText>
       </DialogContent>
