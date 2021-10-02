@@ -33,12 +33,19 @@ const changeRtmpStatus = async (channel, user) => {
 
 const getBitrateMedata = async (httplink) => {
   try {
+    const cachkey = "BITRATE_METADA_"+httplink;
+    const cachevalue = CacheService.get(cachkey);
+    if (cachevalue !== null) return cachevalue;
     const response = await axios.post(`${API_RTMP}/metadata`, {
       surl: httplink,
     });
     const data = response.data;
-    if (data.status === "success") return data.payload;
-    return null;
+    let payload = null;
+    if (data.status === "success") {
+      payload = data.payload;
+    }
+    CacheService.set(cachkey,payload);
+    return payload;
   } catch (error) {
     return null;
   }

@@ -11,13 +11,11 @@ import ScrollMenu from "react-horizontal-scrolling-menu";
 import HealthIcon from "../../components/healthicon";
 import {
   StreamUserInfo,
-  StreamMetadata,
   StreamPlayer,
 } from "./playercomponents";
 //services
 import { getChannels } from "../../service/channel.service";
 import {
-  getBitrateMedata,
   checkChannelHealth,
 } from "../../service/rtmp.service";
 import useStyles from "./player.styles";
@@ -27,14 +25,14 @@ const Home = (props) => {
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
-  const [metadata, setMetadata] = useState({
-    audioType: "N/A",
-    audioRate: "0 kbps",
-    videoType: "N/A",
-    videoRate: "0 kbps",
-    fps: "0 FPS",
-    resolution: "N/A",
-  });
+  // const [metadata, setMetadata] = useState({
+  //   audioType: "N/A",
+  //   audioRate: "0 kbps",
+  //   videoType: "N/A",
+  //   videoRate: "0 kbps",
+  //   fps: "0 FPS",
+  //   resolution: "N/A",
+  // });
   // preloaders and errors
   const [loading, setloading] = useState(false);
   const [selectedChip, setSelectedChip] = useState(0);
@@ -102,32 +100,32 @@ const Home = (props) => {
     setHealthMap(healthMap);
   };
 
-  const getMetadata = async () => {
-    try {
-      const bitratemetadata = await getBitrateMedata(activeChannel.hls);
-      if (bitratemetadata !== null) {
-        setMetadata(bitratemetadata);
-      }
-    } catch (error) {}
-  };
+  // const getMetadata = async () => {
+  //   // try {
+  //   //   const bitratemetadata = await getBitrateMedata(activeChannel.hls);
+  //   //   if (bitratemetadata !== null) {
+  //   //     setMetadata(bitratemetadata);
+  //   //   }
+  //   // } catch (error) {}
+  // };
 
   const onVideoStart = () => {
-    getMetadata();
+    // getMetadata();
   };
 
   const onVideoPlay = () => {
-    getMetadata();
+    // getMetadata();
   };
 
   const onVideoError = () => {
-    setMetadata({
-      audioType: "N/A",
-      audioRate: "0 kbps",
-      videoType: "N/A",
-      videoRate: "0 kbps",
-      fps: "0 FPS",
-      resolution: "N/A",
-    });
+    // setMetadata({
+    //   audioType: "N/A",
+    //   audioRate: "0 kbps",
+    //   videoType: "N/A",
+    //   videoRate: "0 kbps",
+    //   fps: "0 FPS",
+    //   resolution: "N/A",
+    // });
   };
 
   useEffect(() => {
@@ -168,7 +166,7 @@ const Home = (props) => {
             />
           )}
 
-          {settings.bitrate && <StreamMetadata metadata={metadata} />}
+          {/* {settings.bitrate && <StreamMetadata metadata={metadata} />} */}
           {activeChannel !== undefined && (
             <StreamUserInfo
               ch={activeChannel}

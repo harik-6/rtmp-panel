@@ -58,7 +58,7 @@ const Main = () => {
             <Route path="/channels" component={Channels} />
             <Route path="/profile" component={Profile} />
             {user.usertype !== "u" && <Route path="/users" component={Users} />}
-            {user.usertype === "s" && <Route path="/stat" component={Stat} />}
+            {user.usertype !== "u" && <Route path="/stat" component={Stat} />}
             <Route path="" exact>
               {" "}
               <Redirect to="/player" />{" "}

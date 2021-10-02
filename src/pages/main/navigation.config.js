@@ -47,6 +47,12 @@ const adminNavigations = [
     icon: <UsersIcon />,
   },
   {
+    name: "Stat",
+    path: "/stat",
+    tabIndex: 5,
+    icon: <StatIcon />,
+  },
+  {
     name: "Logout",
     path: "/logout",
     tabIndex: -1,
