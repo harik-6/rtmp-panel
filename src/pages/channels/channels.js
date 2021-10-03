@@ -69,8 +69,8 @@ const Channels = () => {
   };
 
   const _countTotalRtmp = async (allchannels = []) => {
-    const channelnames = allchannels.map((ch) => ch.name);
-    const countmap = await getRtmpCount(channelnames);
+    const servers = [...new Set(allchannels.map((ch) => ch.server))]
+    const countmap = await getRtmpCount(servers,user);
     setViewMap(countmap);
   };
 

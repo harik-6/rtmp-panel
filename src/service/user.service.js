@@ -27,13 +27,25 @@ const UserService = {
     CacheService.clear();
     password = sha1(password);
     try {
-      const response = await axios.post(`${API}/auth`, {
+      const authResponse = await axios.post(`${API}/auth`, {
         username,
         password,
       });
-      const userdata = response.data;
-      if (userdata.status === "failed") return null;
-      return userdata.payload;
+      const authData = authResponse.data;
+      if (authData.status === "failed") return null;
+      const userResponse = await axios.post(
+        `${API}/get`,
+        {},
+        {
+          headers: _headers(authData.payload),
+        }
+      );
+      const userData = userResponse.data;
+      const user = userData.payload.user;
+      return {
+        ...user,
+        ...authData.payload,
+      };
     } catch (error) {
       return null;
     }
@@ -84,7 +96,6 @@ const UserService = {
       editedUser["limit"] = parseInt(editedUser["limit"]);
       const body = {
         user: getEditUserPayload(editedUser, newpassword),
-        token,
       };
       // return null;
       const response = await axios.post(`${API}/edit`, body, {

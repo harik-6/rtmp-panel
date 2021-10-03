@@ -16,16 +16,17 @@ import AppConext from "../../context/context";
 import service from "../../service/user.service";
 import useStyles from "./login.styles";
 import CacheService from "../../service/cache.service";
+import Actions from "../../context/actions";
 
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [username, setusername] = useState("");
-  const [password, setpassword] = useState("");
+  const [username, setusername] = useState("admin@manikandan");
+  const [password, setpassword] = useState("mani@9708");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  const { actions, appName, appDesc } = useContext(AppConext);
+  const { dispatch, appName, appDesc,actions } = useContext(AppConext);
 
   const handleusername = (e) => {
     setusername(e.target.value);
@@ -39,13 +40,16 @@ const Login = () => {
     setloginin(true);
     CacheService.clear();
     if (username.length > 0 && password.length > 0) {
-      const metadata = await service.getUser(username, password);
-      if (metadata === null) {
+      const user = await service.getUser(username, password);
+      if (user === null) {
         setloginin(false);
         seterror(true);
         return;
       } else {
-        actions.loginUser(metadata);
+        dispatch({
+          type: Actions.SET_USER,
+          payload: user,
+        });
         history.push("/");
       }
     }
@@ -91,8 +95,8 @@ const Login = () => {
         <div className={classes.txtcontainer}>
           <p className={classes.maintxt}>{appName}</p>
           <>
-            {appDesc.split("<n>").map((text) => (
-              <p className={classes.subtxt}>{text}</p>
+            {appDesc.split("<n>").map((text,i) => (
+              <p key={i} className={classes.subtxt}>{text}</p>
             ))}
           </>
         </div>

@@ -22,8 +22,7 @@ import RebootConfirmationDialog from "../../components/rebootconfirm";
 
 const Main = () => {
   const classes = useStyles();
-  const { user, appName, avatarApi, actions } =
-    useContext(AppContext);
+  const { user, appName, avatarApi, actions } = useContext(AppContext);
   const [openReboot, setOpenReboot] = useState(false);
 
   const logoutUser = () => {
@@ -33,6 +32,8 @@ const Main = () => {
   const toggleReboot = (status) => {
     setOpenReboot(status);
   };
+
+  console.log(user);
 
   if (user.token === null) return <Login />;
 

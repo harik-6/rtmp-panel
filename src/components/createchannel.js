@@ -39,7 +39,7 @@ const CreateNewChannel = ({
   const [chkey, setchkey] = useState("");
   const [creating, setcreating] = useState(false);
   const [chnameerror, setchnameerror] = useState(false);
-  const [server, setSelectedServer] = useState("no-server");
+  const [server, setSelectedServer] = useState(user.server);
 
   const handleChName = (e) => {
     setchname(e.target.value);

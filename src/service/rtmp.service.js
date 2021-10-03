@@ -3,7 +3,6 @@ import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `/api/channel`;
 const API_RTMP = `/api/rtmp`;
-const API_VIEW = `/api/view`;
 
 const _headers = (user) => {
   return {
@@ -33,7 +32,7 @@ const changeRtmpStatus = async (channel, user) => {
 
 const getBitrateMedata = async (httplink) => {
   try {
-    const cachkey = "BITRATE_METADA_"+httplink;
+    const cachkey = "BITRATE_METADA_" + httplink;
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
     const response = await axios.post(`${API_RTMP}/metadata`, {
@@ -44,7 +43,7 @@ const getBitrateMedata = async (httplink) => {
     if (data.status === "success") {
       payload = data.payload;
     }
-    CacheService.set(cachkey,payload);
+    CacheService.set(cachkey, payload);
     return payload;
   } catch (error) {
     return null;
@@ -63,27 +62,27 @@ const rebootServer = async (channellist) => {
   }
 };
 
-const getRtmpCount = async (livechannels = []) => {
+const getRtmpCount = async (servers = [], user) => {
   let countmap = {};
   try {
     const cachkey = CACHEKEYS.FETCH_VIEW_COUNT;
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
-    const response = await axios.post(API_VIEW, {
-      channels: livechannels,
-    });
+    const response = await axios.post(
+      `${API_RTMP}/view`,
+      {
+        servers: servers,
+      },
+      {
+        headers: _headers(user),
+      }
+    );
     const data = response.data;
-    if (data.status === "failed") {
-      livechannels.forEach((chname) => {
-        countmap[chname] = {
-          rtmpCount: 0,
-          hlsCount: 0,
-        };
-      });
-    }
-    data.payload.forEach((viewcount) => {
-      const { rtmpCount, hlsCount } = viewcount;
-      countmap[viewcount.channelName] = {
+    if (data.status === "failed") return countmap;
+    const countArray = data.payload;
+    countArray.forEach((obj) => {
+      const { rtmpCount, hlsCount, channelName } = obj;
+      countmap[channelName] = {
         rtmpCount,
         hlsCount,
       };
@@ -91,12 +90,6 @@ const getRtmpCount = async (livechannels = []) => {
     CacheService.set(cachkey, countmap);
     return countmap;
   } catch (error) {
-    livechannels.forEach((chname) => {
-      countmap[chname] = {
-        rtmpCount: 0,
-        hlsCount: 0,
-      };
-    });
     return countmap;
   }
 };

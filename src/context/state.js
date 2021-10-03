@@ -11,23 +11,19 @@ const initialState = {
   usageData: null,
   avatarApi: "https://avatars.dicebear.com/api/initials/",
   user: {
-    username: "streamwell",
+    username: "",
     usertype: "u",
     token: null,
-    limit : 1,
-    access : []
+    limit: 1,
+    access: [],
+    email: "",
+    server: "",
+    admin: false,
   },
 };
 
 const AppState = (props) => {
   const [state, dispatch] = useReducer(AppReducer, initialState);
-
-  const loginUser = (metadata) => {
-    dispatch({
-      type: "setlogin",
-      payload: metadata,
-    });
-  };
 
   const setChannles = (channels) => {
     dispatch({
@@ -76,8 +72,8 @@ const AppState = (props) => {
     <AppContext.Provider
       value={{
         ...state,
+        dispatch,
         actions: {
-          loginUser,
           setChannles,
           logout,
           setHealth,

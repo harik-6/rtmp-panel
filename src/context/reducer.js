@@ -1,3 +1,5 @@
+import Actions from "./actions";
+
 const AppReducer = (state, action) => {
   const { type, payload } = action;
   switch (type) {
@@ -14,10 +16,10 @@ const AppReducer = (state, action) => {
           token: null,
         },
       };
-    case "setlogin":
+    case Actions.SET_USER:
       return {
         ...state,
-        user: payload.user
+        user: payload,
       };
     case "setchannels":
       return {
