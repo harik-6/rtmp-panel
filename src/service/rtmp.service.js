@@ -30,20 +30,22 @@ const changeRtmpStatus = async (channel, user) => {
   }
 };
 
-const getBitrateMedata = async (httplink) => {
+const getBitrateMedata = async (server, user) => {
   try {
-    const cachkey = "BITRATE_METADA_" + httplink;
-    const cachevalue = CacheService.get(cachkey);
-    if (cachevalue !== null) return cachevalue;
-    const response = await axios.post(`${API_RTMP}/metadata`, {
-      surl: httplink,
-    });
+    const response = await axios.post(
+      `${API_RTMP}/stat`,
+      {
+        server,
+      },
+      {
+        headers: _headers(user),
+      }
+    );
     const data = response.data;
     let payload = null;
     if (data.status === "success") {
       payload = data.payload;
     }
-    CacheService.set(cachkey, payload);
     return payload;
   } catch (error) {
     return null;
@@ -52,7 +54,6 @@ const getBitrateMedata = async (httplink) => {
 
 const rebootServer = async (channellist) => {
   const channel = channellist[0];
-  console.log(channel);
   try {
     const rebootUrl = `https://${channel.server}/sys_reboot`;
     await axios.post(rebootUrl);
@@ -138,7 +139,6 @@ const getXmlData = async (server, user) => {
     if (data.status === "success") return data.payload;
     return "";
   } catch (error) {
-    console.log(error);
     return "";
   }
 };

@@ -31,7 +31,7 @@ const ServerSelect = ({
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        {(serverNames || []).map((servername) => (
+        {(serverNames.sort() || []).map((servername) => (
           <MenuItem
             key={servername}
             onClick={() => {

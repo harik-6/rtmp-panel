@@ -60,7 +60,6 @@ const Users = () => {
     if (forceLoad || allUsers.length === 0) {
       setLoading(true);
       const users = await userservice.getAllUsers(user);
-      console.log(users);
       actions.setAllUsers(users);
       setLoading(false);
     }
@@ -140,7 +139,7 @@ const Users = () => {
                       <TableCell align="left">Name</TableCell>
                       <TableCell align="left">Server</TableCell>
                       <TableCell align="left">Limit</TableCell>
-                      <TableCell align="left">PlayUrl</TableCell>
+                      {/* <TableCell align="left">PlayUrl</TableCell> */}
                       <TableCell align="left">Edit</TableCell>
                       <TableCell align="left">Delete</TableCell>
                       {user.usertype === "s" && (
@@ -165,9 +164,9 @@ const Users = () => {
                           <TableCell className={classes.tbcell} align="left">
                             {u.limit}
                           </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
+                          {/* <TableCell className={classes.tbcell} align="left">
                             {u.preview ? _TickIcon() : _NoTickIcon()}
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell className={classes.tbcell} align="left">
                             <IconButton
                               size="small"

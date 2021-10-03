@@ -33,8 +33,6 @@ const Main = () => {
     setOpenReboot(status);
   };
 
-  console.log(user);
-
   if (user.token === null) return <Login />;
 
   return (

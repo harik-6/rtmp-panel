@@ -35,37 +35,10 @@ const adminNavigations = [
     icon: <HomeIcon />,
   },
   {
-    name: "Channels",
-    path: "/channels",
-    tabIndex: 2,
-    icon: <ChannelIcon />,
-  },
-  {
-    name: "Users",
-    path: "/users",
-    tabIndex: 4,
-    icon: <UsersIcon />,
-  },
-  {
     name: "Stat",
     path: "/stat",
     tabIndex: 5,
     icon: <StatIcon />,
-  },
-  {
-    name: "Logout",
-    path: "/logout",
-    tabIndex: -1,
-    icon: <LogoutIcon />,
-  },
-];
-
-const superAdminNavigations = [
-  {
-    name: "Home",
-    path: "/player",
-    tabIndex: 1,
-    icon: <HomeIcon />,
   },
   {
     name: "Channels",
@@ -78,12 +51,6 @@ const superAdminNavigations = [
     path: "/users",
     tabIndex: 4,
     icon: <UsersIcon />,
-  },
-  {
-    name: "Stat",
-    path: "/stat",
-    tabIndex: 5,
-    icon: <StatIcon />,
   },
   {
     name: "Logout",
@@ -94,9 +61,8 @@ const superAdminNavigations = [
 ];
 
 const getNavigationComponent = (usertype) => {
-  if (usertype === "s") return superAdminNavigations;
-  if (usertype === "a") return adminNavigations;
-  return userNavigations;
+  if (usertype === "u") return userNavigations;
+  return adminNavigations;
 };
 
 export default getNavigationComponent;

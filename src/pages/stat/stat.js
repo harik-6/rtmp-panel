@@ -15,12 +15,13 @@ import { getChannels } from "../../service/channel.service";
 import { getBitrateMedata } from "../../service/rtmp.service";
 
 const defaultMetdata = {
-  audioType: "N/A",
-  audioRate: "0 kbps",
-  videoType: "N/A",
-  videoRate: "0 kbps",
-  fps: "0 FPS",
-  resolution: "N/A",
+  audioRate: 0,
+  inBytes: 0,
+  outBytes: 0,
+  totalIn: 0,
+  totalOut: 0,
+  upTime: 0,
+  videoRate: 0,
 };
 
 const Stat = () => {
@@ -41,14 +42,70 @@ const Stat = () => {
     setPageSize(event.target.value);
   };
 
-  const _loadMetadata = async (fullList = [], serverToFilter) => {
+  const _getReadableFileSizeString = (fileSizeInBytes) => {
+    let i = -1;
+    const byteUnits = [
+      " Kbps",
+      " Mbps",
+      " Gbps",
+      " Tbps",
+      "Pbps",
+      "Ebps",
+      "Zbps",
+      "Ybps",
+    ];
+    do {
+      fileSizeInBytes = fileSizeInBytes / 1000;
+      i++;
+    } while (fileSizeInBytes > 1000);
+    return Math.max(fileSizeInBytes, 0.1).toFixed(3) + byteUnits[i];
+  };
+
+  function _msToTime(ms) {
+    let seconds = (ms / 1000).toFixed(1);
+    let minutes = (ms / (1000 * 60)).toFixed(1);
+    let hours = (ms / (1000 * 60 * 60)).toFixed(1);
+    let days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
+    if (seconds < 60) return seconds + " Sec";
+    else if (minutes < 60) return minutes + " Min";
+    else if (hours < 24) return hours + " Hrs";
+    else return days + " Days";
+  }
+
+
+  const _loadMetadata = async (serverToLoad) => {
     setLoading(true);
-    const list = fullList.filter((c) => c.server === serverToFilter);
+    const list = await getBitrateMedata(serverToLoad, user);
     let map = {};
     for (let i = 0; i < list.length; i++) {
-      const channel = list[i];
-      const metadata = await getBitrateMedata(channel.hls);
-      map[channel.name] = metadata;
+      const meta = list[i];
+      let {
+        audioRate,
+        inBytes,
+        outBytes,
+        totalIn,
+        totalOut,
+        upTime,
+        videoRate,
+      } = meta;
+      const videoRateRaw = videoRate;
+      audioRate = _getReadableFileSizeString(audioRate);
+      videoRate = _getReadableFileSizeString(videoRate);
+      inBytes = _getReadableFileSizeString(inBytes);
+      outBytes = _getReadableFileSizeString(outBytes);
+      totalIn = _getReadableFileSizeString(totalIn);
+      totalOut = _getReadableFileSizeString(totalOut);
+      upTime = _msToTime(upTime);
+      map[meta.channelName] = {
+        audioRate,
+        inBytes,
+        outBytes,
+        totalIn,
+        totalOut,
+        upTime,
+        videoRate,
+        videoRateRaw,
+      };
     }
     setMetadataMap(map);
     setLoading(false);
@@ -61,15 +118,7 @@ const Stat = () => {
     setServerNames(servers);
     setChannelList(list);
     setSelectedServer(servers[0]);
-    _loadMetadata(list, servers[0]);
-  };
-
-  const _formatFPS = (value = "0 FPS") => {
-    const num = parseInt(value);
-    if (num > 60) {
-      return 30;
-    }
-    return num;
+    _loadMetadata(servers[0]);
   };
 
   useEffect(() => {
@@ -79,7 +128,7 @@ const Stat = () => {
 
   const _changeServer = (_serverName) => {
     setSelectedServer(_serverName);
-    _loadMetadata(channelList, _serverName);
+    _loadMetadata(_serverName);
   };
 
   let tableData = channelList
@@ -127,24 +176,26 @@ const Stat = () => {
           <Table aria-label="channel-list">
             <TableRow>
               <TableCell align="left">Name</TableCell>
-              <TableCell align="center">Video rate (Kbps)</TableCell>
-              <TableCell align="center">Video type </TableCell>
-              <TableCell align="center">Audio rate (Kbps)</TableCell>
-              <TableCell align="center">Audio type</TableCell>
-              <TableCell align="center">Resolution</TableCell>
-              <TableCell align="center">FPS</TableCell>
+              <TableCell align="center">Video bitrate</TableCell>
+              <TableCell align="center">Audio bitrate</TableCell>
+              <TableCell align="center">Bitrate In</TableCell>
+              <TableCell align="center">Bitrate Out</TableCell>
+              <TableCell align="center">Bandwidth In</TableCell>
+              <TableCell align="center">Bandwidth Out</TableCell>
+              <TableCell align="center">Uptime</TableCell>
             </TableRow>
             <TableBody>
               {tableData.map((channel, index) => {
                 const {
-                  audioType,
                   audioRate,
-                  videoType,
+                  inBytes,
+                  outBytes,
+                  totalIn,
+                  totalOut,
+                  upTime,
                   videoRate,
-                  fps,
-                  resolution,
+                  videoRateRaw,
                 } = channel.meta;
-                const vrate = parseInt(videoRate);
                 return (
                   <TableRow key={channel.key + " " + index}>
                     <TableCell className={classes.tbcell} align="left">
@@ -152,27 +203,30 @@ const Stat = () => {
                     </TableCell>
                     <TableCell
                       style={{
-                        color: vrate > 1999 ? "#ff1744" : "inherit",
+                        color: videoRateRaw > 2000000 ? "#ff1744" : "inherit",
                       }}
                       className={classes.tbcell}
                       align="center"
                     >
-                      {vrate}
+                      {videoRate}
                     </TableCell>
                     <TableCell className={classes.tbcell} align="center">
-                      {videoType}
+                      {audioRate}
                     </TableCell>
                     <TableCell className={classes.tbcell} align="center">
-                      {parseInt(audioRate)}
+                      {inBytes}
                     </TableCell>
                     <TableCell className={classes.tbcell} align="center">
-                      {audioType}
+                      {outBytes}
                     </TableCell>
                     <TableCell className={classes.tbcell} align="center">
-                      {resolution}
+                      {totalIn}
                     </TableCell>
-                    <TableCell className={classes.tbcell}>
-                      {_formatFPS(fps)}
+                    <TableCell className={classes.tbcell} align="center">
+                      {totalOut}
+                    </TableCell>
+                    <TableCell className={classes.tbcell} align="center">
+                      {upTime}
                     </TableCell>
                   </TableRow>
                 );
