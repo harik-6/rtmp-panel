@@ -13,13 +13,12 @@ const _headers = (user) => {
 const getEditUserPayload = (editedUser, newpass) => {
   if (newpass.length !== 0) {
     return {
+      ...editedUser,
       username: editedUser.username,
       password: sha1(newpass),
     };
   }
-  return {
-    username: editedUser.username,
-  };
+  return editedUser;
 };
 
 const UserService = {
@@ -57,7 +56,7 @@ const UserService = {
       const cachevalue = CacheService.get(cachkey);
       if (cachevalue !== null) return cachevalue;
       const response = await axios.post(
-        `${API}/users`,
+        `${API}/all`,
         {},
         {
           headers: _headers(user),
@@ -96,8 +95,8 @@ const UserService = {
       editedUser["limit"] = parseInt(editedUser["limit"]);
       const body = {
         user: getEditUserPayload(editedUser, newpassword),
+        token : editedUser["token"]
       };
-      // return null;
       const response = await axios.post(`${API}/edit`, body, {
         headers: _headers(admin),
       });

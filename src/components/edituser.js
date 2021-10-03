@@ -146,67 +146,7 @@ const EditUser = ({
             error={chLimitErr}
             helperText={chLimitErr}
           />
-          <FormLabel style={{ marginTop: "8px" }} component="legend">
-            Usage
-          </FormLabel>
-          <RadioGroup
-            aria-label="usage"
-            name="usage"
-            value={userObj.usage === true ? "show" : "hide"}
-            onChange={(e) => {
-              handleChange({
-                target: {
-                  name: "usage",
-                  value: e.target.value === "show" ? true : false,
-                },
-              });
-            }}
-            style={{ display: "flex", flexDirection: "row" }}
-          >
-            <FormControlLabel
-              value={"show"}
-              control={<Radio />}
-              label="Show"
-              disabled={creating}
-            />
-            <FormControlLabel
-              value={"hide"}
-              control={<Radio />}
-              label="Hide"
-              disabled={creating}
-            />
-          </RadioGroup>
-          <FormLabel style={{ marginTop: "8px" }} component="legend">
-            Bitrate
-          </FormLabel>
-          <RadioGroup
-            aria-label="bitrate"
-            name="bitrate"
-            value={userObj.bitrate ? "show" : "hide"}
-            onChange={(e) => {
-              handleChange({
-                target: {
-                  name: "bitrate",
-                  value: e.target.value === "show" ? true : false,
-                },
-              });
-            }}
-            style={{ display: "flex", flexDirection: "row" }}
-          >
-            <FormControlLabel
-              value={"show"}
-              control={<Radio />}
-              label="Show"
-              disabled={creating}
-            />
-            <FormControlLabel
-              value={"hide"}
-              control={<Radio />}
-              label="Hide"
-              disabled={creating}
-            />
-          </RadioGroup>
-          <FormLabel style={{ marginTop: "8px" }} component="legend">
+          {/* <FormLabel style={{ marginTop: "8px" }} component="legend">
             PlayUrl
           </FormLabel>
           <RadioGroup
@@ -235,7 +175,7 @@ const EditUser = ({
               label="Hide"
               disabled={creating}
             />
-          </RadioGroup>
+          </RadioGroup> */}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

@@ -60,6 +60,7 @@ const Users = () => {
     if (forceLoad || allUsers.length === 0) {
       setLoading(true);
       const users = await userservice.getAllUsers(user);
+      console.log(users);
       actions.setAllUsers(users);
       setLoading(false);
     }
@@ -68,7 +69,7 @@ const Users = () => {
   const changeAdminStatus = async (usertochange) => {
     const us = await userservice.promoteDemoteAdmin(
       user,
-      usertochange.usertype==="a",
+      usertochange.admin,
       usertochange.token
     );
     if (us !== null) {
@@ -139,8 +140,6 @@ const Users = () => {
                       <TableCell align="left">Name</TableCell>
                       <TableCell align="left">Server</TableCell>
                       <TableCell align="left">Limit</TableCell>
-                      <TableCell align="left">Usage</TableCell>
-                      <TableCell align="left">Bitrate</TableCell>
                       <TableCell align="left">PlayUrl</TableCell>
                       <TableCell align="left">Edit</TableCell>
                       <TableCell align="left">Delete</TableCell>
@@ -165,12 +164,6 @@ const Users = () => {
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             {u.limit}
-                          </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            {u.usage ? _TickIcon() : _NoTickIcon()}
-                          </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            {u.bitrate ? _TickIcon() : _NoTickIcon()}
                           </TableCell>
                           <TableCell className={classes.tbcell} align="left">
                             {u.preview ? _TickIcon() : _NoTickIcon()}
@@ -207,7 +200,7 @@ const Users = () => {
                                 cursor: "pointer",
                               }}
                             >
-                              {u.usertype === "a" ? _TickIcon() : _NoTickIcon()}
+                              {u.admin? _TickIcon() : _NoTickIcon()}
                             </TableCell>
                           )}
                         </TableRow>
