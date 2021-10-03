@@ -15,7 +15,7 @@ import Login from "./pages/login/login";
 import Preview from "./pages/preview";
 import Landing from "./pages/landing/landing";
 import MaintanencePage from "./pages/maintainance";
-const maintanence = false;
+const maintanence = true;
 
 const theme = createTheme({
   palette: {
