@@ -37,7 +37,7 @@ const EditUser = ({
   successCallback,
   userToEdit,
 }) => {
-  const { user, allUsers, settings } = useContext(AppContext);
+  const { user, allUsers } = useContext(AppContext);
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
   const [chLimitErr, setChLimitErr] = useState(null);
@@ -72,7 +72,7 @@ const EditUser = ({
     if (user.usertype === "a") {
       const consumed = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
       const total = consumed + entered;
-      if (total > parseInt(settings.limit)) {
+      if (total > parseInt(user.limit)) {
         setChLimitErr("Channel limit exceeded.");
         setCreating(false);
         return;

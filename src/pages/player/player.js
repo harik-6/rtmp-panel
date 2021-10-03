@@ -21,7 +21,7 @@ import {
 import useStyles from "./player.styles";
 
 const Home = (props) => {
-  const { user, actions, settings } = useContext(AppContext);
+  const { user, actions } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
@@ -165,12 +165,10 @@ const Home = (props) => {
               isLive={healthMap[activeChannel?.name]}
             />
           )}
-
-          {/* {settings.bitrate && <StreamMetadata metadata={metadata} />} */}
           {activeChannel !== undefined && (
             <StreamUserInfo
               ch={activeChannel}
-              showPlayUrl={settings.preview}
+              showPlayUrl={false}
               isLive={healthMap[activeChannel?.name]}
             />
           )}

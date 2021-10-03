@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
-  const { user, allUsers, settings } = useContext(AppContext);
+  const { user, allUsers } = useContext(AppContext);
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
   const [userObj, setUserObj] = useState({
@@ -70,7 +70,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
   };
 
   const consumed = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
-  const max = settings.limit;
+  const max = user.limit;
   let chLimitErr = false;
   if(user.usertype === "s") {
     chLimitErr = false; 

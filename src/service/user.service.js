@@ -33,21 +33,7 @@ const UserService = {
       });
       const userdata = response.data;
       if (userdata.status === "failed") return null;
-      const settings_response = await axios.post(
-        `${API}/settings`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${userdata.payload.token}`,
-          },
-        }
-      );
-      const settings_data = settings_response.data;
-      if (settings_data.status === "failed") return null;
-      return {
-        user: userdata.payload,
-        settings: settings_data.payload.settings,
-      };
+      return userdata.payload;
     } catch (error) {
       return null;
     }
@@ -96,16 +82,8 @@ const UserService = {
   editUser: async (admin, editedUser, newpassword = "") => {
     try {
       editedUser["limit"] = parseInt(editedUser["limit"]);
-      const { server, limit, bitrate, preview, usage, token } = editedUser;
       const body = {
         user: getEditUserPayload(editedUser, newpassword),
-        settings: {
-          server,
-          limit,
-          bitrate,
-          preview,
-          usage,
-        },
         token,
       };
       // return null;
@@ -127,7 +105,6 @@ const UserService = {
           user: {
             admin: !status,
           },
-          settings: {},
           token,
         },
         {

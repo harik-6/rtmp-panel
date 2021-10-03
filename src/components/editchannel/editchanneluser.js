@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const EditChannelUser = ({ openForm, closeForm, successCallback, channel }) => {
-  const { user, actions, settings } = useContext(AppContext);
+  const { user, actions } = useContext(AppContext);
   const [chname, setchname] = useState(channel.name);
   const [chkey, setchkey] = useState(channel.key);
   const [creating, setcreating] = useState(false);
@@ -61,7 +61,6 @@ const EditChannelUser = ({ openForm, closeForm, successCallback, channel }) => {
           key: chkey.toLowerCase(),
         },
         user,
-        settings
       );
       if (editedchannel !== null) {
         actions.setChannles([]);

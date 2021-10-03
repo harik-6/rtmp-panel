@@ -23,7 +23,7 @@ const allSelections = "All servers";
 
 const Channels = () => {
   const classes = useStyles();
-  const { user,settings } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const [channelList, setChannelList] = useState([]);
   const [activeChannel, setActiveChannel] = useState(null);
   const [healthMap, setHealthMap] = useState({});
@@ -89,7 +89,7 @@ const Channels = () => {
   };
 
   const openCreateChannelForm = () => {
-    if (settings.limit === channelList.length) {
+    if (user.limit === channelList.length) {
       openSnack();
       return;
     } else {

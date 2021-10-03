@@ -14,14 +14,8 @@ const initialState = {
     username: "streamwell",
     usertype: "u",
     token: null,
-  },
-  settings: {
-    usage: false,
-    preview: false,
-    bitrate: false,
-    usageid: null,
-    limit: 0,
-    server : null
+    limit : 1,
+    access : []
   },
 };
 
