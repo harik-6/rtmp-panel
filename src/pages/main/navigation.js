@@ -1,79 +1,88 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
-import useStyles from "./main.styles";
-import AppContext from "../../context/context";
-import getNavigationComponent from "./navigation.config";
+import styled from "styled-components";
 
-const NavigationMenu = ({ isAdmin, logoutUser }) => {
-  const classes = useStyles();
+// components
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+
+// service
+import getNavigationComponent from "./navigation.config";
+import Constants from "../../constants";
+
+const Navlink = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0 16px;
+  font-size: 16px;
+  font-weight: ${(props) => (props.active ? "bold" : "normal")};
+  opacity: ${(props) => (props.active ? 1 : 0.3)};
+  color: ${(props) => (props.active ? Constants.primary_color : "inherit")};
+`;
+
+const Navtext = styled.p`
+  margin: 0 4px;
+`;
+
+const Navigation = () => {
   const history = useHistory();
   const location = useLocation();
-  const { user } = useContext(AppContext);
-  const [activeTab, setActiveTab] = useState(1);
+  const navigations = getNavigationComponent("a");
 
-  const changePage = (page) => {
-    if (page === -1) {
-      logoutUser();
-    } else {
-      setActiveTab(page);
+  // state
+  const [activeTab, setActiveTab] = React.useState(1);
+
+  const _changeActiveTab = () => {
+    const path = location.pathname;
+    switch (path) {
+      case "/home":
+        setActiveTab(1);
+        break;
+      case "/stat":
+        setActiveTab(2);
+        break;
+      case "/users":
+        setActiveTab(3);
+        break;
+      case "/profile":
+        setActiveTab(4);
+        break;
+      case "/logout":
+        setActiveTab(-1);
+        break;
     }
+    return;
   };
 
-  const changeActiveTab = () => {
-    if (location.pathname === "/profile") {
-      changePage(isAdmin ? 5 : 4);
-      return;
-    }
-    if (location.pathname.includes("player")) {
-      changePage(1);
-    }
-  };
-
-  useEffect(() => {
-    if (user.token === null) {
-      history.replace("/login");
-    }
-    changeActiveTab();
+  React.useEffect(() => {
+    // if (user.token === null) {
+    //   history.replace("/login");
+    // }
+    _changeActiveTab();
     // eslint-disable-next-line
-  }, [user, isAdmin, location]);
-
-  let navigations = getNavigationComponent(user.usertype);
+  }, [location]);
 
   return (
-    <>
-      <List className={classes.navlist} aria-label="navigation-list">
+    <AppBar
+      position="static"
+      color="transparent"
+      sx={{ marginLeft: "auto", height: "58px" }}
+      elevation={4}
+    >
+      <Toolbar sx={{ marginLeft: "auto", height: "58px" }}>
         {navigations.map((nav) => (
           <Link to={nav.path}>
-            <ListItem
-              disableGutters={true}
-              onClick={() => changePage(nav.tabIndex)}
-              button
-              className={classes.mobilenav}
-            >
-              <ListItemIcon
-                className={
-                  activeTab === nav.tabIndex ? classes.iconactive : classes.icon
-                }
-              >
-                {nav.icon}
-              </ListItemIcon>
-              <ListItemText
-                disableTypography={true}
-                className={
-                  activeTab === nav.tabIndex
-                    ? classes.navtextactive
-                    : classes.navtext
-                }
-                primary={nav.name}
-              />
-            </ListItem>
+            <Navlink active={activeTab === nav.tabIndex}>
+              {nav.icon}
+              <Navtext>{nav.name}</Navtext>
+            </Navlink>
           </Link>
         ))}
-      </List>
-    </>
+      </Toolbar>
+    </AppBar>
   );
 };
 
-export default NavigationMenu;
+export default Navigation;

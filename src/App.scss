@@ -37,7 +37,7 @@ code {
   padding: 0;
   width: 100vw;
   height: 100vh;
-  min-height: 100vh;
+  max-width: 100%;
 }
 
 .app-main-blank {
@@ -50,15 +50,14 @@ code {
 
 .app-main {
   font-family: "Roboto", sans-serif;
-  background-color: transparent;
-  width: 100vw;
-  max-width: 100vw;
-  min-height: 100vh;
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
 }
 
 a {
   text-decoration: none !important;
-  color: white;
+  color: #000000;
 }
 
 span {

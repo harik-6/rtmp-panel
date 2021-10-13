@@ -21,8 +21,8 @@ import Actions from "../../context/actions";
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [username, setusername] = useState("");
-  const [password, setpassword] = useState("");
+  const [username, setusername] = useState("dev");
+  const [password, setpassword] = useState("dev");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -86,6 +86,7 @@ const Login = () => {
 
   useEffect(() => {
     _setAppName();
+    loginUser();
     // eslint-disable-next-line
   }, []);
 
