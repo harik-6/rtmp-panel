@@ -21,34 +21,35 @@ const getEditUserPayload = (editedUser, newpass) => {
   return editedUser;
 };
 
+const getUser = async (username, password) => {
+  CacheService.clear();
+  password = sha1(password);
+  try {
+    const authResponse = await axios.post(`${API}/auth`, {
+      username,
+      password,
+    });
+    const authData = authResponse.data;
+    if (authData.status === "failed") return null;
+    const userResponse = await axios.post(
+      `${API}/get`,
+      {},
+      {
+        headers: _headers(authData.payload),
+      }
+    );
+    const userData = userResponse.data;
+    const user = userData.payload.user;
+    return {
+      ...user,
+      ...authData.payload,
+    };
+  } catch (error) {
+    return null;
+  }
+};
+
 const UserService = {
-  getUser: async (username, password) => {
-    CacheService.clear();
-    password = sha1(password);
-    try {
-      const authResponse = await axios.post(`${API}/auth`, {
-        username,
-        password,
-      });
-      const authData = authResponse.data;
-      if (authData.status === "failed") return null;
-      const userResponse = await axios.post(
-        `${API}/get`,
-        {},
-        {
-          headers: _headers(authData.payload),
-        }
-      );
-      const userData = userResponse.data;
-      const user = userData.payload.user;
-      return {
-        ...user,
-        ...authData.payload,
-      };
-    } catch (error) {
-      return null;
-    }
-  },
   getAllUsers: async (user) => {
     if (user.usertype === "u") return [];
     try {
@@ -95,7 +96,7 @@ const UserService = {
       editedUser["limit"] = parseInt(editedUser["limit"]);
       const body = {
         user: getEditUserPayload(editedUser, newpassword),
-        token : editedUser["token"]
+        token: editedUser["token"],
       };
       const response = await axios.post(`${API}/edit`, body, {
         headers: _headers(admin),
@@ -146,5 +147,7 @@ const UserService = {
     }
   },
 };
+
+export { getUser };
 
 export default UserService;

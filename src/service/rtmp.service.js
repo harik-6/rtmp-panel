@@ -63,7 +63,7 @@ const rebootServer = async (channellist) => {
   }
 };
 
-const getRtmpCount = async (servers = [], user) => {
+const getViews = async (servers = [], user) => {
   let countmap = {};
   try {
     const cachkey = CACHEKEYS.FETCH_VIEW_COUNT;
@@ -95,32 +95,32 @@ const getRtmpCount = async (servers = [], user) => {
   }
 };
 
-const checkChannelHealth = async (list, forceCheck = false) => {
+const getHealth = async (servers = [], user) => {
+  let healthmap = {};
   try {
     const cachkey = CACHEKEYS.FETCH_CHANNEL_HEALTH;
-    if (forceCheck) {
-      CacheService.remove(cachkey);
-    }
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
-    let healthMap = {};
-    for (let i = 0; i < list.length; i++) {
-      const channel = list[i];
-      try {
-        const response = await fetch(channel.hls);
-        if (response.status >= 200 && response.status <= 205) {
-          healthMap[channel.name] = true;
-        } else {
-          healthMap[channel.name] = false;
-        }
-      } catch (_) {
-        healthMap[channel.name] = false;
+    const response = await axios.post(
+      `${API_RTMP}/health`,
+      {
+        servers: servers,
+      },
+      {
+        headers: _headers(user),
       }
-    }
-    CacheService.set(cachkey, healthMap);
-    return healthMap;
+    );
+    const data = response.data;
+    if (data.status === "failed") return healthmap;
+    const healthArray = data.payload;
+    healthArray.forEach((obj) => {
+      const { name, health } = obj;
+      healthmap[name] = health;
+    });
+    CacheService.set(cachkey, healthmap);
+    return healthmap;
   } catch (error) {
-    return null;
+    return healthmap;
   }
 };
 
@@ -146,7 +146,7 @@ export {
   changeRtmpStatus,
   rebootServer,
   getBitrateMedata,
-  checkChannelHealth,
-  getRtmpCount,
+  getHealth,
+  getViews,
   getXmlData,
 };

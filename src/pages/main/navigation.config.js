@@ -33,7 +33,7 @@ const adminNavigations = [
     icon: <ProfileIcon />,
   },
   {
-    name: "Logout",
+    name: "",
     path: "/logout",
     tabIndex: -1,
     icon: <LogoutIcon />,

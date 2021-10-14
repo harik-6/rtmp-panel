@@ -68,8 +68,8 @@ const Navigation = () => {
     <AppBar
       position="static"
       color="transparent"
-      sx={{ marginLeft: "auto", height: "58px" }}
-      elevation={4}
+      sx={{ marginLeft: "auto", height: "58px",backgroundColor:'#ffffff' }}
+      elevation={0}
     >
       <Toolbar sx={{ marginLeft: "auto", height: "58px" }}>
         {navigations.map((nav) => (

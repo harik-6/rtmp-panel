@@ -1,60 +1,58 @@
 import Actions from "./actions";
 
+const initialState = {
+  appName: "StreamWell",
+  appDesc: "Dedicated streaming server provider.",
+  channels: [],
+  servers: [],
+  healths: {},
+  views: {},
+  users: [],
+  avatarApi: "https://avatars.dicebear.com/api/initials/",
+  user: {
+    username: "",
+    usertype: "u",
+    token: null,
+    limit: 1,
+    access: [],
+    email: "",
+    server: "",
+    admin: false,
+  },
+};
+
 const AppReducer = (state, action) => {
   const { type, payload } = action;
   switch (type) {
-    case "logout":
-      return {
-        ...state,
-        channels: null,
-        healthList: null,
-        allUsers: [],
-        usageData: null,
-        user: {
-          username: "streamwell",
-          usertype: "u",
-          token: null,
-        },
-      };
     case Actions.SET_USER:
       return {
         ...state,
         user: payload,
       };
-    case "setchannels":
+    case Actions.SET_APPNAME:
+      const { appName, appDesc } = payload;
+      return {
+        ...state,
+        appName,
+        appDesc,
+      };
+    case Actions.SET_CHANNEL_LIST:
       return {
         ...state,
         channels: payload,
       };
-    case "sethealth":
+    case Actions.SET_SERVER_LIST:
       return {
         ...state,
-        healthList: payload,
+        servers: payload,
       };
-    case "setallusers":
-      return {
-        ...state,
-        allUsers: payload,
-      };
-    case "setusagedata":
-      return {
-        ...state,
-        usageData: payload,
-      };
-    case "setappname":
-      return {
-        ...state,
-        appName: payload.name,
-        appDesc: payload.desc,
-      };
-    case "superadmin":
-      return {
-        ...state,
-        superAdmin: true,
-      };
+    case "logout":
+      return initialState;
     default:
       return state;
   }
 };
+
+export { initialState };
 
 export default AppReducer;

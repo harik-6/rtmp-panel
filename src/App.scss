@@ -25,6 +25,7 @@ body {
   overflow-x: hidden;
   height: 100%;
   width: 100%;
+  font-size: 14px;
 }
 
 code {
@@ -50,7 +51,7 @@ code {
 
 .app-main {
   font-family: "Roboto", sans-serif;
-  background-color: #ffffff;
+  background-color: rgb(245, 245, 245);
   width: 100%;
   height: 100%;
 }
@@ -65,7 +66,20 @@ span {
 }
 
 .menu-item-wrapper {
-  &:first-child  {
-    margin-left: -8px  !important;
+  &:first-child {
+    margin-left: -8px !important;
   }
+}
+
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+.channel-list-div::-webkit-scrollbar {
+  width: 4px;
+}
+
+.channel-list-div::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 16px;
 }

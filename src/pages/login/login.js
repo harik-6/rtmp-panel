@@ -13,20 +13,29 @@ import EyeOn from "@material-ui/icons/Visibility";
 import EyeOff from "@material-ui/icons/VisibilityOff";
 import LockIcon from "@material-ui/icons/Lock";
 import AppConext from "../../context/context";
-import service from "../../service/user.service";
 import useStyles from "./login.styles";
 import CacheService from "../../service/cache.service";
 import Actions from "../../context/actions";
 
+// services
+import { getUser } from "../../service/user.service";
+
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
+
+  // store varibles
+  const {
+    dispatch,
+    store: { appDesc, appName },
+  } = useContext(AppConext);
+
+  // state variables
   const [username, setusername] = useState("dev");
   const [password, setpassword] = useState("dev");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  const { dispatch, appName, appDesc,actions } = useContext(AppConext);
 
   const handleusername = (e) => {
     setusername(e.target.value);
@@ -36,11 +45,11 @@ const Login = () => {
     setpassword(e.target.value);
   };
 
-  const loginUser = async () => {
+  const _loginUser = async () => {
     setloginin(true);
     CacheService.clear();
     if (username.length > 0 && password.length > 0) {
-      const user = await service.getUser(username, password);
+      const user = await getUser(username, password);
       if (user === null) {
         setloginin(false);
         seterror(true);
@@ -55,6 +64,16 @@ const Login = () => {
     }
   };
 
+  const _dispatchAppData = (name, desc) => {
+    dispatch({
+      type: Actions.SET_APPNAME,
+      payload: {
+        appName: name,
+        appDesc: desc,
+      },
+    });
+  };
+
   const togglePassword = () => {
     setShowPass(!showPass);
   };
@@ -62,31 +81,31 @@ const Login = () => {
   const _setAppName = () => {
     const location = window.location.href;
     if (location.includes("localhost")) {
-      actions.setAppName({
-        name: "Localhost",
-        desc: `Dedicated Streaming Server Provider.<n>For contact +91 79040 37932.`,
-      });
+      _dispatchAppData(
+        "Localhost",
+        "Dedicated Streaming Server Provider.<n>For contact +91 79040 37932."
+      );
       return;
     }
     if (location.includes("iptelevision")) {
-      actions.setAppName({
-        name: "IPtelevision",
-        desc: `Dedicated Streaming Server Provider.<n>For contact +91 97154 42908.`,
-      });
+      _dispatchAppData(
+        "IPtelevision",
+        "Dedicated Streaming Server Provider.<n>For contact +91 97154 42908."
+      );
       return;
     }
     if (location.includes("teluguwebsolutions")) {
-      actions.setAppName({
-        name: "Telugu Web Solutions",
-        desc: `Dedicated Streaming Server Provider.<n>For contact +91 70757 57910.`,
-      });
+      _dispatchAppData(
+        "Telugu Web Solutions",
+        "Dedicated Streaming Server Provider.<n>For contact +91 70757 57910."
+      );
       return;
     }
   };
 
   useEffect(() => {
     _setAppName();
-    loginUser();
+    // _loginUser();
     // eslint-disable-next-line
   }, []);
 
@@ -96,8 +115,10 @@ const Login = () => {
         <div className={classes.txtcontainer}>
           <p className={classes.maintxt}>{appName}</p>
           <>
-            {appDesc.split("<n>").map((text,i) => (
-              <p key={i} className={classes.subtxt}>{text}</p>
+            {appDesc.split("<n>").map((text, i) => (
+              <p key={i} className={classes.subtxt}>
+                {text}
+              </p>
             ))}
           </>
         </div>
@@ -164,7 +185,7 @@ const Login = () => {
                 </div>
               ) : (
                 <Button
-                  onClick={loginUser}
+                  onClick={_loginUser}
                   variant="contained"
                   color="primary"
                   disableElevation
