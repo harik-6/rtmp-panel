@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import ReactPlayer from "react-player";
 import TextField from "@mui/material/TextField";
+import UtilDiv from "../../components/Utildiv";
 
 // services
 import { getChannels } from "../../service/channel.service";
@@ -50,17 +51,6 @@ const ChannelListDiv = styled.div`
   height: 515px;
   overflow-y: scroll;
   border-radius: 16px;
-`;
-
-const UtilDiv = styled.div`
-  height: 56px;
-  // background-color: #ffffff;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 8px;
 `;
 
 const Search = styled(TextField)`

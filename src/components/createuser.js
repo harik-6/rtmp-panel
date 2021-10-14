@@ -28,7 +28,11 @@ const useStyles = makeStyles((theme) =>
 );
 
 const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
-  const { user, allUsers } = useContext(AppContext);
+  // store variables
+  const { store } = useContext(AppContext);
+  const { user,users } = store;
+
+  // state variables
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
   const [userObj, setUserObj] = useState({
@@ -47,7 +51,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
   const addNewUser = async () => {
     setCreating(true);
     setErr(null);
-    const allnames = allUsers.map((user) => user.username);
+    const allnames = users.map((user) => user.username);
     if (allnames.indexOf(userObj.username) === -1) {
       await service.createUser(user, userObj);
       closePopup();
@@ -69,7 +73,7 @@ const CreateNewUser = ({ openForm, closeCreatepop, successCallback }) => {
     closeCreatepop();
   };
 
-  const consumed = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
+  const consumed = users.reduce((prev, cur) => prev + cur.limit, 0);
   const max = user.limit;
   let chLimitErr = false;
   if(user.usertype === "s") {
