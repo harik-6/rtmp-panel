@@ -11,7 +11,6 @@ import Avatar from "@material-ui/core/Avatar";
 import AppContext from "../../context/context";
 import Menu from "@material-ui/core/Menu";
 import Player from "../player/player";
-import Channels from "../channels/channels";
 import useStyles from "./main.styles";
 import Users from "../users/users";
 import Login from "../login/login";

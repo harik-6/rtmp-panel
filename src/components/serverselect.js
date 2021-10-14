@@ -9,7 +9,7 @@ const ServerSelect = ({
   labelVisible,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const visible = labelVisible ===false? false : true;
+  const visible = labelVisible === false ? false : true;
 
   return (
     <React.Fragment>
@@ -19,7 +19,6 @@ const ServerSelect = ({
         aria-haspopup="true"
         onClick={(event) => setAnchorEl(event.currentTarget)}
         disableElevation
-        style={{ marginTop: "16px", marginBottom: "-16px" }}
       >
         {selectedServer}
         <DownArrowIcon />

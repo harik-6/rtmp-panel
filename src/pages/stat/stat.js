@@ -1,18 +1,36 @@
 import React, { useState, useEffect, useContext } from "react";
+import styled from "styled-components";
 import AppContext from "../../context/context";
-import {
-  Table,
-  TableRow,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TablePagination,
-} from "@material-ui/core";
+
+// components
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
 import ServerSelect from "../../components/serverselect";
-import useStyles from "./stat.styles";
-// import { getXmlData } from "../../service/rtmp.service";
-import { getChannels } from "../../service/channel.service";
+
+// services
 import { getBitrateMedata } from "../../service/rtmp.service";
+import { statFormatter } from "./stat.formatter";
+
+// styled
+const TopDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const TableContainerStyled = styled(TableContainer)`
+  background-color: #ffffff;
+  border-radius: 16px;
+`;
+
+const TableCellStyled = styled(TableCell)`
+  padding: 12px 0;
+`;
 
 const defaultMetdata = {
   audioRate: 0,
@@ -25,14 +43,16 @@ const defaultMetdata = {
 };
 
 const Stat = () => {
-  const { user } = useContext(AppContext);
+  // store variable
+  const { store } = useContext(AppContext);
+  const { user, servers, channels } = store;
+
+  // state variable
   const [metadataMap, setMetadataMap] = useState({});
-  const [channelList, setChannelList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const [selectedServer, setSelectedServer] = useState("no-server");
-  const [serverNames, setServerNames] = useState([["no-server"]]);
+  const [_selectedServer, setSelectedServer] = useState("no-server");
 
   const handleChangePage = (event, pagenumber) => {
     setPage(pagenumber);
@@ -42,97 +62,28 @@ const Stat = () => {
     setPageSize(event.target.value);
   };
 
-  const _getReadableFileSizeString = (fileSizeInBytes) => {
-    let i = -1;
-    const byteUnits = [
-      " Kbps",
-      " Mbps",
-      " Gbps",
-      " Tbps",
-      "Pbps",
-      "Ebps",
-      "Zbps",
-      "Ybps",
-    ];
-    do {
-      fileSizeInBytes = fileSizeInBytes / 1000;
-      i++;
-    } while (fileSizeInBytes > 1000);
-    return Math.max(fileSizeInBytes, 0.1).toFixed(3) + byteUnits[i];
-  };
-
-  function _msToTime(ms) {
-    let seconds = (ms / 1000).toFixed(1);
-    let minutes = (ms / (1000 * 60)).toFixed(1);
-    let hours = (ms / (1000 * 60 * 60)).toFixed(1);
-    let days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
-    if (seconds < 60) return seconds + " Sec";
-    else if (minutes < 60) return minutes + " Min";
-    else if (hours < 24) return hours + " Hrs";
-    else return days + " Days";
-  }
-
-
   const _loadMetadata = async (serverToLoad) => {
     setLoading(true);
     const list = await getBitrateMedata(serverToLoad, user);
-    let map = {};
-    for (let i = 0; i < list.length; i++) {
-      const meta = list[i];
-      let {
-        audioRate,
-        inBytes,
-        outBytes,
-        totalIn,
-        totalOut,
-        upTime,
-        videoRate,
-      } = meta;
-      const videoRateRaw = videoRate;
-      audioRate = _getReadableFileSizeString(audioRate);
-      videoRate = _getReadableFileSizeString(videoRate);
-      inBytes = _getReadableFileSizeString(inBytes);
-      outBytes = _getReadableFileSizeString(outBytes);
-      totalIn = _getReadableFileSizeString(totalIn);
-      totalOut = _getReadableFileSizeString(totalOut);
-      upTime = _msToTime(upTime);
-      map[meta.channelName] = {
-        audioRate,
-        inBytes,
-        outBytes,
-        totalIn,
-        totalOut,
-        upTime,
-        videoRate,
-        videoRateRaw,
-      };
-    }
+    const map = statFormatter(list);
     setMetadataMap(map);
     setLoading(false);
   };
 
-  const loadChannels = async () => {
-    setLoading(true);
-    const list = (await getChannels(user)) || [];
-    const servers = [...new Set(list.map((c) => c.server))] || ["no-server"];
-    setServerNames(servers);
-    setChannelList(list);
-    setSelectedServer(servers[0]);
-    _loadMetadata(servers[0]);
-  };
-
   useEffect(() => {
-    loadChannels();
+    const ser = servers[0];
+    setSelectedServer(ser);
+    _loadMetadata(ser);
     // eslint-disable-next-line
-  }, []);
+  }, [servers, channels]);
 
   const _changeServer = (_serverName) => {
     setSelectedServer(_serverName);
     _loadMetadata(_serverName);
   };
 
-  let tableData = channelList
-    .filter((c) => c.server === selectedServer)
+  let tableData = channels
+    .filter((c) => c.server === _selectedServer)
     .map((channel) => {
       let meta = metadataMap[channel.name];
       if (meta === null || meta === undefined) {
@@ -148,41 +99,42 @@ const Stat = () => {
     (a, b) => parseInt(b.meta.videoRate) - parseInt(a.meta.videoRate)
   );
 
-  const classes = useStyles();
-
   return (
-    <div className={classes.stat}>
-      <ServerSelect
-        serverNames={serverNames}
-        onSelect={_changeServer}
-        selectedServer={selectedServer}
-        labelVisible={false}
-      />
+    <div>
+      <TopDiv>
+        <ServerSelect
+          serverNames={servers}
+          onSelect={_changeServer}
+          selectedServer={_selectedServer}
+          labelVisible={false}
+        />
+        <TablePagination
+          rowsPerPageOptions={[10, 15, 25]}
+          component="div"
+          count={tableData.length}
+          rowsPerPage={pageSize}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </TopDiv>
+
       {loading ? (
         <p style={{ textAlign: "center", marginTop: "32px" }}>
           Loading data...
         </p>
       ) : (
-        <TableContainer className={classes.tablecnt}>
-          <TablePagination
-            rowsPerPageOptions={[10, 15, 25]}
-            component="div"
-            count={tableData.length}
-            rowsPerPage={pageSize}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
+        <TableContainerStyled>
           <Table aria-label="channel-list">
             <TableRow>
-              <TableCell align="left">Name</TableCell>
-              <TableCell align="center">Video bitrate</TableCell>
-              <TableCell align="center">Audio bitrate</TableCell>
-              <TableCell align="center">Bitrate In</TableCell>
-              <TableCell align="center">Bitrate Out</TableCell>
-              <TableCell align="center">Bandwidth In</TableCell>
-              <TableCell align="center">Bandwidth Out</TableCell>
-              <TableCell align="center">Uptime</TableCell>
+              <TableCellStyled align="left">Name</TableCellStyled>
+              <TableCellStyled align="center">Video bitrate</TableCellStyled>
+              <TableCellStyled align="center">Audio bitrate</TableCellStyled>
+              <TableCellStyled align="center">Bitrate In</TableCellStyled>
+              <TableCellStyled align="center">Bitrate Out</TableCellStyled>
+              <TableCellStyled align="center">Bandwidth In</TableCellStyled>
+              <TableCellStyled align="center">Bandwidth Out</TableCellStyled>
+              <TableCellStyled align="center">Uptime</TableCellStyled>
             </TableRow>
             <TableBody>
               {tableData.map((channel, index) => {
@@ -198,42 +150,31 @@ const Stat = () => {
                 } = channel.meta;
                 return (
                   <TableRow key={channel.key + " " + index}>
-                    <TableCell className={classes.tbcell} align="left">
+                    <TableCellStyled align="left">
                       {channel.name}
-                    </TableCell>
-                    <TableCell
+                    </TableCellStyled>
+                    <TableCellStyled
                       style={{
                         color: videoRateRaw > 2000000 ? "#ff1744" : "inherit",
                       }}
-                      className={classes.tbcell}
                       align="center"
                     >
                       {videoRate}
-                    </TableCell>
-                    <TableCell className={classes.tbcell} align="center">
+                    </TableCellStyled>
+                    <TableCellStyled align="center">
                       {audioRate}
-                    </TableCell>
-                    <TableCell className={classes.tbcell} align="center">
-                      {inBytes}
-                    </TableCell>
-                    <TableCell className={classes.tbcell} align="center">
-                      {outBytes}
-                    </TableCell>
-                    <TableCell className={classes.tbcell} align="center">
-                      {totalIn}
-                    </TableCell>
-                    <TableCell className={classes.tbcell} align="center">
-                      {totalOut}
-                    </TableCell>
-                    <TableCell className={classes.tbcell} align="center">
-                      {upTime}
-                    </TableCell>
+                    </TableCellStyled>
+                    <TableCellStyled align="center">{inBytes}</TableCellStyled>
+                    <TableCellStyled align="center">{outBytes}</TableCellStyled>
+                    <TableCellStyled align="center">{totalIn}</TableCellStyled>
+                    <TableCellStyled align="center">{totalOut}</TableCellStyled>
+                    <TableCellStyled align="center">{upTime}</TableCellStyled>
                   </TableRow>
                 );
               })}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainerStyled>
       )}
     </div>
   );

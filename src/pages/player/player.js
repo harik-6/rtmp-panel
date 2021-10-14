@@ -64,7 +64,6 @@ const UtilDiv = styled.div`
 `;
 
 const Search = styled(TextField)`
-  flex: 1;
   fieldset {
     // background-color: #ffffff;
     border-radius: 32px;
@@ -84,11 +83,12 @@ const Home = () => {
   const [_selected, setSelected] = useState({});
 
   const _setServers = (list = []) => {
-    const set = [...new Set(list.map((c) => c.server))];
-    // dispatch({
-    //   type: Actions.SET_SERVER_LIST,
-    //   payload: set,
-    // });
+    let set = [...new Set(list.map((c) => c.server))];
+    set.sort();
+    dispatch({
+      type: Actions.SET_SERVER_LIST,
+      payload: set,
+    });
     return set;
   };
 
