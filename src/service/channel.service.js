@@ -34,7 +34,7 @@ const createChannel = async (user, channelname, server) => {
         channel: newchannel,
       },
       {
-        headers: _headers(user)
+        headers: _headers(user),
       }
     );
     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
@@ -47,24 +47,6 @@ const createChannel = async (user, channelname, server) => {
   }
 };
 
-
-const getAllTokens = async (user) => {
-  try {
-    const response = await axios.post(
-      `${API}/keys`,
-      {},
-      {
-        headers: _headers(user)
-      }
-    );
-    if (response.data.status === "success") return response.data.payload;
-    return null;
-  } catch (error) {
-    return null;
-  }
-};
-
-
 const getChannels = async (user) => {
   try {
     const cachkey = CACHEKEYS.FETCH_CHANNELS;
@@ -74,7 +56,7 @@ const getChannels = async (user) => {
       `${API}/get`,
       {},
       {
-        headers: _headers(user)
+        headers: _headers(user),
       }
     );
     const data = response.data.payload || [];
@@ -86,7 +68,6 @@ const getChannels = async (user) => {
   }
 };
 
-
 const deleteChannel = async (channel, user) => {
   try {
     const response = await axios.post(
@@ -95,7 +76,7 @@ const deleteChannel = async (channel, user) => {
         channelid: channel["_id"],
       },
       {
-        headers: _headers(user)
+        headers: _headers(user),
       }
     );
     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
@@ -105,7 +86,6 @@ const deleteChannel = async (channel, user) => {
     return false;
   }
 };
-
 
 const getChannelDetailsByName = async (channelName) => {
   try {
@@ -118,9 +98,8 @@ const getChannelDetailsByName = async (channelName) => {
   }
 };
 
-
 const editchannelAdmin = async (channel, user) => {
-  if (user.usertype==="s") {
+  if (user.usertype === "s") {
     try {
       const channeltoedit = {
         ...channel,
@@ -132,7 +111,7 @@ const editchannelAdmin = async (channel, user) => {
           channel: channeltoedit,
         },
         {
-          headers: _headers(user)
+          headers: _headers(user),
         }
       );
       const data = response.data;
@@ -147,7 +126,6 @@ const editchannelAdmin = async (channel, user) => {
 
 export {
   createChannel,
-  getAllTokens,
   getChannels,
   deleteChannel,
   getChannelDetailsByName,

@@ -25,6 +25,7 @@ import ChannelLinks from "./Channellinks";
 import ChannelNumbers from "./Channelnumbers";
 import Legend from "../../components/Legend";
 import Preloader from "../../components/Preloader";
+import CreateNewChannel from "../../components/Createchannel";
 
 // styled
 const Page = styled.div`
@@ -79,6 +80,7 @@ const Home = () => {
   const [_servers, setServers] = useState([]);
   const [_filtered, setFiltered] = useState([]);
   const [_selectedServer, setSelectedserver] = useState();
+  const [_opencreate, setOpencreate] = useState(false);
 
   const _setServers = (list = []) => {
     let set = [...new Set(list.map((c) => c.server))];
@@ -151,6 +153,7 @@ const Home = () => {
             size="small"
             variant="contained"
             endIcon={<AddIcon />}
+            onClick={() => setOpencreate(true)}
           >
             New Channel
           </Button>
@@ -172,7 +175,12 @@ const Home = () => {
         <DetailDiv>
           <Card sx={{ borderRadius: "16px" }} elevation={0}>
             <CardContent>
-              <ChannelAction channel={_selected} />
+              <ChannelAction
+                channel={_selected}
+                health={_health[_selected.name]}
+                user={user}
+                callback={() => _loadChannels()}
+              />
               <PlayerDiv>
                 <PlayerClipper>
                   <ReactPlayer
@@ -188,6 +196,11 @@ const Home = () => {
           </Card>
         </DetailDiv>
       </Page>
+      <CreateNewChannel
+        open={_opencreate}
+        onClose={() => setOpencreate(false)}
+        callback={() => _loadChannels()}
+      />
     </>
   );
 };

@@ -10,6 +10,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Preloader from "../../components/Preloader";
 import UtilDiv from "../../components/Utildiv";
 import Usercard from "./Usercard";
+import CreateNewUser from "../../components/Createuser";
 
 // services
 import {
@@ -17,7 +18,6 @@ import {
   deleteUser,
   promoteDemoteAdmin,
 } from "../../service/user.service";
-import CreateNewUser from "../../components/Createuser";
 
 // styled
 const UsersListDiv = styled.div`

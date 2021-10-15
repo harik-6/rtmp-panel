@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
-  DialogContent,
 } from "@mui/material";
 
 const WarningModal = ({ open, onClose, onYes, message }) => {
