@@ -2,15 +2,17 @@ import React, { useEffect, useContext, useState } from "react";
 import styled from "styled-components";
 import AppContext from "../../context/context";
 
-// components
-import Channeltile from "./Channeltile";
+// mui
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+
+// components
+import Channeltile from "./Channeltile";
 import ReactPlayer from "react-player";
-import TextField from "@mui/material/TextField";
 import UtilDiv from "../../components/Utildiv";
+import ServerSelect from "../../components/Serverselect";
 
 // services
 import { getChannels } from "../../service/channel.service";
@@ -53,13 +55,6 @@ const ChannelListDiv = styled.div`
   border-radius: 16px;
 `;
 
-const Search = styled(TextField)`
-  fieldset {
-    // background-color: #ffffff;
-    border-radius: 32px;
-  }
-`;
-
 const Home = () => {
   // store variables
   const { dispatch, store } = useContext(AppContext);
@@ -71,10 +66,14 @@ const Home = () => {
   const [_health, setHealth] = useState({});
   const [_loading, setLoading] = useState(false);
   const [_selected, setSelected] = useState({});
+  const [_servers, setServers] = useState([]);
+  const [_selectedServer, setSelectedserver] = useState("All");
 
   const _setServers = (list = []) => {
     let set = [...new Set(list.map((c) => c.server))];
     set.sort();
+    setServers(set);
+    setSelectedserver(set[0]);
     dispatch({
       type: Actions.SET_SERVER_LIST,
       payload: set,
@@ -116,14 +115,21 @@ const Home = () => {
     return <h1>Loading...</h1>;
   }
 
+  let _filtered = [];
+  if (_selectedServer === "All") {
+    _filtered = _channels;
+  } else {
+    _filtered = _channels.filter((c) => c.server === _selectedServer);
+  }
+
   return (
     <>
       <UtilDiv>
-        <Search
-          id="channel-search"
-          label="Search channel"
-          variant="outlined"
-          size="small"
+        <ServerSelect
+          serverNames={_servers}
+          onSelect={(s) => setSelectedserver(s)}
+          selectedServer={_selectedServer}
+          labelVisible={false}
         />
         <Button
           sx={{ marginLeft: "16px" }}
@@ -136,7 +142,7 @@ const Home = () => {
       </UtilDiv>
       <Page>
         <ChannelListDiv className="channel-list-div">
-          {_channels.map((c, index) => (
+          {_filtered.map((c, index) => (
             <Channeltile
               key={index + "-" + c.name}
               selected={_selected?.name === c.name}

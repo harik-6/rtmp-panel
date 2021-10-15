@@ -49,65 +49,86 @@ const getUser = async (username, password) => {
   }
 };
 
-const UserService = {
-  getAllUsers: async (user) => {
-    if (user.usertype === "u") return [];
-    try {
-      const cachkey = CACHEKEYS.FETCH_USERS;
-      const cachevalue = CacheService.get(cachkey);
-      if (cachevalue !== null) return cachevalue;
-      const response = await axios.post(
-        `${API}/all`,
-        {},
-        {
-          headers: _headers(user),
-        }
-      );
-      const data = response.data;
-      if (data.payload.status === "failed") return [];
-      CacheService.set(cachkey, data.payload);
-      return data.payload;
-    } catch (error) {
-      return [];
-    }
-  },
-  createUser: async (admin, newuser) => {
-    try {
-      const { password } = newuser;
-      newuser["password"] = sha1(password);
-      const response = await axios.post(
-        `${API}/create`,
-        {
-          user: newuser,
-        },
-        {
-          headers: _headers(admin),
-        }
-      );
-      CacheService.remove(CACHEKEYS.FETCH_USERS);
-      const data = response.data;
-      return data.payload;
-    } catch (error) {
-      return null;
-    }
-  },
-  editUser: async (admin, editedUser, newpassword = "") => {
-    try {
-      editedUser["limit"] = parseInt(editedUser["limit"]);
-      const body = {
-        user: getEditUserPayload(editedUser, newpassword),
-        token: editedUser["token"],
-      };
-      const response = await axios.post(`${API}/edit`, body, {
+const getAllUsers = async (user) => {
+  if (user.usertype === "u") return [];
+  try {
+    const cachkey = CACHEKEYS.FETCH_USERS;
+    const cachevalue = CacheService.get(cachkey);
+    if (cachevalue !== null) return cachevalue;
+    const response = await axios.post(
+      `${API}/all`,
+      {},
+      {
+        headers: _headers(user),
+      }
+    );
+    const data = response.data;
+    if (data.payload.status === "failed") return [];
+    CacheService.set(cachkey, data.payload);
+    return data.payload;
+  } catch (error) {
+    return [];
+  }
+};
+
+const createUser = async (admin, newuser) => {
+  try {
+    const { password } = newuser;
+    newuser["password"] = sha1(password);
+    const response = await axios.post(
+      `${API}/create`,
+      {
+        user: newuser,
+      },
+      {
         headers: _headers(admin),
-      });
-      CacheService.remove(CACHEKEYS.FETCH_USERS);
-      if (response.data.status === "failed") return null;
-      return editedUser;
-    } catch (error) {
-      return null;
-    }
-  },
+      }
+    );
+    CacheService.remove(CACHEKEYS.FETCH_USERS);
+    const data = response.data;
+    return data.payload;
+  } catch (error) {
+    return null;
+  }
+};
+
+const editUser = async (admin, editedUser, newpassword = "") => {
+  try {
+    editedUser["limit"] = parseInt(editedUser["limit"]);
+    const body = {
+      user: getEditUserPayload(editedUser, newpassword),
+      token: editedUser["token"],
+    };
+    const response = await axios.post(`${API}/edit`, body, {
+      headers: _headers(admin),
+    });
+    CacheService.remove(CACHEKEYS.FETCH_USERS);
+    if (response.data.status === "failed") return null;
+    return editedUser;
+  } catch (error) {
+    return null;
+  }
+};
+
+const deleteUser = async (admin, usertoDelete) => {
+  try {
+    await axios.post(
+      `${API}/delete`,
+      {
+        token: usertoDelete.token,
+      },
+      {
+        headers: _headers(admin),
+      }
+    );
+    CacheService.remove(CACHEKEYS.FETCH_USERS);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+const UserService = {
   promoteDemoteAdmin: async (admin, status, token) => {
     try {
       const response = await axios.post(
@@ -129,25 +150,8 @@ const UserService = {
       return null;
     }
   },
-  deleteUser: async (admin, usertoDelete) => {
-    try {
-      await axios.post(
-        `${API}/delete`,
-        {
-          token: usertoDelete.token,
-        },
-        {
-          headers: _headers(admin),
-        }
-      );
-      CacheService.remove(CACHEKEYS.FETCH_USERS);
-      return true;
-    } catch (error) {
-      return false;
-    }
-  },
 };
 
-export { getUser };
+export { getUser, getAllUsers, createUser, editUser, deleteUser };
 
 export default UserService;

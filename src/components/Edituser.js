@@ -1,5 +1,7 @@
 import React, { useState, useContext } from "react";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import AppContext from "../context/context";
+
+// mui
 import {
   Button,
   Dialog,
@@ -9,31 +11,25 @@ import {
   DialogTitle,
   TextField,
   CircularProgress,
-} from "@material-ui/core";
-import Slide from "@material-ui/core/Slide";
-import AppContext from "../context/context";
-import service from "../service/user.service";
+} from "@mui/material";
+import Slide from "@mui/material/Slide";
+
+// components
+import TxtField from "./TxtField";
+
+// services
+import { editUser } from "../service/user.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    txtfield: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const EditUser = ({ open, onClose, callback, userToEdit }) => {
+  // store vaiable
+  const { store } = useContext(AppContext);
+  const { user, users } = store;
 
-const EditUser = ({
-  openForm,
-  closeCreatepop,
-  successCallback,
-  userToEdit,
-}) => {
-  const { user, allUsers } = useContext(AppContext);
+  // state variabled
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
   const [chLimitErr, setChLimitErr] = useState(null);
@@ -51,14 +47,6 @@ const EditUser = ({
   const editExistingUser = async () => {
     setCreating(true);
     setErr(null);
-    const allnames = allUsers
-      .map((user) => user.username)
-      .filter((name) => name !== userObj.username);
-    if (allnames.indexOf(userObj.username) !== -1) {
-      setErr("User alerady exists");
-      setCreating(false);
-      return;
-    }
     const entered = parseInt(userObj.limit);
     if (entered <= 0) {
       setChLimitErr("Invalid channel limit");
@@ -66,7 +54,7 @@ const EditUser = ({
       return;
     }
     if (user.usertype === "a") {
-      const consumed = allUsers.reduce((prev, cur) => prev + cur.limit, 0);
+      const consumed = users.reduce((prev, cur) => prev + cur.limit, 0);
       const total = consumed + entered;
       if (total > parseInt(user.limit)) {
         setChLimitErr("Channel limit exceeded.");
@@ -74,32 +62,28 @@ const EditUser = ({
         return;
       }
     }
-    await service.editUser(user, userObj, password);
+    await editUser(user, userObj, password);
     closePopup();
-    successCallback();
+    callback();
   };
 
   const closePopup = () => {
     setCreating(false);
     setErr(null);
-    closeCreatepop();
+    onClose();
   };
-  const classes = useStyles();
   return (
     <Dialog
-      open={openForm}
+      open={open}
       TransitionComponent={Transition}
       keepMounted
       onClose={closePopup}
       aria-labelledby="create-user-form"
-      fullWidth
     >
       <DialogTitle id="create-user-form-title">{"Edit user"}</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ width: "350px" }}>
         <DialogContentText id="create-user-form-title-description">
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          <TxtField
             id="username"
             label="Name"
             name="username"
@@ -109,9 +93,7 @@ const EditUser = ({
             error={err}
             helperText={err}
           />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          <TxtField
             id="password"
             name="password"
             label="Password"
@@ -119,9 +101,7 @@ const EditUser = ({
             disabled={creating}
             onChange={(ev) => setPassword(ev.target.value)}
           />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          <TxtField
             id="server"
             name="server"
             label="Server"
@@ -129,9 +109,7 @@ const EditUser = ({
             disabled={creating}
             onChange={handleChange}
           />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          <TxtField
             id="limit"
             name="limit"
             label="Limit"
@@ -142,36 +120,6 @@ const EditUser = ({
             error={chLimitErr}
             helperText={chLimitErr}
           />
-          {/* <FormLabel style={{ marginTop: "8px" }} component="legend">
-            PlayUrl
-          </FormLabel>
-          <RadioGroup
-            aria-label="preview"
-            name="preview"
-            value={userObj.preview ? "show" : "hide"}
-            onChange={(e) => {
-              handleChange({
-                target: {
-                  name: "preview",
-                  value: e.target.value === "show" ? true : false,
-                },
-              });
-            }}
-            style={{ display: "flex", flexDirection: "row" }}
-          >
-            <FormControlLabel
-              value={"show"}
-              control={<Radio />}
-              label="Show"
-              disabled={creating}
-            />
-            <FormControlLabel
-              value={"hide"}
-              control={<Radio />}
-              label="Hide"
-              disabled={creating}
-            />
-          </RadioGroup> */}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

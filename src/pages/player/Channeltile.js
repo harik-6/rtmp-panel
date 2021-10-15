@@ -47,7 +47,7 @@ const Legend = ({ type }) => {
   );
 };
 
-const Channeltile = ({ channel, view, selected, health,onClick }) => {
+const Channeltile = ({ channel, view, selected, health, onClick }) => {
   return (
     <Card
       elevation={0}
@@ -67,7 +67,7 @@ const Channeltile = ({ channel, view, selected, health,onClick }) => {
         <Indicators>
           <Div>
             {health ? <Legend type="live" /> : <Legend type="idle" />}
-            <p>Live</p>
+            <p>{health ? "Live" : "Idle"}</p>
           </Div>
           <Div>
             <Legend type="rtmpcount" />

@@ -9,7 +9,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import ServerSelect from "../../components/serverselect";
+import ServerSelect from "../../components/Serverselect";
 
 // services
 import { getBitrateMedata } from "../../service/rtmp.service";
