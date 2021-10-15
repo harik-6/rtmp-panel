@@ -10,7 +10,7 @@ const _headers = (user) => {
   };
 };
 
-const getEditUserPayload = (editedUser, newpass) => {
+const _getEditUserPayload = (editedUser, newpass) => {
   if (newpass.length !== 0) {
     return {
       ...editedUser,
@@ -96,7 +96,7 @@ const editUser = async (admin, editedUser, newpassword = "") => {
   try {
     editedUser["limit"] = parseInt(editedUser["limit"]);
     const body = {
-      user: getEditUserPayload(editedUser, newpassword),
+      user: _getEditUserPayload(editedUser, newpassword),
       token: editedUser["token"],
     };
     const response = await axios.post(`${API}/edit`, body, {
@@ -128,30 +128,33 @@ const deleteUser = async (admin, usertoDelete) => {
   }
 };
 
-const UserService = {
-  promoteDemoteAdmin: async (admin, status, token) => {
-    try {
-      const response = await axios.post(
-        `${API}/edit`,
-        {
-          user: {
-            admin: !status,
-          },
-          token,
+const promoteDemoteAdmin = async (admin, status, token) => {
+  try {
+    const response = await axios.post(
+      `${API}/edit`,
+      {
+        user: {
+          admin: !status,
         },
-        {
-          headers: _headers(admin),
-        }
-      );
-      CacheService.remove(CACHEKEYS.FETCH_USERS);
-      if (response.data.status === "failed") return null;
-      return token;
-    } catch (error) {
-      return null;
-    }
-  },
+        token,
+      },
+      {
+        headers: _headers(admin),
+      }
+    );
+    CacheService.remove(CACHEKEYS.FETCH_USERS);
+    if (response.data.status === "failed") return null;
+    return token;
+  } catch (error) {
+    return null;
+  }
 };
 
-export { getUser, getAllUsers, createUser, editUser, deleteUser };
-
-export default UserService;
+export {
+  getUser,
+  getAllUsers,
+  createUser,
+  editUser,
+  deleteUser,
+  promoteDemoteAdmin,
+};

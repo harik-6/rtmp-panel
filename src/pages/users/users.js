@@ -12,7 +12,11 @@ import UtilDiv from "../../components/Utildiv";
 import Usercard from "./Usercard";
 
 // services
-import { getAllUsers, deleteUser } from "../../service/user.service";
+import {
+  getAllUsers,
+  deleteUser,
+  promoteDemoteAdmin,
+} from "../../service/user.service";
 import CreateNewUser from "../../components/Createuser";
 
 // styled
@@ -36,23 +40,19 @@ const Users = () => {
 
   const _loadUsers = async () => {
     setLoading(true);
+    console.log("user",user);
     let usrs = await getAllUsers(user);
     usrs.sort((a, b) => a.username.localeCompare(b.username));
-    console.log(usrs);
     setUsers(usrs);
     setLoading(false);
   };
 
-  // const changeAdminStatus = async (usertochange) => {
-  //   const us = await userservice.promoteDemoteAdmin(
-  //     user,
-  //     usertochange.admin,
-  //     usertochange.token
-  //   );
-  //   if (us !== null) {
-  //     loadAllUsers();
-  //   }
-  // };
+  const _changeAdminStatus = async (_u) => {
+    const us = await promoteDemoteAdmin(user, _u.admin, _u.token);
+    if (us !== null) {
+      _loadUsers();
+    }
+  };
 
   const _deleteUser = async (_u) => {
     setLoading(true);
@@ -68,6 +68,7 @@ const Users = () => {
   if (_loading) {
     return <Preloader message={"Loading users..."} />;
   }
+
 
   return (
     <div>
@@ -90,6 +91,8 @@ const Users = () => {
             user={u}
             callback={() => _loadUsers()}
             onDelete={() => _deleteUser(u)}
+            showAdmin={user.usertype === "s"}
+            onChangeAdmin={() => _changeAdminStatus(u)}
           />
         ))}
       </UsersListDiv>

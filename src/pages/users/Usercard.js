@@ -7,11 +7,14 @@ import CardContent from "@mui/material/CardContent";
 import Avatar from "@mui/material/Avatar";
 import EditIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import TickIcon from "@mui/icons-material/CheckOutlined";
+import CrossIcon from "@mui/icons-material/ClearOutlined";
 
 // services
 import { getAvatarColor } from "./usercolors";
 import EditUser from "../../components/Edituser";
 import WarningModal from "../../components/Warningmodal";
+import Constants from "../../constants";
 
 // styled
 const Name = styled.p`
@@ -43,12 +46,60 @@ const ActionDiv = styled.div`
   justify-content: flex-end;
 `;
 
-const Usercard = ({ user, callback, onDelete }) => {
+const AdminDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+const AdminName = styled.p`
+  font-size: 16px;
+`;
+
+const Usercard = ({ user, callback, onDelete, showAdmin, onChangeAdmin }) => {
   const username = user?.username;
 
   // state variables
   const [_openedit, setOpenedit] = useState(false);
   const [_opendelete, setOpendelete] = useState(false);
+
+  const _renderName = () => {
+    if (showAdmin) {
+      if (user.admin) {
+        return (
+          <AdminDiv>
+            <AdminName>{username} </AdminName>
+            <TickIcon
+              sx={{
+                width: 18,
+                height: 18,
+                cursor: "pointer",
+                color: "green",
+              }}
+              onClick={onChangeAdmin}
+            />
+          </AdminDiv>
+        );
+      }
+      return (
+        <AdminDiv>
+          <AdminName>{username} </AdminName>
+          <CrossIcon
+            sx={{
+              width: 18,
+              height: 18,
+              cursor: "pointer",
+              color: "red",
+            }}
+            onClick={onChangeAdmin}
+          />
+        </AdminDiv>
+      );
+    }
+    return <Name>{username} </Name>;
+  };
 
   return (
     <>
@@ -67,7 +118,7 @@ const Usercard = ({ user, callback, onDelete }) => {
               {(username || "s")[0].toUpperCase()}
             </Avatar>
             <div>
-              <Name>{username}</Name>
+              {_renderName()}
               <Server>{user?.server}</Server>
               <Limit>Channel limit : {user?.limit}</Limit>
             </div>
