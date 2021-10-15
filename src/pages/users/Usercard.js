@@ -15,12 +15,17 @@ import WarningModal from "../../components/Warningmodal";
 
 // styled
 const Name = styled.p`
-  font-size: 15px;
-  margin-bottom: 4px;
+  font-size: 16px;
+  margin-bottom: 8px;
 `;
 
 const Server = styled.p`
   opacity: 0.6;
+  margin-bottom: 8px;
+`;
+
+const Limit = styled.p`
+  opacity: 0.6;8
 `;
 
 const DataDiv = styled.div`
@@ -64,6 +69,7 @@ const Usercard = ({ user, callback, onDelete }) => {
             <div>
               <Name>{username}</Name>
               <Server>{user?.server}</Server>
+              <Limit>Channel limit : {user?.limit}</Limit>
             </div>
           </DataDiv>
           <ActionDiv>

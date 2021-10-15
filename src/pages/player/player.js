@@ -67,13 +67,14 @@ const Home = () => {
   const [_loading, setLoading] = useState(false);
   const [_selected, setSelected] = useState({});
   const [_servers, setServers] = useState([]);
-  const [_selectedServer, setSelectedserver] = useState("All");
+  const [_filtered, setFiltered] = useState([]);
+  const [_selectedServer, setSelectedserver] = useState();
 
   const _setServers = (list = []) => {
     let set = [...new Set(list.map((c) => c.server))];
     set.sort();
     setServers(set);
-    setSelectedserver(set[0]);
+    setSelectedserver("All");
     dispatch({
       type: Actions.SET_SERVER_LIST,
       payload: set,
@@ -91,12 +92,21 @@ const Home = () => {
     setHealth(health);
   };
 
+  const _changeSeletedServer = (_s) => {
+    setSelectedserver(_s);
+    let fil = [];
+    fil = _channels.filter((c) => c.server === _s);
+    setFiltered(fil);
+    setSelected(fil[0]);
+  };
+
   const _loadChannels = async () => {
     setLoading(true);
     let list = await getChannels(user);
     list.sort((a, b) => a.name.localeCompare(b.name));
     setChannels(list);
     setSelected(list[0]);
+    setFiltered(list);
     dispatch({
       type: Actions.SET_CHANNEL_LIST,
       payload: list,
@@ -115,19 +125,12 @@ const Home = () => {
     return <h1>Loading...</h1>;
   }
 
-  let _filtered = [];
-  if (_selectedServer === "All") {
-    _filtered = _channels;
-  } else {
-    _filtered = _channels.filter((c) => c.server === _selectedServer);
-  }
-
   return (
     <>
       <UtilDiv>
         <ServerSelect
           serverNames={_servers}
-          onSelect={(s) => setSelectedserver(s)}
+          onSelect={_changeSeletedServer}
           selectedServer={_selectedServer}
           labelVisible={false}
         />
