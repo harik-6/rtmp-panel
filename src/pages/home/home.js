@@ -22,6 +22,8 @@ import { getViews, getHealth } from "../../service/rtmp.service";
 import Actions from "../../context/actions";
 import ChannelAction from "./Channelaction";
 import ChannelLinks from "./Channellinks";
+import ChannelNumbers from "./Channelnumbers";
+import Legend from "../../components/Legend";
 
 // styled
 const Page = styled.div`
@@ -53,6 +55,13 @@ const ChannelListDiv = styled.div`
   height: 515px;
   overflow-y: scroll;
   border-radius: 16px;
+`;
+
+const LegendDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
 `;
 
 const Home = () => {
@@ -134,14 +143,17 @@ const Home = () => {
           selectedServer={_selectedServer}
           labelVisible={false}
         />
-        <Button
-          sx={{ marginLeft: "16px" }}
-          size="small"
-          variant="contained"
-          endIcon={<AddIcon />}
-        >
-          New Channel
-        </Button>
+        <LegendDiv>
+          <ChannelNumbers channels={_filtered} health={_health} />
+          <Button
+            sx={{ marginLeft: "16px" }}
+            size="small"
+            variant="contained"
+            endIcon={<AddIcon />}
+          >
+            New Channel
+          </Button>
+        </LegendDiv>
       </UtilDiv>
       <Page>
         <ChannelListDiv className="channel-list-div">
@@ -164,7 +176,7 @@ const Home = () => {
                 <PlayerClipper>
                   <ReactPlayer
                     id="channel-preview-player"
-                    url={_selected.hls}
+                    // url={_selected.hls}
                     controls={true}
                     playing={true}
                   />

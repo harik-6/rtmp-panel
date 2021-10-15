@@ -5,7 +5,10 @@ import styled from "styled-components";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CircleIcon from "@mui/icons-material/FiberManualRecord";
+import Legend from "../../components/Legend";
+
 import Constants from "../../constants";
+
 
 const Name = styled.p`
   font-size: 15px;
@@ -32,20 +35,6 @@ const Div = styled.div`
   font-size: 12px;
 `;
 
-const legendColors = {
-  live: Constants.live_color,
-  idle: Constants.idle_color,
-  rtmpcount: "blue",
-  hlscount: Constants.secondary_color,
-};
-
-const Legend = ({ type }) => {
-  return (
-    <CircleIcon
-      sx={{ height: "16px", width: "16px", color: legendColors[type] }}
-    />
-  );
-};
 
 const Channeltile = ({ channel, view, selected, health, onClick }) => {
   return (
