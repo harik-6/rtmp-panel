@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 
 // components
-import Preloader from "../../components/preloader";
+import Preloader from "../../components/Preloader";
 import UtilDiv from "../../components/Utildiv";
 import Usercard from "./Usercard";
 

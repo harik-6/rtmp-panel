@@ -14,6 +14,7 @@ import ServerSelect from "../../components/Serverselect";
 // services
 import { getBitrateMedata } from "../../service/rtmp.service";
 import { statFormatter } from "./stat.formatter";
+import Preloader from "../../components/Preloader";
 
 // styled
 const TopDiv = styled.div`
@@ -64,7 +65,7 @@ const Stat = () => {
 
   // state variable
   const [metadataMap, setMetadataMap] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [_selectedServer, setSelectedServer] = useState("no-server");
@@ -106,10 +107,9 @@ const Stat = () => {
     (a, b) => (b.meta.videoRateRaw || 0) - (a.meta.videoRateRaw || 0)
   );
 
-  if (loading)
-    return (
-      <p style={{ textAlign: "center", marginTop: "32px" }}>Loading data...</p>
-    );
+  if (_loading) {
+    return <Preloader message={"Loading statistics..."} />;
+  }
 
   return (
     <div>

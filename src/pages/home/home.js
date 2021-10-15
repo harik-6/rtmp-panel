@@ -24,6 +24,7 @@ import ChannelAction from "./Channelaction";
 import ChannelLinks from "./Channellinks";
 import ChannelNumbers from "./Channelnumbers";
 import Legend from "../../components/Legend";
+import Preloader from "../../components/Preloader";
 
 // styled
 const Page = styled.div`
@@ -121,8 +122,8 @@ const Home = () => {
       payload: list,
     });
     const servers = _setServers(list);
-    _setViews(servers);
-    _setHealth(servers);
+    await _setViews(servers);
+    await _setHealth(servers);
     setLoading(false);
   };
 
@@ -131,7 +132,7 @@ const Home = () => {
   }, [user]);
 
   if (_loading) {
-    return <h1>Loading...</h1>;
+    return <Preloader message={"Loading channels..."} />;
   }
 
   return (
@@ -176,7 +177,7 @@ const Home = () => {
                 <PlayerClipper>
                   <ReactPlayer
                     id="channel-preview-player"
-                    // url={_selected.hls}
+                    url={_selected.hls}
                     controls={true}
                     playing={true}
                   />
