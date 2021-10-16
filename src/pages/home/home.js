@@ -13,6 +13,12 @@ import Channeltile from "./Channeltile";
 import ReactPlayer from "react-player";
 import UtilDiv from "../../components/Utildiv";
 import ServerSelect from "../../components/Serverselect";
+import ChannelAction from "./Channelaction";
+import ChannelLinks from "./Channellinks";
+import ChannelNumbers from "./Channelnumbers";
+import Preloader from "../../components/Preloader";
+import Nodata from "../../components/Nodata";
+import CreateNewChannel from "../../components/Channel/Createchannel";
 
 // services
 import { getChannels } from "../../service/channel.service";
@@ -20,12 +26,6 @@ import { getViews, getHealth } from "../../service/rtmp.service";
 
 // vars
 import Actions from "../../context/actions";
-import ChannelAction from "./Channelaction";
-import ChannelLinks from "./Channellinks";
-import ChannelNumbers from "./Channelnumbers";
-import Legend from "../../components/Legend";
-import Preloader from "../../components/Preloader";
-import CreateNewChannel from "../../components/Createchannel";
 
 // styled
 const Page = styled.div`
@@ -159,43 +159,48 @@ const Home = () => {
           </Button>
         </LegendDiv>
       </UtilDiv>
-      <Page>
-        <ChannelListDiv className="channel-list-div">
-          {_filtered.map((c, index) => (
-            <Channeltile
-              key={index + "-" + c.name}
-              selected={_selected?.name === c.name}
-              channel={c}
-              view={_views[c.name]}
-              health={_health[c.name]}
-              onClick={() => setSelected(c)}
-            />
-          ))}
-        </ChannelListDiv>
-        <DetailDiv>
-          <Card sx={{ borderRadius: "16px" }} elevation={0}>
-            <CardContent>
-              <ChannelAction
-                channel={_selected}
-                health={_health[_selected.name]}
-                user={user}
-                callback={() => _loadChannels()}
+      {_filtered.length === 0 ? (
+        <Nodata message={"You have not created channels."} />
+      ) : (
+        <Page>
+          <ChannelListDiv className="channel-list-div">
+            {_filtered.map((c, index) => (
+              <Channeltile
+                key={index + "-" + c.name}
+                selected={_selected?.name === c.name}
+                channel={c}
+                view={_views[c.name]}
+                health={_health[c.name]}
+                onClick={() => setSelected(c)}
               />
-              <PlayerDiv>
-                <PlayerClipper>
-                  <ReactPlayer
-                    id="channel-preview-player"
-                    url={_selected.hls}
-                    controls={true}
-                    playing={true}
-                  />
-                </PlayerClipper>
-              </PlayerDiv>
-              <ChannelLinks channel={_selected} />
-            </CardContent>
-          </Card>
-        </DetailDiv>
-      </Page>
+            ))}
+          </ChannelListDiv>
+          <DetailDiv>
+            <Card sx={{ borderRadius: "16px" }} elevation={0}>
+              <CardContent>
+                <ChannelAction
+                  channel={_selected}
+                  health={_health[_selected?.name]}
+                  user={user}
+                  callback={() => _loadChannels()}
+                />
+                <PlayerDiv>
+                  <PlayerClipper>
+                    <ReactPlayer
+                      id="channel-preview-player"
+                      url={_selected?.hls}
+                      controls={true}
+                      playing={true}
+                    />
+                  </PlayerClipper>
+                </PlayerDiv>
+                <ChannelLinks channel={_selected} />
+              </CardContent>
+            </Card>
+          </DetailDiv>
+        </Page>
+      )}
+
       <CreateNewChannel
         open={_opencreate}
         onClose={() => setOpencreate(false)}

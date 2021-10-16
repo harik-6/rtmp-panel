@@ -50,7 +50,7 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
       setErr("Username cannot be empty");
       return false;
     }
-    const isNameValid = await isUsernameAllowed(username);
+    const isNameValid = await isUsernameAllowed(user, username);
     if (!isNameValid) {
       setErr("Username already exists");
       return false;

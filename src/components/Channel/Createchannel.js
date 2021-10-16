@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import AppContext from "../context/context";
+import AppContext from "../../context/context";
 
 // mui
 import {
@@ -14,11 +14,14 @@ import {
 import Slide from "@mui/material/Slide";
 
 // components
-import ServerSelect from "./Serverselect";
-import TxtField from "./TxtField";
+import ServerSelect from "../Serverselect";
+import TxtField from "../TxtField";
 
 // services
-import { createChannel } from "../service/channel.service";
+import {
+  createChannel,
+  isChannelnameAllowed,
+} from "../../service/channel.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -35,16 +38,29 @@ const CreateNewChannel = ({ open, onClose, callback }) => {
   const [_err, setErr] = useState(false);
   const [_server, setSelectedServer] = useState(user.server);
 
-  const createNewChannel = async () => {
-    if (_name.length > 0) {
-      setcreating(true);
-      const channel = await createChannel(user, _name, _server);
-      if (channel !== null) {
-        setcreating(false);
-        onClose();
-        callback();
-      }
+  const _validEntries = async () => {
+    setErr(null);
+    if (_name.length === 0) {
+      setErr("Channel name cannot be empty");
+      return false;
     }
+    const isNameValid = await isChannelnameAllowed(user, _name);
+    if (!isNameValid) {
+      setErr("Channel name already exists");
+      return false;
+    }
+    return true;
+  };
+
+  const createNewChannel = async () => {
+    setcreating(true);
+    const isValid = await _validEntries();
+    if (isValid) {
+      await createChannel(user, _name, _server);
+      onClose();
+      callback();
+    }
+    setcreating(false);
   };
 
   const closePopup = () => {

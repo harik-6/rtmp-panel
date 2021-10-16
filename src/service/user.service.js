@@ -74,7 +74,7 @@ const getAllUsers = async (user) => {
 const isUsernameAllowed = async (admin, username) => {
   try {
     await axios.post(
-      `${API}/namecheck/username`,
+      `${API}/namecheck/${username}`,
       {},
       {
         headers: _headers(admin),

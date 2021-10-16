@@ -11,6 +11,7 @@ import Preloader from "../../components/Preloader";
 import UtilDiv from "../../components/Utildiv";
 import Usercard from "./Usercard";
 import CreateNewUser from "../../components/User/Createuser";
+import Nodata from "../../components/Nodata";
 
 // services
 import {
@@ -40,7 +41,7 @@ const Users = () => {
 
   const _loadUsers = async () => {
     setLoading(true);
-    console.log("user",user);
+    console.log("user", user);
     let usrs = await getAllUsers(user);
     usrs.sort((a, b) => a.username.localeCompare(b.username));
     setUsers(usrs);
@@ -69,7 +70,6 @@ const Users = () => {
     return <Preloader message={"Loading users..."} />;
   }
 
-
   return (
     <div>
       <UtilDiv>
@@ -84,18 +84,23 @@ const Users = () => {
           New User
         </Button>
       </UtilDiv>
-      <UsersListDiv>
-        {_users.map((u, index) => (
-          <Usercard
-            key={index + "-" + u.username}
-            user={u}
-            callback={() => _loadUsers()}
-            onDelete={() => _deleteUser(u)}
-            showAdmin={user.usertype === "s"}
-            onChangeAdmin={() => _changeAdminStatus(u)}
-          />
-        ))}
-      </UsersListDiv>
+      {_users.length === 0 ? (
+        <Nodata message={"You have not created users yet."} />
+      ) : (
+        <UsersListDiv>
+          {_users.map((u, index) => (
+            <Usercard
+              key={index + "-" + u.username}
+              user={u}
+              callback={() => _loadUsers()}
+              onDelete={() => _deleteUser(u)}
+              showAdmin={user.usertype === "s"}
+              onChangeAdmin={() => _changeAdminStatus(u)}
+            />
+          ))}
+        </UsersListDiv>
+      )}
+
       <CreateNewUser
         open={_opencreate}
         onClose={() => setOpencreate(false)}

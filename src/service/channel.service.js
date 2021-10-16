@@ -124,10 +124,26 @@ const editchannelAdmin = async (channel, user) => {
   }
 };
 
+const isChannelnameAllowed = async (user, chName) => {
+  try {
+    await axios.post(
+      `${API}/namecheck/${chName}`,
+      {},
+      {
+        headers: _headers(user),
+      }
+    );
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 export {
   createChannel,
   getChannels,
   deleteChannel,
   getChannelDetailsByName,
   editchannelAdmin,
+  isChannelnameAllowed
 };
