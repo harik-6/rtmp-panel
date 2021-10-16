@@ -11,8 +11,8 @@ import WarningModal from "../../components/Warningmodal";
 import EditChannel from "../../components/Channel/Editchannel";
 
 // services
-import { deleteChannel, editchannel } from "../../service/channel.service";
-import { rebootServer } from "../../service/rtmp.service";
+import { deleteChannel } from "../../service/channel.service";
+import { rebootServer, changeRtmpStatus } from "../../service/rtmp.service";
 
 const ActionDiv = styled.div`
   display: flex;
@@ -57,14 +57,22 @@ const ChannelAction = ({ channel, health, user, callback }) => {
   const [_opendelete, setOpendelete] = useState(false);
   const [_toEdit, setToEdit] = useState(channel);
 
-  const _deleteChannel = async () => {
-    await deleteChannel(channel, user);
-    await rebootServer([channel]);
+  const _rebootAndCallback = async () => {
+    await rebootServer([_toEdit]);
     callback();
   };
 
+  const _deleteChannel = async () => {
+    await deleteChannel(_toEdit, user);
+    _rebootAndCallback();
+  };
+
+  const _onOffChannel = async (_) => {
+    await changeRtmpStatus(_toEdit, user);
+    _rebootAndCallback();
+  };
+
   React.useEffect(() => {
-    console.log(channel);
     setToEdit(channel);
   }, [channel]);
 
@@ -91,8 +99,14 @@ const ChannelAction = ({ channel, health, user, callback }) => {
         </Action>
         <Action>
           <FormControlLabel
-            control={<Switch size="small" defaultChecked />}
-            label="On"
+            control={
+              <Switch
+                onChange={_onOffChannel}
+                size="small"
+                checked={_toEdit.status}
+              />
+            }
+            label={_toEdit.status?"On":"Off"}
           />
         </Action>
       </Div>

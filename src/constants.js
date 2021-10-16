@@ -3,7 +3,7 @@ const Constants = {
   secondary_color: "#ff6551",
   background_color: "rgb(245, 245, 245)",
   live_color: "#32CD32",
-  idle_color: "#d3d3d3",
+  idle_color: "#808080",
 };
 
 export default Constants;
