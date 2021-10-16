@@ -8,10 +8,11 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import Legend from "../../components/Legend";
 import WarningModal from "../../components/Warningmodal";
+import EditChannel from "../../components/Channel/Editchannel";
 
 // services
-import { deleteChannel } from '../../service/channel.service';
-import { rebootServer } from '../../service/rtmp.service';
+import { deleteChannel, editchannel } from "../../service/channel.service";
+import { rebootServer } from "../../service/rtmp.service";
 
 const ActionDiv = styled.div`
   display: flex;
@@ -54,12 +55,18 @@ const ChannelAction = ({ channel, health, user, callback }) => {
   // state variables
   const [_openedit, setOpenedit] = useState(false);
   const [_opendelete, setOpendelete] = useState(false);
+  const [_toEdit, setToEdit] = useState(channel);
 
   const _deleteChannel = async () => {
     await deleteChannel(channel, user);
     await rebootServer([channel]);
     callback();
   };
+
+  React.useEffect(() => {
+    console.log(channel);
+    setToEdit(channel);
+  }, [channel]);
 
   return (
     <ActionDiv>
@@ -73,7 +80,7 @@ const ChannelAction = ({ channel, health, user, callback }) => {
           <p>{health ? "Live" : "Idle"}</p>
         </Action>
         {user.usertype === "s" && (
-          <Action>
+          <Action onClick={() => setOpenedit(true)}>
             <EditIcon />
             <p>Edit</p>
           </Action>
@@ -94,6 +101,12 @@ const ChannelAction = ({ channel, health, user, callback }) => {
         onClose={() => setOpendelete(false)}
         message={`You sure you want to delete ${channel?.name} ?`}
         onYes={_deleteChannel}
+      />
+      <EditChannel
+        open={_openedit}
+        onClose={() => setOpenedit(false)}
+        callback={callback}
+        channel={_toEdit}
       />
     </ActionDiv>
   );

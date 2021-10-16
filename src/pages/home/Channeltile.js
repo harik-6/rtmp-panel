@@ -4,7 +4,6 @@ import styled from "styled-components";
 // components
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CircleIcon from "@mui/icons-material/FiberManualRecord";
 import Legend from "../../components/Legend";
 
 import Constants from "../../constants";

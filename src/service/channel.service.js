@@ -98,7 +98,7 @@ const getChannelDetailsByName = async (channelName) => {
   }
 };
 
-const editchannelAdmin = async (channel, user) => {
+const editchannel = async (channel, user) => {
   if (user.usertype === "s") {
     try {
       const channeltoedit = {
@@ -144,6 +144,6 @@ export {
   getChannels,
   deleteChannel,
   getChannelDetailsByName,
-  editchannelAdmin,
-  isChannelnameAllowed
+  editchannel,
+  isChannelnameAllowed,
 };

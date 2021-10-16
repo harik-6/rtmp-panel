@@ -31,8 +31,8 @@ const Login = () => {
   } = useContext(AppConext);
 
   // state variables
-  const [username, setusername] = useState("dev");
-  const [password, setpassword] = useState("dev");
+  const [username, setusername] = useState("admin@streamwell");
+  const [password, setpassword] = useState("@dm1n@$tream248well");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);

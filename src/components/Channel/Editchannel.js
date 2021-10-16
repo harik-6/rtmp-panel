@@ -1,5 +1,7 @@
 import React, { useState, useContext } from "react";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import AppContext from "../../context/context";
+
+// mui
 import {
   Button,
   Dialog,
@@ -7,35 +9,30 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  TextField,
   CircularProgress,
-} from "@material-ui/core";
-import Slide from "@material-ui/core/Slide";
-import AppContext from "../../context/context";
-import { getAllTokens, editchannelAdmin } from "../../service/channel.service";
+} from "@mui/material";
+import Slide from "@mui/material/Slide";
+import TxtField from "../TxtField";
+
+// services
+import {
+  isChannelnameAllowed,
+  editchannel,
+} from "../../service/channel.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    txtfield: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const EditChannel = ({ open, onClose, callback, channel }) => {
+  console.log("Edit channle", channel);
+  // store variables
+  const { store } = useContext(AppContext);
+  const { user } = store;
 
-const EditChannelAdmin = ({
-  openForm,
-  closeForm,
-  successCallback,
-  channel,
-}) => {
-  const { actions,user } = useContext(AppContext);
+  // state variables
   const [chnl, setChnl] = useState(channel);
-  const [chnameerror, setchnameerror] = useState(false);
+  const [_err, setErr] = useState(false);
   const [creating, setcreating] = useState(false);
 
   const handleChange = (e) => {
@@ -46,51 +43,55 @@ const EditChannelAdmin = ({
     });
   };
 
-  const editChannel = async () => {
-    if (chnl.name.length > 0) {
-      const alltokens = getAllTokens();
-      if (alltokens.length > 0) {
-        if (alltokens.indexOf(chnl.name.toLowerCase()) !== -1) {
-          setchnameerror(true);
-          return;
-        }
-      }
-      setcreating(true);
-      const toedit = {
-        ...chnl,
-        key: chnl.name,
-      };
-      const editedchannel = await editchannelAdmin(toedit,user);
-      if (editedchannel !== null) {
-        actions.setChannles([]);
-        successCallback();
-        closeDialog();
-      }
+  const _validEntries = async () => {
+    setErr(null);
+    const { name } = chnl;
+    if (name.length === 0) {
+      setErr("Channel name cannot be empty");
+      return false;
     }
+    const isNameValid = await isChannelnameAllowed(user, name);
+    if (!isNameValid) {
+      setErr("Channel name already exists");
+      return false;
+    }
+    return true;
+  };
+
+  const _editChannel = async () => {
+    setcreating(true);
+    const isValid = await _validEntries();
+    if (isValid) {
+      await editchannel(chnl, user);
+      callback();
+      closeDialog();
+    }
+    setcreating(false);
   };
 
   const closeDialog = () => {
-    setchnameerror(false);
+    setErr(false);
     setcreating(false);
-    closeForm();
+    setChnl({});
+    onClose();
   };
 
-  const classes = useStyles();
+  React.useEffect(() => {
+    setChnl(channel);
+  }, [channel]);
+
   return (
     <Dialog
-      open={openForm}
+      open={open}
       TransitionComponent={Transition}
       keepMounted
       onClose={closeDialog}
       aria-labelledby="create-channel-form"
-      fullWidth
     >
-      <DialogTitle id="create-channel-form-title">{"Edit channel"}</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="create-channel-form-title-description">
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+      <DialogTitle id="edit-channel-form-title">{"Edit channel"}</DialogTitle>
+      <DialogContent sx={{ width: "350px" }}>
+        <DialogContentText id="edit-channel-form-title-description">
+          <TxtField
             id="name"
             name="name"
             label="Name"
@@ -98,10 +99,16 @@ const EditChannelAdmin = ({
             disabled={creating}
             onChange={handleChange}
           />
-          {chnameerror && <p style={{ color: "red" }}>Name already exists.</p>}
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          {_err && <p style={{ color: "red" }}>Name already exists.</p>}
+          <TxtField
+            id="key"
+            name="key"
+            label="Key"
+            value={chnl.key}
+            disabled={creating}
+            onChange={handleChange}
+          />
+          <TxtField
             id="server"
             name="server"
             label="Server"
@@ -109,9 +116,7 @@ const EditChannelAdmin = ({
             disabled={creating}
             onChange={handleChange}
           />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          <TxtField
             id="stream"
             name="stream"
             label="Stream url"
@@ -119,9 +124,7 @@ const EditChannelAdmin = ({
             disabled={creating}
             onChange={handleChange}
           />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          <TxtField
             id="rtmp"
             name="rtmp"
             label="Rtmp play url"
@@ -129,9 +132,7 @@ const EditChannelAdmin = ({
             disabled={creating}
             onChange={handleChange}
           />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          <TxtField
             id="hls"
             name="hls"
             label="Hls play url"
@@ -139,9 +140,7 @@ const EditChannelAdmin = ({
             disabled={creating}
             onChange={handleChange}
           />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          <TxtField
             id="token"
             name="token"
             label="Token"
@@ -149,9 +148,7 @@ const EditChannelAdmin = ({
             disabled={creating}
             onChange={handleChange}
           />
-          <TextField
-            className={classes.txtfield}
-            fullWidth
+          <TxtField
             id="preview"
             name="preview"
             label="Preview play url"
@@ -167,19 +164,18 @@ const EditChannelAdmin = ({
         )}
       </DialogContent>
       <DialogActions>
-        {!creating && (
-          <Button
-            onClick={editChannel}
-            variant="contained"
-            color="primary"
-            disableElevation
-          >
-            Save changes
-          </Button>
-        )}
+        <Button
+          onClick={_editChannel}
+          variant="contained"
+          color="primary"
+          disableElevation
+          disabled={creating}
+        >
+          Save changes
+        </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default EditChannelAdmin;
+export default EditChannel;

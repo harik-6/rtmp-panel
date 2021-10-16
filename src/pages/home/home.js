@@ -200,7 +200,6 @@ const Home = () => {
           </DetailDiv>
         </Page>
       )}
-
       <CreateNewChannel
         open={_opencreate}
         onClose={() => setOpencreate(false)}
