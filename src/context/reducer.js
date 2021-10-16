@@ -1,8 +1,10 @@
 import Actions from "./actions";
 
 const initialState = {
-  appName: "StreamWell",
-  appDesc: "Dedicated streaming server provider.",
+  app: {
+    name: "",
+    phone: "",
+  },
   channels: [],
   servers: [],
   healths: {},
@@ -34,11 +36,9 @@ const AppReducer = (state, action) => {
         user: payload,
       };
     case Actions.SET_APPNAME:
-      const { appName, appDesc } = payload;
       return {
         ...state,
-        appName,
-        appDesc,
+        app: payload,
       };
     case Actions.SET_CHANNEL_LIST:
       return {
