@@ -71,6 +71,21 @@ const getAllUsers = async (user) => {
   }
 };
 
+const isUsernameAllowed = async (admin, username) => {
+  try {
+    await axios.post(
+      `${API}/namecheck/username`,
+      {},
+      {
+        headers: _headers(admin),
+      }
+    );
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 const createUser = async (admin, newuser) => {
   try {
     const { password } = newuser;
@@ -157,4 +172,5 @@ export {
   editUser,
   deleteUser,
   promoteDemoteAdmin,
+  isUsernameAllowed,
 };

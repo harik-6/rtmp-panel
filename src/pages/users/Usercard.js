@@ -10,12 +10,10 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import TickIcon from "@mui/icons-material/CheckOutlined";
 import CrossIcon from "@mui/icons-material/ClearOutlined";
 import WarningModal from "../../components/Warningmodal";
-
+import EditUser from "../../components/User/Edituser";
 
 // services
 import { getAvatarColor } from "./usercolors";
-import EditUser from "../../components/Edituser";
-import Constants from "../../constants";
 
 // styled
 const Name = styled.p`

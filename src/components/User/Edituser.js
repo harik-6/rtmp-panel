@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import AppContext from "../context/context";
+import AppContext from "../../context/context";
 
 // mui
 import {
@@ -9,16 +9,15 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  TextField,
   CircularProgress,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
 
 // components
-import TxtField from "./TxtField";
+import TxtField from "../TxtField";
 
 // services
-import { editUser } from "../service/user.service";
+import { editUser, isUsernameAllowed } from "../../service/user.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -32,7 +31,7 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
   // state variabled
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
-  const [chLimitErr, setChLimitErr] = useState(null);
+  const [_limiterr, setLimiterr] = useState(null);
   const [userObj, setUserObj] = useState({
     ...userToEdit,
   });
@@ -44,27 +43,30 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
     });
   };
 
+  const _validEntries = async () => {
+    setErr(null);
+    const { username } = userObj;
+    if (username.length === 0) {
+      setErr("Username cannot be empty");
+      return false;
+    }
+    const isNameValid = await isUsernameAllowed(username);
+    if (!isNameValid) {
+      setErr("Username already exists");
+      return false;
+    }
+    return true;
+  };
+
   const editExistingUser = async () => {
     setCreating(true);
-    setErr(null);
-    const entered = parseInt(userObj.limit);
-    if (entered <= 0) {
-      setChLimitErr("Invalid channel limit");
-      setCreating(false);
-      return;
+    const isValid = await _validEntries();
+    if (isValid) {
+      await editUser(user, userObj, password);
+      closePopup();
+      callback();
     }
-    if (user.usertype === "a") {
-      const consumed = users.reduce((prev, cur) => prev + cur.limit, 0);
-      const total = consumed + entered;
-      if (total > parseInt(user.limit)) {
-        setChLimitErr("Channel limit exceeded.");
-        setCreating(false);
-        return;
-      }
-    }
-    await editUser(user, userObj, password);
-    closePopup();
-    callback();
+    setCreating(false);
   };
 
   const closePopup = () => {
@@ -117,8 +119,8 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
             type="number"
             disabled={creating}
             onChange={handleChange}
-            error={chLimitErr}
-            helperText={chLimitErr}
+            error={_limiterr}
+            helperText={_limiterr}
           />
         </DialogContentText>
         {creating && (

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import AppContext from "../context/context";
+import AppContext from "../../context/context";
 
 // mui
 import {
@@ -14,8 +14,8 @@ import {
 import Slide from "@mui/material/Slide";
 
 // services
-import { createUser } from "../service/user.service";
-import TxtField from "./TxtField";
+import { createUser, isUsernameAllowed } from "../../service/user.service";
+import TxtField from "../TxtField";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -24,7 +24,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const CreateNewUser = ({ open, onClose, callback }) => {
   // store variables
   const { store } = useContext(AppContext);
-  const { user, users } = store;
+  const { user } = store;
 
   // state variables
   const [creating, setCreating] = useState(false);
@@ -42,18 +42,30 @@ const CreateNewUser = ({ open, onClose, callback }) => {
     });
   };
 
+  const _validEntries = async () => {
+    setErr(null);
+    const { username } = userObj;
+    if (username.length === 0) {
+      setErr("Username cannot be empty");
+      return false;
+    }
+    const isNameValid = await isUsernameAllowed(username);
+    if (!isNameValid) {
+      setErr("Username already exists");
+      return false;
+    }
+    return true;
+  };
+
   const addNewUser = async () => {
     setCreating(true);
-    setErr(null);
-    const allnames = users.map((user) => user.username);
-    if (allnames.indexOf(userObj.username) === -1) {
+    const isValid = await _validEntries();
+    if (isValid) {
       await createUser(user, userObj);
       onClose();
       callback();
-    } else {
-      setErr("User alerady exists");
-      setCreating(false);
     }
+    setCreating(false);
   };
 
   const closePopup = () => {

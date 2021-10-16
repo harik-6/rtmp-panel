@@ -10,7 +10,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Preloader from "../../components/Preloader";
 import UtilDiv from "../../components/Utildiv";
 import Usercard from "./Usercard";
-import CreateNewUser from "../../components/Createuser";
+import CreateNewUser from "../../components/User/Createuser";
 
 // services
 import {
