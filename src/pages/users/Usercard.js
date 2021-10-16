@@ -143,7 +143,7 @@ const Usercard = ({ user, callback, onDelete, showAdmin, onChangeAdmin }) => {
       <WarningModal
         open={_opendelete}
         onClose={() => setOpendelete(false)}
-        message={`You sure you want to delete ${user?.username} ?`}
+        message={`You sure you want to delete the user ${user?.username} ?`}
         onYes={onDelete}
       />
     </>

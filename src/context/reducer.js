@@ -9,6 +9,11 @@ const initialState = {
   views: {},
   users: [],
   avatarApi: "https://avatars.dicebear.com/api/initials/",
+  alert: {
+    show: false,
+    type: "",
+    message: "",
+  },
   user: {
     username: "",
     usertype: "u",
@@ -45,6 +50,23 @@ const AppReducer = (state, action) => {
       return {
         ...state,
         servers: payload,
+      };
+    case Actions.SHOW_ALERT:
+      return {
+        ...state,
+        alert: {
+          ...payload,
+          show: true,
+        },
+      };
+    case Actions.HIDE_ALERT:
+      return {
+        ...state,
+        alert: {
+          show: false,
+          type: "",
+          message: "",
+        },
       };
     case "logout":
       return initialState;

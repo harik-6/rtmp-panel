@@ -13,6 +13,7 @@ import Stat from "../stat/stat";
 import Appwrapper from "../../components/Appwrapper";
 import Navigation from "./navigation";
 import Activepage from "../../components/Activepage";
+import Toast from "../../components/Toast";
 
 const Main = () => {
   // store variable
@@ -25,6 +26,7 @@ const Main = () => {
     <Appwrapper>
       <Navigation />
       <Activepage>
+        <Toast />
         <Switch>
           <Route path="/home" component={Home} />
           <Route path="/profile" component={Profile} />

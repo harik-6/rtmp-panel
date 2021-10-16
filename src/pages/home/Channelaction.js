@@ -106,14 +106,14 @@ const ChannelAction = ({ channel, health, user, callback }) => {
                 checked={_toEdit.status}
               />
             }
-            label={_toEdit.status?"On":"Off"}
+            label={_toEdit.status ? "On" : "Off"}
           />
         </Action>
       </Div>
       <WarningModal
         open={_opendelete}
         onClose={() => setOpendelete(false)}
-        message={`You sure you want to delete ${channel?.name} ?`}
+        message={`Are you sure you want to delete the channel ${channel?.name} ?`}
         onYes={_deleteChannel}
       />
       <EditChannel

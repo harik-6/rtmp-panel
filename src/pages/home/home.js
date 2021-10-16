@@ -26,6 +26,7 @@ import { getViews, getHealth } from "../../service/rtmp.service";
 
 // vars
 import Actions from "../../context/actions";
+import Constants from "../../constants";
 
 // styled
 const Page = styled.div`
@@ -129,6 +130,22 @@ const Home = () => {
     setLoading(false);
   };
 
+  const _openCreateChannel = () => {
+    const _ul = user.limit;
+    const _cl = _channels.length;
+    if (_cl >= _ul) {
+      dispatch({
+        type: Actions.SHOW_ALERT,
+        payload: {
+          type: Constants.alert_error,
+          message: "Error : Channel limit exceeded",
+        },
+      });
+    } else {
+      setOpencreate(true);
+    }
+  };
+
   useEffect(() => {
     _loadChannels();
   }, [user]);
@@ -153,7 +170,7 @@ const Home = () => {
             size="small"
             variant="contained"
             endIcon={<AddIcon />}
-            onClick={() => setOpencreate(true)}
+            onClick={_openCreateChannel}
           >
             New Channel
           </Button>
