@@ -1,103 +1,122 @@
-import React, { useContext} from "react";
-import {
-  TextField,
-  FormLabel,
-  Grid,
-  Button,
-  // Typography,
-} from "@material-ui/core";
+import React, { useContext, useEffect } from "react";
+import styled from "styled-components";
 import AppContext from "../../context/context";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
-import Avatar from "@material-ui/core/Avatar";
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    profile: {
-      flex: 1,
-      minHeight: "100vh",
-      padding: theme.spacing(2),
-      backgroundColor: "#ebe9e9",
-      [theme.breakpoints.down("sm")]: {
-        padding: theme.spacing(0.5),
-        marginTop: "48px",
-      },
-    },
-    formgrid: { marginBottom: "24px" },
-    formlabel: { marginBottom: "8px", fontSize: "18px", color: "#000000" },
-    formavatar: {
-      width: theme.spacing(12),
-      height: theme.spacing(12),
-    },
-    formtxtfield: {
-      backgroundColor: "#ffffff",
-    },
-  })
-);
+
+// mui
+import Avatar from "@mui/material/Avatar";
+import Constants from "../../constants";
+import TxtField from "../../components/TxtField";
+import Button from "@mui/material/Button";
+
+// styled
+const UserProfile = styled.div`
+  padding: 0 32px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+`;
+
+const ProfileStat = styled.div`
+  width: 250px;
+  background-color: #ffffff;
+  padding: 8px;
+  border-radius: 8px;
+`;
+
+const CountDiv = styled.div`
+  font-size: 18px;
+  margin: 24px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const ProfileDetails = styled.div`
+  flex: 1;
+  background-color: #ffffff;
+  padding: 16px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border-radius: 16px;
+`;
+
+const Name = styled.p`
+  text-align: center;
+  margin: 16px 0;
+`;
 
 const Profile = () => {
-  const classes = useStyles();
-  const { user, avatarApi } = useContext(AppContext);
-  const avatarUrl = `${avatarApi}/${user.username}.svg?backgroundColors[]=indigo`;
+  // store variable
+  const { store } = useContext(AppContext);
+  const { user, users, channels, servers } = store;
+  console.log(user);
+  useEffect(() => {}, [channels, servers, users, user]);
 
-  const updateUser = () => {};
+  // const avatarUrl = `https://avatars.dicebear.com/api/botts/${user.username}.svg`;
 
   return (
-    <div className={classes.profile}>
-      <Grid justify="center" container>
-        <Grid
-          item
-          lg={8}
-          justify="center"
-          container
-          className={classes.formgrid}
+    <UserProfile>
+      <ProfileStat>
+        <Avatar
+          alt={user.username}
+          src="https://avatars.dicebear.com/api/bottts/test.svg"
+          variant="rounded"
+          sx={{
+            width: 100,
+            height: 100,
+            margin: "8px auto",
+            background: Constants.background_color,
+          }}
+        />
+        <Name>{user.username}</Name>
+        <Name>{user.admin ? "admin" : "user"}</Name>
+        <CountDiv>
+          <p>Channels </p>
+          <p>{channels.length}</p>
+        </CountDiv>
+        <CountDiv>
+          <p>Servers </p>
+          <p>{servers.length}</p>
+        </CountDiv>
+        {user.usertype !== "u" && (
+          <CountDiv>
+            <p>Users </p>
+            <p>{users.length}</p>
+          </CountDiv>
+        )}
+      </ProfileStat>
+      <ProfileDetails>
+        <TxtField
+          id="username"
+          label="Name"
+          name="username"
+          value={user.username}
+        />
+        <TxtField
+          id="server"
+          label="Server"
+          name="server"
+          value={user.server}
+        />
+        {/* <TxtField
+          id="limit"
+          label="Limit"
+          name="limit"
+          value={user.limit}
+        /> */}
+        <TxtField id="phone" label="Phone" name="phone" value={user.phone} />
+        <TxtField id="email" label="Email" name="email" value={user.email} />
+        <Button
+          variant="contained"
+          color="primary"
+          disableElevation
+          sx={{ width: 100, marginLeft: "auto" }}
         >
-          <Avatar src={avatarUrl} className={classes.formavatar} />
-        </Grid>
-        <Grid item lg={8} className={classes.formgrid}>
-          <FormLabel className={classes.formlabel} component="legend">
-            Username
-          </FormLabel>
-          <TextField
-            fullWidth={true}
-            id="username"
-            name="username"
-            className={classes.formtxtfield}
-            value={user.username}
-            variant="outlined"
-          />
-        </Grid>
-        {/* <Grid item lg={8} className={classes.formgrid}>
-          <FormLabel className={classes.formlabel} component="legend">
-            Email
-          </FormLabel>
-          <TextField
-            fullWidth={true}
-            id="email"
-            name="email"
-            className={classes.formtxtfield}
-            value={user.email}
-            variant="outlined"
-          />
-        </Grid>
-        <Grid item lg={8} className={classes.formgrid}>
-          <FormLabel className={classes.formlabel} component="legend">
-            Phone
-          </FormLabel>
-          <TextField
-            fullWidth={true}
-            id="phone"
-            name="phone"
-            className={classes.formtxtfield}
-            value={user.phone}
-            variant="outlined"
-          />
-        </Grid> */}
-        <Grid item lg={8} className={classes.formgrid}>
-          <Button disabled onClick={updateUser} variant="contained" color="primary">
-            Save Changes
-          </Button>
-        </Grid>
-      </Grid>
-    </div>
+          Save
+        </Button>
+      </ProfileDetails>
+    </UserProfile>
   );
 };
 

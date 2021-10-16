@@ -19,6 +19,7 @@ import {
   deleteUser,
   promoteDemoteAdmin,
 } from "../../service/user.service";
+import Actions from "../../context/actions";
 
 // styled
 const UsersListDiv = styled.div`
@@ -31,7 +32,7 @@ const UsersListDiv = styled.div`
 
 const Users = () => {
   // store variabled
-  const { store } = useContext(AppContext);
+  const { store, dispatch } = useContext(AppContext);
   const { user } = store;
 
   // stat variabled
@@ -41,9 +42,12 @@ const Users = () => {
 
   const _loadUsers = async () => {
     setLoading(true);
-    console.log("user", user);
     let usrs = await getAllUsers(user);
     usrs.sort((a, b) => a.username.localeCompare(b.username));
+    dispatch({
+      type: Actions.SET_USER_LIST,
+      payload: usrs,
+    });
     setUsers(usrs);
     setLoading(false);
   };

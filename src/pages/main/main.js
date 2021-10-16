@@ -33,7 +33,7 @@ const Main = () => {
           <Route path="/home" component={Home} />
           <Route path="/profile" component={Profile} />
           <Route path="/stat" component={Stat} />
-          {user.admin && <Route path="/users" component={Users} />}
+          {user.usertype !== "u" && <Route path="/users" component={Users} />}
           <Route path="" exact>
             {" "}
             <Redirect to="/home" />{" "}

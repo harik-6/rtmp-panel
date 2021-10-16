@@ -8,7 +8,6 @@ const initialState = {
   healths: {},
   views: {},
   users: [],
-  avatarApi: "https://avatars.dicebear.com/api/initials/",
   alert: {
     show: false,
     type: "",
@@ -67,6 +66,11 @@ const AppReducer = (state, action) => {
           type: "",
           message: "",
         },
+      };
+    case Actions.SET_USER_LIST:
+      return {
+        ...state,
+        users: payload,
       };
     case "logout":
       return initialState;
