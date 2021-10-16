@@ -148,6 +148,7 @@ const Home = () => {
 
   useEffect(() => {
     _loadChannels();
+    // eslint-disable-next-line
   }, [user]);
 
   if (_loading) {

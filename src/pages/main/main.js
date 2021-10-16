@@ -18,7 +18,7 @@ import Toast from "../../components/Toast";
 const Main = () => {
   // store variable
   const { store } = React.useContext(AppContext);
-  const user = store.user;
+  const {user,app} = store;
 
   console.log(user);
 
@@ -26,7 +26,7 @@ const Main = () => {
 
   return (
     <Appwrapper>
-      <Navigation usertype={user.usertype} />
+      <Navigation user={user} name={app.name} />
       <Activepage>
         <Toast />
         <Switch>

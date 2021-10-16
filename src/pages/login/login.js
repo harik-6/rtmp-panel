@@ -83,10 +83,7 @@ const Login = () => {
   const history = useHistory();
 
   // store varibles
-  const {
-    dispatch,
-    store: { appDesc, appName },
-  } = useContext(AppConext);
+  const { dispatch } = useContext(AppConext);
 
   // state variables
   const [_app, setApp] = useState({
@@ -142,6 +139,7 @@ const Login = () => {
 
   useEffect(() => {
     _setAppName();
+    // eslint-disable-next-line
   }, []);
 
   return (
