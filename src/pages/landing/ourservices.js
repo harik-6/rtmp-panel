@@ -4,7 +4,7 @@ import {
   Card,
   CardActionArea,
   CardContent,
-} from "@material-ui/core";
+} from "@mui/material";
 import useStyles from "./landing.styles";
 
 const allservices = [

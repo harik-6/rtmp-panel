@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import useStyles from "./landing.styles";
 import ContactIcons from "./contacticons";
 const Aboutus = () => {

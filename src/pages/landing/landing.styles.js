@@ -1,4 +1,4 @@
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles } from "@mui/material/styles";
 const useStyles = makeStyles((theme) =>
   createStyles({
     landing: {
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) =>
       flexGrow: 1,
       marginLeft: "32px",
       display: "flex",
-      cursor:"pointer",
+      cursor: "pointer",
       alignItems: "center",
     },
     navlink: {

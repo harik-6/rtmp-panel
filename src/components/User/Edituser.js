@@ -17,7 +17,7 @@ import Slide from "@mui/material/Slide";
 import TxtField from "../TxtField";
 
 // services
-import { editUser, isUsernameAllowed } from "../../service/user.service";
+import { editUser } from "../../service/user.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -26,7 +26,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const EditUser = ({ open, onClose, callback, userToEdit }) => {
   // store vaiable
   const { store } = useContext(AppContext);
-  const { user, users } = store;
+  const { user, channels } = store;
 
   // state variabled
   const [creating, setCreating] = useState(false);
@@ -45,16 +45,30 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
 
   const _validEntries = async () => {
     setErr(null);
-    const { username } = userObj;
+    setLimiterr(null);
+    const { username, limit } = userObj;
     if (username.length === 0) {
       setErr("Username cannot be empty");
       return false;
     }
-    const isNameValid = await isUsernameAllowed(user, username);
-    if (!isNameValid) {
-      setErr("Username already exists");
+    if (limit <= 0) {
+      setLimiterr("Invalid limit");
       return false;
     }
+    if (user.usertype === "a") {
+      const consumed = +channels.length;
+      const max = +user.limit;
+      const _l = +limit;
+      if (consumed + _l > max) {
+        setLimiterr("Channel limit exceded");
+        return false;
+      }
+    }
+    // const isNameValid = await isUsernameAllowed(user, username);
+    // if (!isNameValid) {
+    //   setErr("Username already exists");
+    //   return false;
+    // }
     return true;
   };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { AppBar, Toolbar, Button, Typography } from "@material-ui/core";
-import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
+import { AppBar, Toolbar, Button, Typography } from "@mui/material";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import Ourservices from "./ourservices";
 import Aboutus from "./aboutus";
 import RequestDemo from "./demorequest";

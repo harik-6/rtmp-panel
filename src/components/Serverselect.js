@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Button, Menu, MenuItem, FormLabel } from "@material-ui/core";
-import DownArrowIcon from "@material-ui/icons/ExpandMoreRounded";
+import { Button, Menu, MenuItem, FormLabel } from "@mui/material";
+import DownArrowIcon from "@mui/icons-material/ExpandMoreRounded";
 
 const ServerSelect = ({
   serverNames,

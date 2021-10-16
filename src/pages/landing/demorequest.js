@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogContentText,
   DialogContent,
-} from "@material-ui/core";
+} from "@mui/material";
 import ContactIcons from "./contacticons";
 
 const RequestDemo = ({ openForm, closeForm }) => {
