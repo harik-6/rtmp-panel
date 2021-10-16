@@ -188,9 +188,15 @@ const Login = () => {
                   endAdornment: (
                     <InputAdornment position="end">
                       {!showPass ? (
-                        <EyeOff onClick={togglePassword} />
+                        <EyeOff
+                          sx={{ cursor: "pointer" }}
+                          onClick={togglePassword}
+                        />
                       ) : (
-                        <EyeOn onClick={togglePassword} />
+                        <EyeOn
+                          sx={{ cursor: "pointer" }}
+                          onClick={togglePassword}
+                        />
                       )}
                     </InputAdornment>
                   ),

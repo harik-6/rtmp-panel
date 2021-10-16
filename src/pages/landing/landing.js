@@ -60,7 +60,7 @@ const Landing = () => {
               />
               {/* StreamWell */}
             </Typography>
-            <div className={classes.navbar}>
+            <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
               <Typography
                 onClick={() => _scrollTo("home")}
                 className={classes.navlink}
@@ -112,9 +112,9 @@ const Landing = () => {
               <p className={classes.appmaindesc}>StreamWell</p>
               <p className={classes.appdesc}>
                 <span style={{ marginLeft: "40px" }} />
-                Cloud platform for rtmp streaming service with low latency servers
-                located in india for different users according to their needs and
-                requirements.
+                Cloud platform for rtmp streaming service with low latency
+                servers located in india for different users according to their
+                needs and requirements.
               </p>
               <Button
                 color="primary"
