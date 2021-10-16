@@ -20,18 +20,20 @@ const Main = () => {
   const { store } = React.useContext(AppContext);
   const user = store.user;
 
+  console.log(user);
+
   if (user.token === null) return <Login />;
 
   return (
     <Appwrapper>
-      <Navigation />
+      <Navigation usertype={user.usertype} />
       <Activepage>
         <Toast />
         <Switch>
           <Route path="/home" component={Home} />
           <Route path="/profile" component={Profile} />
           <Route path="/stat" component={Stat} />
-          <Route path="/users" component={Users} />
+          {user.admin && <Route path="/users" component={Users} />}
           <Route path="" exact>
             {" "}
             <Redirect to="/home" />{" "}

@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 // components
@@ -26,10 +25,9 @@ const Navtext = styled.p`
   margin: 0 4px;
 `;
 
-const Navigation = () => {
-  const history = useHistory();
+const Navigation = ({ usertype }) => {
   const location = useLocation();
-  const navigations = getNavigationComponent("a");
+  const navigations = getNavigationComponent(usertype);
 
   // state
   const [activeTab, setActiveTab] = React.useState(1);
@@ -68,7 +66,7 @@ const Navigation = () => {
     <AppBar
       position="static"
       color="transparent"
-      sx={{ marginLeft: "auto", height: "58px",backgroundColor:'#ffffff' }}
+      sx={{ marginLeft: "auto", height: "58px", backgroundColor: "#ffffff" }}
       elevation={0}
     >
       <Toolbar sx={{ marginLeft: "auto", height: "58px" }}>
