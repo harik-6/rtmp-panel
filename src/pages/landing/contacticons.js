@@ -1,7 +1,7 @@
 import React from "react";
-import CallIcon from "@material-ui/icons/Call";
-import WhatsAppIcon from "@material-ui/icons/WhatsApp";
-import EmailIcon from "@material-ui/icons/Email";
+import CallIcon from "@mui/icons-material/Call";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import EmailIcon from "@mui/icons-material/Email";
 
 const ContactIcons = () => {
   const _openWhatsApp = () => {

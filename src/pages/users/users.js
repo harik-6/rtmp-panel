@@ -1,241 +1,115 @@
 import React, { useContext, useState, useEffect } from "react";
-import {
-  Grid,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
-  TableContainer,
-  IconButton,
-  TablePagination,
-} from "@material-ui/core";
-import userservice from "../../service/user.service";
+import styled from "styled-components";
 import AppContext from "../../context/context";
-import EditIcon from "@material-ui/icons/EditRounded";
-import DeleteIcon from "@material-ui/icons/Delete";
-import useStyles from "./users.styles";
-import CreateNewUser from "../../components/createuser";
-import EditUser from "../../components/edituser";
-import DeleteConfirmationDialog from "../../components/deletechannel";
-import Preloader from "../../components/preloader";
-import Nodataloader from "../../components/nodataloader";
-import FabAddButton from "../../components/fabaddbutton";
-import TickIcon from "@material-ui/icons/Check";
-import NoTickIcon from "@material-ui/icons/ClearOutlined";
+
+// mui-components
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+
+// components
+import Preloader from "../../components/Preloader";
+import UtilDiv from "../../components/Utildiv";
+import Usercard from "./Usercard";
+import CreateNewUser from "../../components/User/Createuser";
+import Nodata from "../../components/Nodata";
+
+// services
+import {
+  getAllUsers,
+  deleteUser,
+  promoteDemoteAdmin,
+} from "../../service/user.service";
+import Actions from "../../context/actions";
+
+// styled
+const UsersListDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`;
 
 const Users = () => {
-  const classes = useStyles();
-  const { user, actions, allUsers } = useContext(AppContext);
-  const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(0);
-  const [activeUser, setActiveUser] = useState(null);
-  // loaders and errors
-  const [loading, setLoading] = useState(false);
-  const [action, setAction] = useState(null);
-  const [openDeleteConfirm, setDeleteConfirm] = useState(false);
+  // store variabled
+  const { store, dispatch } = useContext(AppContext);
+  const { user } = store;
 
-  const openActionDialog = (action) => {
-    setAction(action);
+  // stat variabled
+  const [_users, setUsers] = useState([]);
+  const [_loading, setLoading] = useState(false);
+  const [_opencreate, setOpencreate] = useState(false);
+
+  const _loadUsers = async () => {
+    setLoading(true);
+    let usrs = await getAllUsers(user);
+    usrs.sort((a, b) => a.username.localeCompare(b.username));
+    dispatch({
+      type: Actions.SET_USER_LIST,
+      payload: usrs,
+    });
+    setUsers(usrs);
+    setLoading(false);
   };
 
-  const closeActionDialog = () => {
-    setAction(null);
-    setActiveUser(null);
-  };
-
-  const askConfirmation = () => {
-    setDeleteConfirm(true);
-  };
-
-  const handleChangePage = (event, pagenumber) => {
-    setPage(pagenumber);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setPageSize(event.target.value);
-  };
-
-  const loadAllUsers = async (forceLoad) => {
-    if (forceLoad || allUsers.length === 0) {
-      setLoading(true);
-      const users = await userservice.getAllUsers(user);
-      actions.setAllUsers(users);
-      setLoading(false);
-    }
-  };
-
-  const changeAdminStatus = async (usertochange) => {
-    const us = await userservice.promoteDemoteAdmin(
-      user,
-      usertochange.admin,
-      usertochange.token
-    );
+  const _changeAdminStatus = async (_u) => {
+    const us = await promoteDemoteAdmin(user, _u.admin, _u.token);
     if (us !== null) {
-      loadAllUsers(true);
+      _loadUsers();
     }
   };
 
-  const deleteUser = async () => {
-    setDeleteConfirm(false);
-    await userservice.deleteUser(user, activeUser);
-    loadAllUsers(true);
+  const _deleteUser = async (_u) => {
+    setLoading(true);
+    await deleteUser(user, _u);
+    _loadUsers();
   };
-
-  const offSet = page * pageSize;
-  const spliceddata = allUsers.slice(offSet, (page + 1) * pageSize);
-
-  const _TickIcon = () => (
-    <TickIcon fontSize="small" style={{ color: "green" }} />
-  );
-  const _NoTickIcon = () => <NoTickIcon fontSize="small" color="secondary" />;
 
   useEffect(() => {
-    loadAllUsers();
+    _loadUsers();
     //eslint-disable-next-line
   }, []);
 
-  if (loading) {
+  if (_loading) {
     return <Preloader message={"Loading users..."} />;
   }
 
-  if (allUsers.length <= 0 && action !== "add") {
-    return (
-      <>
-        <Nodataloader message={"You don't have any users.Create one"} />
-        <FabAddButton onClickAction={() => setAction("add")} />
-      </>
-    );
-  }
-
   return (
-    <div className={classes.users}>
-      <Grid className={classes.chcardcnt} container>
-        <Grid item lg={12}>
-          {allUsers.length <= 0 ? (
-            <>
-              <div className={classes.preloadercnt}>
-                <p className={classes.preloadertxt}>
-                  You don't have any users.Create one
-                </p>
-              </div>
-            </>
-          ) : (
-            <React.Fragment>
-              <TableContainer className={classes.tablecnt}>
-                <TablePagination
-                  rowsPerPageOptions={[10, 15, 25]}
-                  component="div"
-                  count={allUsers.length}
-                  rowsPerPage={pageSize}
-                  page={page}
-                  onChangePage={handleChangePage}
-                  onChangeRowsPerPage={handleChangeRowsPerPage}
-                />
-                <Table aria-label="channel-list">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="left">S.No</TableCell>
-                      <TableCell align="left">Name</TableCell>
-                      <TableCell align="left">Server</TableCell>
-                      <TableCell align="left">Limit</TableCell>
-                      {/* <TableCell align="left">PlayUrl</TableCell> */}
-                      <TableCell align="left">Edit</TableCell>
-                      <TableCell align="left">Delete</TableCell>
-                      {user.usertype === "s" && (
-                        <TableCell align="left">Admin</TableCell>
-                      )}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {spliceddata.map((u, index) => {
-                      return (
-                        <TableRow key={u.username + " " + index}>
-                          <TableCell
-                            className={classes.tbcell}
-                            align="left"
-                          >{`${offSet + index + 1}.`}</TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            {u.username}
-                          </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            {u.server}
-                          </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            {u.limit}
-                          </TableCell>
-                          {/* <TableCell className={classes.tbcell} align="left">
-                            {u.preview ? _TickIcon() : _NoTickIcon()}
-                          </TableCell> */}
-                          <TableCell className={classes.tbcell} align="left">
-                            <IconButton
-                              size="small"
-                              onClick={() => {
-                                setActiveUser(u);
-                                openActionDialog("edit");
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </TableCell>
-                          <TableCell className={classes.tbcell} align="left">
-                            <IconButton
-                              onClick={(event) => {
-                                setActiveUser(u);
-                                askConfirmation();
-                              }}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </TableCell>
-                          {user.usertype === "s" && (
-                            <TableCell
-                              onClick={() => {
-                                changeAdminStatus(u);
-                              }}
-                              className={classes.tbcell}
-                              align="left"
-                              style={{
-                                cursor: "pointer",
-                              }}
-                            >
-                              {u.admin? _TickIcon() : _NoTickIcon()}
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </React.Fragment>
-          )}
-        </Grid>
-      </Grid>
-      <FabAddButton onClickAction={() => setAction("add")} />
+    <div>
+      <UtilDiv>
+        <p></p>
+        <Button
+          sx={{ marginLeft: "16px" }}
+          size="small"
+          variant="contained"
+          endIcon={<AddIcon />}
+          onClick={() => setOpencreate(true)}
+        >
+          New User
+        </Button>
+      </UtilDiv>
+      {_users.length === 0 ? (
+        <Nodata message={"You have not created users yet."} />
+      ) : (
+        <UsersListDiv>
+          {_users.map((u, index) => (
+            <Usercard
+              key={index + "-" + u.username}
+              user={u}
+              callback={() => _loadUsers()}
+              onDelete={() => _deleteUser(u)}
+              showAdmin={user.usertype === "s"}
+              onChangeAdmin={() => _changeAdminStatus(u)}
+            />
+          ))}
+        </UsersListDiv>
+      )}
+
       <CreateNewUser
-        openForm={action === "add"}
-        closeCreatepop={closeActionDialog}
-        successCallback={() => loadAllUsers(true)}
+        open={_opencreate}
+        onClose={() => setOpencreate(false)}
+        callback={() => _loadUsers()}
       />
-      {activeUser !== null && (
-        <EditUser
-          openForm={action === "edit"}
-          closeCreatepop={closeActionDialog}
-          successCallback={() => loadAllUsers(true)}
-          userToEdit={activeUser}
-        />
-      )}
-      {activeUser !== null && (
-        <DeleteConfirmationDialog
-          openForm={openDeleteConfirm}
-          closeForm={() => setDeleteConfirm(false)}
-          onDeleteYes={deleteUser}
-          channel={{
-            name: activeUser.username,
-          }}
-        />
-      )}
     </div>
   );
 };

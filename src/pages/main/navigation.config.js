@@ -1,26 +1,31 @@
 import React from "react";
-import HomeIcon from "@material-ui/icons/HomeRounded";
-import ChannelIcon from "@material-ui/icons/VideocamRounded";
-import UsersIcon from "@material-ui/icons/SupervisorAccount";
-import LogoutIcon from "@material-ui/icons/ExitToApp";
-import StatIcon from "@material-ui/icons/Assessment";
-// import PersonIcon from "@material-ui/icons/Person";
+import HomeIcon from "@mui/icons-material/HomeOutlined";
+import StatIcon from "@mui/icons-material/ShowChartOutlined";
+import UsersIcon from "@mui/icons-material/PeopleAltOutlined";
+import LogoutIcon from "@mui/icons-material/LogoutOutlined";
+import ProfileIcon from "@mui/icons-material/AccountCircleOutlined";
 
 const userNavigations = [
   {
     name: "Home",
-    path: "/player",
+    path: "/home",
     tabIndex: 1,
     icon: <HomeIcon />,
   },
   {
-    name: "Channels",
-    path: "/channels",
+    name: "Statistics",
+    path: "/stat",
     tabIndex: 2,
-    icon: <ChannelIcon />,
+    icon: <StatIcon />,
   },
   {
-    name: "Logout",
+    name: "Profile",
+    path: "/profile",
+    tabIndex: 4,
+    icon: <ProfileIcon />,
+  },
+  {
+    name: "",
     path: "/logout",
     tabIndex: -1,
     icon: <LogoutIcon />,
@@ -30,30 +35,30 @@ const userNavigations = [
 const adminNavigations = [
   {
     name: "Home",
-    path: "/player",
+    path: "/home",
     tabIndex: 1,
     icon: <HomeIcon />,
   },
   {
-    name: "Stat",
+    name: "Statistics",
     path: "/stat",
-    tabIndex: 5,
-    icon: <StatIcon />,
-  },
-  {
-    name: "Channels",
-    path: "/channels",
     tabIndex: 2,
-    icon: <ChannelIcon />,
+    icon: <StatIcon />,
   },
   {
     name: "Users",
     path: "/users",
-    tabIndex: 4,
+    tabIndex: 3,
     icon: <UsersIcon />,
   },
   {
-    name: "Logout",
+    name: "Profile",
+    path: "/profile",
+    tabIndex: 4,
+    icon: <ProfileIcon />,
+  },
+  {
+    name: "",
     path: "/logout",
     tabIndex: -1,
     icon: <LogoutIcon />,

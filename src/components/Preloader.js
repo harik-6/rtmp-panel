@@ -1,5 +1,6 @@
 import React from "react";
-const Nodataloader = ({ message }) => {
+import { CircularProgress } from "@mui/material";
+const Preloader = ({ message }) => {
   return (
     <div
       style={{
@@ -9,14 +10,15 @@ const Nodataloader = ({ message }) => {
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
-        height: "600px",
+        height: "70vh",
       }}
     >
-      <p style={{ fontSize: "20px", paddingTop: "16px" }}>
-        {message || "No data available."}
+      <CircularProgress />
+      <p style={{ fontSize: "20px", marginTop: "24px" }}>
+        {message || "Loading."}
       </p>
     </div>
   );
 };
 
-export default Nodataloader;
+export default Preloader;
