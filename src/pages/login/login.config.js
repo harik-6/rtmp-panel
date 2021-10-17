@@ -23,5 +23,9 @@ const getApp = (location) => {
       phone: "+91 70757 57910",
     };
   }
+  return {
+    name: "STREAMWELL",
+    phone: "+91 79040 37932",
+  };
 };
 export { getApp };

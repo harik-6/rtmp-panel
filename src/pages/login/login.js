@@ -35,7 +35,11 @@ const Left = styled.div`
   flex: 1;
   // overflow-x: hidden;
   // position: relative;
+
   //responsive
+  @media ${Devices.tablet} {
+    flex:2
+  }
 `;
 
 const Content = styled.div`
@@ -73,9 +77,10 @@ const Right = styled.div`
   flex-direction: column;
   justify-content: center;
   background-color: rgba(5, 15, 102, 0.5);
+  
   //responsive
   @media ${Devices.tablet} {
-    justify-content: flex-start;
+    flex:4;
   }
 `;
 
@@ -86,7 +91,8 @@ const LoginDiv = styled.div`
   background-color: #ffffff;
   border-radius: 16px;
   @media ${Devices.tablet} {
-    margin-top: -32px;
+    margin-top: -64px;
+    width: 80%;
   }
 `;
 
