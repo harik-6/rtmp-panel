@@ -25,7 +25,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const EditChannel = ({ open, onClose, callback, channel }) => {
-  console.log("Edit channle", channel);
   // store variables
   const { store } = useContext(AppContext);
   const { user } = store;

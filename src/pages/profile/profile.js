@@ -50,7 +50,6 @@ const Profile = () => {
   // store variable
   const { store } = useContext(AppContext);
   const { user, users, channels, servers } = store;
-  console.log(user);
   useEffect(() => {}, [channels, servers, users, user]);
 
   // const avatarUrl = `https://avatars.dicebear.com/api/botts/${user.username}.svg`;

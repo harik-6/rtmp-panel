@@ -20,7 +20,6 @@ const Main = () => {
   const { store } = React.useContext(AppContext);
   const {user,app} = store;
 
-  console.log(user);
 
   if (user.token === null) return <Login />;
 
