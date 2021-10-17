@@ -10,6 +10,7 @@ import Toolbar from "@mui/material/Toolbar";
 // service
 import getNavigationComponent from "./navigation.config";
 import Constants from "../../constants";
+import Devices from "../../Devices";
 
 const Navlink = styled.div`
   display: flex;
@@ -31,6 +32,10 @@ const NavDiv = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  //responsive
+  @media ${Devices.tablet} {
+    overflow-x: scroll;
+  }
 `;
 
 const Navigation = ({ user, name }) => {

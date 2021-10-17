@@ -27,12 +27,18 @@ import { getViews, getHealth } from "../../service/rtmp.service";
 // vars
 import Actions from "../../context/actions";
 import Constants from "../../constants";
+import Devices from "../../Devices";
 
 // styled
 const Page = styled.div`
   display: flex;
   flex-direction: row;
   gap: 32px;
+
+  //responsive
+  @media ${Devices.tablet} {
+    flex-direction: column;
+  }
 `;
 
 const DetailDiv = styled.div`
@@ -58,6 +64,15 @@ const ChannelListDiv = styled.div`
   height: 515px;
   overflow-y: scroll;
   border-radius: 16px;
+
+  //responsive
+  @media ${Devices.tablet} {
+    display:flex;
+    flex-direction: row;
+    height:120px;
+    gap:16px;
+    overflow-x:scroll;
+  }
 `;
 
 const LegendDiv = styled.div`
@@ -208,7 +223,7 @@ const Home = () => {
                       id="channel-preview-player"
                       url={_selected?.hls}
                       controls={true}
-                      playing={true}
+                      playing={false}
                     />
                   </PlayerClipper>
                 </PlayerDiv>

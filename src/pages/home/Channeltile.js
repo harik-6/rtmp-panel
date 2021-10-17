@@ -40,7 +40,7 @@ const Channeltile = ({ channel, view, selected, health, onClick }) => {
     <Card
       elevation={0}
       sx={{
-        width: 275,
+        minWidth: 275,
         margin: "8px 0",
         borderRadius: "8px",
         paddingBottom: "0",

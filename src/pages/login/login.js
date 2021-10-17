@@ -18,18 +18,24 @@ import TxtField from "../../components/TxtField";
 // services
 import { getUser } from "../../service/user.service";
 import { getApp } from "./login.config";
+import Devices from "../../Devices";
 
 // styled
 const LoginPage = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
+  //responsive
+  @media ${Devices.tablet} {
+    flex-direction: column;
+  }
 `;
 
 const Left = styled.div`
   flex: 1;
   // overflow-x: hidden;
   // position: relative;
+  //responsive
 `;
 
 const Content = styled.div`
@@ -46,11 +52,19 @@ const Name = styled.p`
   font-weight: bold;
   font-size: 80px;
   margin-top: -32px;
+  //responsive
+  @media ${Devices.tablet} {
+    font-size: 40px;
+  }
 `;
 
 const Desc = styled.p`
   font-size: 22px;
   margin-bottom: 8px;
+  //responsive
+  @media ${Devices.tablet} {
+    font-size: 12px;
+  }
 `;
 
 const Right = styled.div`
@@ -59,6 +73,10 @@ const Right = styled.div`
   flex-direction: column;
   justify-content: center;
   background-color: rgba(5, 15, 102, 0.5);
+  //responsive
+  @media ${Devices.tablet} {
+    justify-content: flex-start;
+  }
 `;
 
 const LoginDiv = styled.div`
@@ -67,6 +85,9 @@ const LoginDiv = styled.div`
   padding: 24px 16px;
   background-color: #ffffff;
   border-radius: 16px;
+  @media ${Devices.tablet} {
+    margin-top: -32px;
+  }
 `;
 
 const InputArea = styled.div`
@@ -77,6 +98,10 @@ const Centerp = styled.p`
   text-align: center;
   font-size: 16px;
   margin-bottom: 4px;
+  //responsive
+  @media ${Devices.tablet} {
+    margin-bottom: 0;
+  }
 `;
 
 const Login = () => {
