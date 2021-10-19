@@ -51,7 +51,10 @@ const Servers = () => {
         server: _server,
       },
     ]);
-    setTimeout(() => setBooting(false), 10 * 1000);
+    setTimeout(() => {
+      setBooting(false);
+      setOpen(false);
+    }, 4 * 1000);
   };
 
   useEffect(() => {}, [servers]);
