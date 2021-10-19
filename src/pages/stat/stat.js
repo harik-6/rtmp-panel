@@ -120,8 +120,8 @@ const Stat = () => {
           count={tableData.length}
           rowsPerPage={pageSize}
           page={page}
-          onChangePage={(_, pagenumber) => setPage(pagenumber)}
-          onChangeRowsPerPage={(event) => setPageSize(event.target.value)}
+          onPageChange={(_, pagenumber) => setPage(pagenumber)}
+          onRowsPerPageChange={(event) => setPageSize(event.target.value)}
         />
         <ServerSelect
           serverNames={servers}
