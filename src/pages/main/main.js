@@ -8,6 +8,8 @@ import Users from "../users/users";
 import Login from "../login/login";
 import Profile from "../profile/profile";
 import Stat from "../stat/stat";
+import Servers from "../servers/server";
+
 
 // components
 import Appwrapper from "../../components/Appwrapper";
@@ -33,6 +35,7 @@ const Main = () => {
           <Route path="/profile" component={Profile} />
           <Route path="/stat" component={Stat} />
           {user.usertype !== "u" && <Route path="/users" component={Users} />}
+          {user.usertype !== "u" && <Route path="/servers" component={Servers} />}
           <Route path="" exact>
             {" "}
             <Redirect to="/home" />{" "}

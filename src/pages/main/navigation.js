@@ -8,7 +8,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
 // service
-import getNavigationComponent from "./navigation.config";
+import getNavigationComponent, { navIndex } from "./navigation.config";
 import Constants from "../../constants";
 import Devices from "../../Devices";
 
@@ -48,25 +48,8 @@ const Navigation = ({ user, name }) => {
 
   const _changeActiveTab = () => {
     const path = location.pathname;
-    switch (path) {
-      case "/home":
-        setActiveTab(1);
-        break;
-      case "/stat":
-        setActiveTab(2);
-        break;
-      case "/users":
-        setActiveTab(3);
-        break;
-      case "/profile":
-        setActiveTab(4);
-        break;
-      case "/logout":
-        setActiveTab(-1);
-        break;
-      default:
-        break;
-    }
+    const tabIndex = navIndex[path];
+    setActiveTab(tabIndex);
     return;
   };
 

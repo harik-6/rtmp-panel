@@ -4,6 +4,16 @@ import StatIcon from "@mui/icons-material/ShowChartOutlined";
 import UsersIcon from "@mui/icons-material/PeopleAltOutlined";
 import LogoutIcon from "@mui/icons-material/LogoutOutlined";
 import ProfileIcon from "@mui/icons-material/AccountCircleOutlined";
+import ServerIcon from '@mui/icons-material/Dns';
+
+const navIndex = {
+  "/home": 1,
+  "/stat": 2,
+  "/users": 3,
+  "/profile": 4,
+  "/servers": 5,
+  "/logout": -1,
+};
 
 const userNavigations = [
   {
@@ -46,6 +56,12 @@ const adminNavigations = [
     icon: <StatIcon />,
   },
   {
+    name: "Servers",
+    path: "/servers",
+    tabIndex: 5,
+    icon: <ServerIcon />,
+  },
+  {
     name: "Users",
     path: "/users",
     tabIndex: 3,
@@ -70,4 +86,5 @@ const getNavigationComponent = (usertype) => {
   return adminNavigations;
 };
 
+export { navIndex };
 export default getNavigationComponent;
