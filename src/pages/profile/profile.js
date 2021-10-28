@@ -1,12 +1,17 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import AppContext from "../../context/context";
+import Actions from "../../context/actions";
 
 // mui
 import Avatar from "@mui/material/Avatar";
 import Constants from "../../constants";
 import TxtField from "../../components/TxtField";
 import Button from "@mui/material/Button";
+
+// services
+import { editUserPersonalDetails } from "../../service/user.service";
+import { CircularProgress } from "@mui/material";
 
 // styled
 const UserProfile = styled.div`
@@ -48,8 +53,39 @@ const Name = styled.p`
 
 const Profile = () => {
   // store variable
-  const { store } = useContext(AppContext);
+  const { store, dispatch } = useContext(AppContext);
   const { user, users, channels, servers } = store;
+
+  //state variables
+  const [phone, setPhone] = useState(user.phone);
+  const [email, setEmail] = useState(user.email);
+  const [loading, setLoading] = useState(false);
+
+  const _editUser = async () => {
+    setLoading(true);
+    const payload = {
+      ...user,
+      phone,
+      email,
+    };
+    const edited = await editUserPersonalDetails(payload);
+    if (edited !== null) {
+      dispatch({
+        type: Actions.SET_USER,
+        payload,
+      });
+    } else {
+      dispatch({
+        type: Actions.SHOW_ALERT,
+        payload: {
+          type: Constants.alert_error,
+          message: "Server error",
+        },
+      });
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {}, [channels, servers, users, user]);
 
   // const avatarUrl = `https://avatars.dicebear.com/api/botts/${user.username}.svg`;
@@ -91,12 +127,14 @@ const Profile = () => {
           label="Name"
           name="username"
           value={user.username}
+          disabled={true}
         />
         <TxtField
           id="server"
           label="Server"
           name="server"
           value={user.server}
+          disabled={true}
         />
         {/* <TxtField
           id="limit"
@@ -104,16 +142,36 @@ const Profile = () => {
           name="limit"
           value={user.limit}
         /> */}
-        <TxtField id="phone" label="Phone" name="phone" value={user.phone} />
-        <TxtField id="email" label="Email" name="email" value={user.email} />
-        <Button
-          variant="contained"
-          color="primary"
-          disableElevation
-          sx={{ width: 100, marginLeft: "auto" }}
-        >
-          Save
-        </Button>
+        <TxtField
+          id="phone"
+          label="Phone"
+          name="phone"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          max={10}
+          disabled={loading}
+        />
+        <TxtField
+          id="email"
+          label="Email"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={loading}
+        />
+        {loading ? (
+          <CircularProgress sx={{ margin: "auto" }} />
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            disableElevation
+            sx={{ width: 100, margin: "auto" }}
+            onClick={_editUser}
+          >
+            Save
+          </Button>
+        )}
       </ProfileDetails>
     </UserProfile>
   );
