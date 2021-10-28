@@ -27,7 +27,6 @@ const UsersListDiv = styled.div`
   flex-direction: row;
   gap: 16px;
   flex-wrap: wrap;
-  justify-content: space-around;
 `;
 
 const Users = () => {
@@ -43,7 +42,7 @@ const Users = () => {
   const _loadUsers = async () => {
     setLoading(true);
     let usrs = await getAllUsers(user);
-    usrs.sort((a, b) => a.username.localeCompare(b.username));
+    usrs.sort((a, b) => a.server.localeCompare(b.server));
     dispatch({
       type: Actions.SET_USER_LIST,
       payload: usrs,
