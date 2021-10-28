@@ -125,6 +125,23 @@ const editUser = async (admin, editedUser, newpassword = "") => {
   }
 };
 
+const editUserPersonalDetails = async (user_to_edit) => {
+  try {
+    const body = {
+      user: _getEditUserPayload(user_to_edit, ""),
+      token: user_to_edit["token"],
+    };
+    const response = await axios.post(`${API}/edit`, body, {
+      headers: _headers(user_to_edit),
+    });
+    CacheService.remove(CACHEKEYS.FETCH_USERS);
+    if (response.data.status === "failed") return null;
+    return user_to_edit;
+  } catch (error) {
+    return null;
+  }
+};
+
 const deleteUser = async (admin, usertoDelete) => {
   try {
     await axios.post(
@@ -173,4 +190,5 @@ export {
   deleteUser,
   promoteDemoteAdmin,
   isUsernameAllowed,
+  editUserPersonalDetails,
 };
