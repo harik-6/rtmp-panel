@@ -25,7 +25,7 @@ const LoginPage = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
-  max-width: 1440px;
+  max-width: 1536px;
   margin: 1px auto;
   //responsive
   @media ${Devices.tablet} {

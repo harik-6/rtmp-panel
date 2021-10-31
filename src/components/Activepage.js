@@ -5,7 +5,7 @@ const Activepage = styled.div`
   overflow-x: hidden;
   margin: 1px auto;
   padding: 32px 32px 0 32px;
-  max-width: 1440px;
+  max-width: 1536px;
   background-color:smokewhite;
 `;
 
