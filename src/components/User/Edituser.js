@@ -12,6 +12,11 @@ import {
   CircularProgress,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 // components
 import TxtField from "../TxtField";
@@ -37,6 +42,9 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
     ...userToEdit,
   });
   const [password, setPassword] = useState("");
+  const [preview, setPreview] = useState(
+    userObj.access.indexOf("preview") !== -1
+  );
   const handleChange = (e) => {
     setUserObj({
       ...userObj,
@@ -78,8 +86,16 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
   const editExistingUser = async () => {
     setCreating(true);
     const isValid = await _validEntries();
+    let access = ["bitrate"];
+    if (preview) {
+      access.push("preview");
+    }
+    const _toEdit = {
+      ...userObj,
+      access,
+    };
     if (isValid) {
-      await editUser(user, userObj, password);
+      await editUser(user, _toEdit, password);
       closePopup();
       callback();
     }
@@ -143,6 +159,27 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
             error={_limiterr}
             helperText={_limiterr}
           />
+          <FormControl component="fieldset">
+            <FormLabel component="preview-legend">Preview URL</FormLabel>
+            <RadioGroup
+              row
+              aria-label="preview"
+              name="preview-radio-buttons-group"
+            >
+              <FormControlLabel
+                onChange={(_) => setPreview(true)}
+                checked={preview === true}
+                control={<Radio />}
+                label="Show"
+              />
+              <FormControlLabel
+                onChange={(_) => setPreview(false)}
+                checked={preview === false}
+                control={<Radio />}
+                label="Hide"
+              />
+            </RadioGroup>
+          </FormControl>
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

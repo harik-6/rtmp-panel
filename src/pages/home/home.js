@@ -67,11 +67,11 @@ const ChannelListDiv = styled.div`
 
   //responsive
   @media ${Devices.tablet} {
-    display:flex;
+    display: flex;
     flex-direction: row;
-    height:120px;
-    gap:16px;
-    overflow-x:scroll;
+    height: 120px;
+    gap: 16px;
+    overflow-x: scroll;
   }
 `;
 
@@ -227,7 +227,7 @@ const Home = () => {
                     />
                   </PlayerClipper>
                 </PlayerDiv>
-                <ChannelLinks channel={_selected} />
+                <ChannelLinks channel={_selected} access={user.access} />
               </CardContent>
             </Card>
           </DetailDiv>

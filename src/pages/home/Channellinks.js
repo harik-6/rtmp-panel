@@ -43,7 +43,8 @@ const links = [
   },
 ];
 
-const ChannelLinks = ({ channel }) => {
+const ChannelLinks = ({ channel, access }) => {
+  console.log(channel);
   const _onCopy = (text) => {
     navigator.clipboard.writeText(text).then(function () {
       //   setSnack(true);
@@ -66,6 +67,17 @@ const ChannelLinks = ({ channel }) => {
           </CopyDiv>
         );
       })}
+      {access.indexOf("preview") !== -1 && (
+        <CopyDiv key={"preview"}>
+          <div>
+            <Header>Preview URL</Header>
+            <Text>{channel?.preview}</Text>
+          </div>
+          <IconButton onClick={() => _onCopy(channel?.preview)}>
+            <CopyIcon fontSize="small" />
+          </IconButton>
+        </CopyDiv>
+      )}
     </Links>
   );
 };

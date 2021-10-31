@@ -25,6 +25,8 @@ const LoginPage = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
+  max-width: 1440px;
+  margin: 1px auto;
   //responsive
   @media ${Devices.tablet} {
     flex-direction: column;
@@ -38,7 +40,7 @@ const Left = styled.div`
 
   //responsive
   @media ${Devices.tablet} {
-    flex:2
+    flex: 2;
   }
 `;
 
@@ -77,10 +79,10 @@ const Right = styled.div`
   flex-direction: column;
   justify-content: center;
   background-color: rgba(5, 15, 102, 0.5);
-  
+
   //responsive
   @media ${Devices.tablet} {
-    flex:4;
+    flex: 4;
   }
 `;
 
