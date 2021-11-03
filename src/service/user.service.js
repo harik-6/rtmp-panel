@@ -21,6 +21,22 @@ const _getEditUserPayload = (editedUser, newpass) => {
   return editedUser;
 };
 
+const getUserDetails = async (authData) => {
+  const userResponse = await axios.post(
+    `${API}/get`,
+    {},
+    {
+      headers: _headers(authData.payload),
+    }
+  );
+  const userData = userResponse.data;
+  const user = userData.payload.user;
+  return {
+    ...user,
+    ...authData.payload,
+  };
+};
+
 const getUser = async (username, password) => {
   CacheService.clear();
   password = sha1(password);
@@ -31,19 +47,15 @@ const getUser = async (username, password) => {
     });
     const authData = authResponse.data;
     if (authData.status === "failed") return null;
-    const userResponse = await axios.post(
-      `${API}/get`,
-      {},
-      {
-        headers: _headers(authData.payload),
-      }
-    );
-    const userData = userResponse.data;
-    const user = userData.payload.user;
-    return {
-      ...user,
-      ...authData.payload,
-    };
+    let now = new Date();
+    now.setHours(now.getHours() + 2);
+    // now.setSeconds(now.getSeconds() + 10);
+    CacheService.set(CACHEKEYS.SESSION_AUTH_DATA, {
+      eat: now,
+      session: authData,
+    });
+    const userData = await getUserDetails(authData);
+    return userData;
   } catch (error) {
     return null;
   }
@@ -191,4 +203,5 @@ export {
   promoteDemoteAdmin,
   isUsernameAllowed,
   editUserPersonalDetails,
+  getUserDetails,
 };

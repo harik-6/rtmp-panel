@@ -38,9 +38,9 @@ const Apppanel = () => {
           <Switch>
             <Route exact path="/play/:channel" component={Preview} />
             <Route exact path="/login" component={Login} />
-            <Route exact path="/logout">
+            {/* <Route exact path="/logout">
               <Redirect to="/login" />{" "}
-            </Route>
+            </Route> */}
             <Route path="" component={Main} />
           </Switch>
         </Router>

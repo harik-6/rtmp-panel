@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import AppConext from "../../context/context";
-import CacheService from "../../service/cache.service";
 import Actions from "../../context/actions";
 
 // mui
@@ -15,10 +14,13 @@ import LockIcon from "@mui/icons-material/Lock";
 
 // components
 import TxtField from "../../components/TxtField";
+
 // services
-import { getUser } from "../../service/user.service";
+import { getUser, getUserDetails } from "../../service/user.service";
 import { getApp } from "./login.config";
+import CacheService from "../../service/cache.service";
 import Devices from "../../Devices";
+import CACHEKEYS from "../../cacheKeys";
 
 // styled
 const LoginPage = styled.div`
@@ -137,22 +139,41 @@ const Login = () => {
     setpassword(e.target.value);
   };
 
+  const _routeToHome = (_u) => {
+    if (_u === null) {
+      setloginin(false);
+      seterror(true);
+      return;
+    } else {
+      dispatch({
+        type: Actions.SET_USER,
+        payload: _u,
+      });
+      history.push("/");
+    }
+  };
+
   const _loginUser = async () => {
     if (username.length > 0 && password.length > 0) {
       setloginin(true);
       CacheService.clear();
       const user = await getUser(username, password);
-      if (user === null) {
-        setloginin(false);
-        seterror(true);
-        return;
-      } else {
-        dispatch({
-          type: Actions.SET_USER,
-          payload: user,
-        });
-        history.push("/");
-      }
+      _routeToHome(user);
+    }
+  };
+
+  const _isExpired = (_eat) => {
+    return new Date(_eat).valueOf() < new Date().valueOf();
+  };
+
+  const _checkAutoLogin = async () => {
+    setloginin(true);
+    const sessiondata = CacheService.get(CACHEKEYS.SESSION_AUTH_DATA);
+    if (sessiondata === null || _isExpired(sessiondata.eat)) {
+      setloginin(false);
+    } else {
+      const user = await getUserDetails(sessiondata.session);
+      _routeToHome(user);
     }
   };
 
@@ -172,6 +193,7 @@ const Login = () => {
 
   useEffect(() => {
     _setAppName();
+    _checkAutoLogin();
     // eslint-disable-next-line
   }, []);
 
@@ -209,6 +231,7 @@ const Login = () => {
                 label="Username"
                 value={username}
                 onChange={handleusername}
+                disabled={logingin}
               />
               <TxtField
                 variant="outlined"
@@ -217,6 +240,7 @@ const Login = () => {
                 type={showPass ? "text" : "password"}
                 value={password}
                 onChange={handlepass}
+                disabled={logingin}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">

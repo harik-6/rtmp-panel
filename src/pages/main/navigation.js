@@ -11,6 +11,7 @@ import Toolbar from "@mui/material/Toolbar";
 import getNavigationComponent, { navIndex } from "./navigation.config";
 import Constants from "../../constants";
 import Devices from "../../Devices";
+import CacheService from "../../service/cache.service";
 
 const Navlink = styled.div`
   display: flex;
@@ -49,6 +50,10 @@ const Navigation = ({ user, name }) => {
   const _changeActiveTab = () => {
     const path = location.pathname;
     const tabIndex = navIndex[path];
+    if (tabIndex === -1) {
+      CacheService.clear();
+      history.replace("/login");
+    }
     setActiveTab(tabIndex);
     return;
   };

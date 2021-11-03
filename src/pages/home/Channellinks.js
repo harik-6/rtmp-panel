@@ -44,7 +44,6 @@ const links = [
 ];
 
 const ChannelLinks = ({ channel, access }) => {
-  console.log(channel);
   const _onCopy = (text) => {
     navigator.clipboard.writeText(text).then(function () {
       //   setSnack(true);
