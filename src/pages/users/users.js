@@ -20,6 +20,7 @@ import {
   promoteDemoteAdmin,
 } from "../../service/user.service";
 import Actions from "../../context/actions";
+import { ButtonGroup, Stack } from "@mui/material";
 
 // styled
 const UsersListDiv = styled.div`
@@ -38,6 +39,7 @@ const Users = () => {
   const [_users, setUsers] = useState([]);
   const [_loading, setLoading] = useState(false);
   const [_opencreate, setOpencreate] = useState(false);
+  const [_sort, setSort] = useState("server");
 
   const _loadUsers = async () => {
     setLoading(true);
@@ -73,11 +75,39 @@ const Users = () => {
     return <Preloader message={"Loading users..."} />;
   }
 
+  let sortedUsers = _users;
+  if (_sort === "server") {
+    sortedUsers.sort((a, b) => a.server.localeCompare(b.server));
+  } else {
+    sortedUsers.sort((a, b) => a.username.localeCompare(b.username));
+  }
+
   return (
     <div>
       <UtilDiv>
-        <p></p>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <p style={{ fontSize: "18px" }}>Sort by: </p>
+          <ButtonGroup>
+            <Button
+              disableElevation
+              size="small"
+              variant={_sort === "server" ? "contained" : "outlined"}
+              onClick={() => setSort("server")}
+            >
+              server
+            </Button>
+            <Button
+              disableElevation
+              size="small"
+              variant={_sort === "user" ? "contained" : "outlined"}
+              onClick={() => setSort("user")}
+            >
+              user
+            </Button>
+          </ButtonGroup>
+        </Stack>
         <Button
+          disableElevation
           sx={{ marginLeft: "16px" }}
           size="small"
           variant="contained"
@@ -91,7 +121,7 @@ const Users = () => {
         <Nodata message={"You have not created users yet."} />
       ) : (
         <UsersListDiv>
-          {_users.map((u, index) => (
+          {sortedUsers.map((u, index) => (
             <Usercard
               key={index + "-" + u.username}
               user={u}
