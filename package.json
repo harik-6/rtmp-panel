@@ -43,5 +43,5 @@
     ]
   },
   "homepage": "/",
-  "proxy": "https://api.streamwell.in/api"
+  "proxy": "https://api.streamwell.in"
 }

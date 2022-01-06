@@ -1,8 +1,8 @@
 import axios from "axios";
 import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
-const API = `/channel`;
-const API_RTMP = `/rtmp`;
+const API = `/api/channel`;
+const API_RTMP = `/api/rtmp`;
 
 const changeRtmpStatus = async (channel, user) => {
   try {
