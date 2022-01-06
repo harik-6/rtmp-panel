@@ -2,13 +2,8 @@ import sha1 from "sha1";
 import axios from "axios";
 import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
-const API = `/api/user`;
-
-const _headers = (user) => {
-  return {
-    Authorization: `Bearer ${user.token}`,
-  };
-};
+const API = `/user`;
+// const API = "http://localhost:8000/api/user";
 
 const _getEditUserPayload = (editedUser, newpass) => {
   if (newpass.length !== 0) {
@@ -21,41 +16,26 @@ const _getEditUserPayload = (editedUser, newpass) => {
   return editedUser;
 };
 
-const getUserDetails = async (authData) => {
-  const userResponse = await axios.post(
-    `${API}/get`,
-    {},
-    {
-      headers: _headers(authData.payload),
-    }
-  );
-  const userData = userResponse.data;
-  const user = userData.payload.user;
-  return {
-    ...user,
-    ...authData.payload,
-  };
-};
-
 const getUser = async (username, password) => {
   CacheService.clear();
   password = sha1(password);
   try {
-    const authResponse = await axios.post(`${API}/auth`, {
-      username,
-      password,
+    const authResponse = await axios.get(`${API}`, {
+      headers: {
+        "x-header-authid": username,
+        "x-header-ticket": password,
+      },
     });
     const authData = authResponse.data;
     if (authData.status === "failed") return null;
-    let now = new Date();
-    now.setHours(now.getHours() + 2);
-    // now.setSeconds(now.getSeconds() + 10);
-    CacheService.set(CACHEKEYS.SESSION_AUTH_DATA, {
-      eat: now,
-      session: authData,
-    });
-    const userData = await getUserDetails(authData);
-    return userData;
+    // let now = new Date();
+    // now.setHours(now.getHours() + 2);
+    // // now.setSeconds(now.getSeconds() + 10);
+    // CacheService.set(CACHEKEYS.SESSION_AUTH_DATA, {
+    //   eat: now,
+    //   session: authData,
+    // });
+    return authData.payload;
   } catch (error) {
     return null;
   }
@@ -67,13 +47,7 @@ const getAllUsers = async (user) => {
     const cachkey = CACHEKEYS.FETCH_USERS;
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
-    const response = await axios.post(
-      `${API}/all`,
-      {},
-      {
-        headers: _headers(user),
-      }
-    );
+    const response = await axios.get(`${API}/${user["id"]}/users`);
     const data = response.data;
     if (data.payload.status === "failed") return [];
     CacheService.set(cachkey, data.payload);
@@ -83,69 +57,36 @@ const getAllUsers = async (user) => {
   }
 };
 
-const isUsernameAllowed = async (admin, username) => {
-  try {
-    await axios.post(
-      `${API}/namecheck/${username}`,
-      {},
-      {
-        headers: _headers(admin),
-      }
-    );
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
-
 const createUser = async (admin, newuser) => {
   try {
     const { password } = newuser;
     newuser["password"] = sha1(password);
-    const response = await axios.post(
-      `${API}/create`,
-      {
-        user: newuser,
-      },
-      {
-        headers: _headers(admin),
-      }
-    );
+    newuser["owner"] = admin["id"];
+    await axios.post(`${API}`, newuser);
     CacheService.remove(CACHEKEYS.FETCH_USERS);
-    const data = response.data;
-    return data.payload;
+    return "success";
   } catch (error) {
-    return null;
+    return "failed";
   }
 };
 
 const editUser = async (admin, editedUser, newpassword = "") => {
   try {
     editedUser["limit"] = parseInt(editedUser["limit"]);
-    const body = {
-      user: _getEditUserPayload(editedUser, newpassword),
-      token: editedUser["token"],
-    };
-    const response = await axios.post(`${API}/edit`, body, {
-      headers: _headers(admin),
-    });
+    const user = _getEditUserPayload(editedUser, newpassword);
+    delete user["usertype"];
+    await axios.put(`${API}`, user);
     CacheService.remove(CACHEKEYS.FETCH_USERS);
-    if (response.data.status === "failed") return null;
-    return editedUser;
+    return "success";
   } catch (error) {
-    return null;
+    return "failed";
   }
 };
 
 const editUserPersonalDetails = async (user_to_edit) => {
   try {
-    const body = {
-      user: _getEditUserPayload(user_to_edit, ""),
-      token: user_to_edit["token"],
-    };
-    const response = await axios.post(`${API}/edit`, body, {
-      headers: _headers(user_to_edit),
-    });
+    const user = _getEditUserPayload(user_to_edit, "");
+    const response = await axios.put(`${API}`, user);
     CacheService.remove(CACHEKEYS.FETCH_USERS);
     if (response.data.status === "failed") return null;
     return user_to_edit;
@@ -156,15 +97,7 @@ const editUserPersonalDetails = async (user_to_edit) => {
 
 const deleteUser = async (admin, usertoDelete) => {
   try {
-    await axios.post(
-      `${API}/delete`,
-      {
-        token: usertoDelete.token,
-      },
-      {
-        headers: _headers(admin),
-      }
-    );
+    await axios.delete(`${API}/${usertoDelete["id"]}`);
     CacheService.remove(CACHEKEYS.FETCH_USERS);
     return true;
   } catch (error) {
@@ -172,25 +105,16 @@ const deleteUser = async (admin, usertoDelete) => {
   }
 };
 
-const promoteDemoteAdmin = async (admin, status, token) => {
+const promoteDemoteAdmin = async (user) => {
   try {
-    const response = await axios.post(
-      `${API}/edit`,
-      {
-        user: {
-          admin: !status,
-        },
-        token,
-      },
-      {
-        headers: _headers(admin),
-      }
-    );
+    await axios.put(`${API}`, {
+      ...user,
+      admin: !user.admin,
+    });
     CacheService.remove(CACHEKEYS.FETCH_USERS);
-    if (response.data.status === "failed") return null;
-    return token;
+    return "success";
   } catch (error) {
-    return null;
+    return "failed";
   }
 };
 
@@ -201,7 +125,5 @@ export {
   editUser,
   deleteUser,
   promoteDemoteAdmin,
-  isUsernameAllowed,
   editUserPersonalDetails,
-  getUserDetails,
 };

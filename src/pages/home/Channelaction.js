@@ -63,7 +63,7 @@ const ChannelAction = ({ channel, health, user, callback }) => {
   };
 
   const _deleteChannel = async () => {
-    await deleteChannel(_toEdit, user);
+    await deleteChannel(_toEdit["id"]);
     _rebootAndCallback();
   };
 

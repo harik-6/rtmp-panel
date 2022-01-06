@@ -14,7 +14,7 @@ import {
 import Slide from "@mui/material/Slide";
 
 // services
-import { createUser, isUsernameAllowed } from "../../service/user.service";
+import { createUser } from "../../service/user.service";
 import TxtField from "../TxtField";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -49,11 +49,6 @@ const CreateNewUser = ({ open, onClose, callback }) => {
       setErr("Username cannot be empty");
       return false;
     }
-    const isNameValid = await isUsernameAllowed(user,username);
-    if (!isNameValid) {
-      setErr("Username already exists");
-      return false;
-    }
     return true;
   };
 
@@ -61,9 +56,13 @@ const CreateNewUser = ({ open, onClose, callback }) => {
     setCreating(true);
     const isValid = await _validEntries();
     if (isValid) {
-      await createUser(user, userObj);
-      onClose();
-      callback();
+      const status = await createUser(user, userObj);
+      if (status === "failed") {
+        setErr("Error in creating user");
+      } else {
+        onClose();
+        callback();
+      }
     }
     setCreating(false);
   };

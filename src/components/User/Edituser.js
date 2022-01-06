@@ -22,7 +22,7 @@ import FormLabel from "@mui/material/FormLabel";
 import TxtField from "../TxtField";
 
 // services
-import { editUser, isUsernameAllowed } from "../../service/user.service";
+import { editUser } from "../../service/user.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -37,7 +37,6 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
   const [_limiterr, setLimiterr] = useState(null);
-  const [_currentName, setCurrentName] = useState(userToEdit?.username);
   const [userObj, setUserObj] = useState({
     ...userToEdit,
   });
@@ -73,13 +72,6 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
         return false;
       }
     }
-    if (username !== _currentName) {
-      const isNameValid = await isUsernameAllowed(user, username);
-      if (!isNameValid) {
-        setErr("Username already exists");
-        return false;
-      }
-    }
     return true;
   };
 
@@ -95,9 +87,13 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
       access,
     };
     if (isValid) {
-      await editUser(user, _toEdit, password);
-      closePopup();
-      callback();
+      const status = await editUser(user, _toEdit, password);
+      if (status === "failed") {
+        setErr("Error in editing user");
+      } else {
+        closePopup();
+        callback();
+      }
     }
     setCreating(false);
   };
@@ -107,10 +103,6 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
     setErr(null);
     onClose();
   };
-
-  React.useEffect(() => {
-    setCurrentName(userToEdit?.username);
-  }, [userToEdit]);
   return (
     <Dialog
       open={open}

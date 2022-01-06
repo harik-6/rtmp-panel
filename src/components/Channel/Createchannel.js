@@ -18,10 +18,7 @@ import ServerSelect from "../Serverselect";
 import TxtField from "../TxtField";
 
 // services
-import {
-  createChannel,
-  isChannelnameAllowed,
-} from "../../service/channel.service";
+import { createChannel } from "../../service/channel.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -44,11 +41,6 @@ const CreateNewChannel = ({ open, onClose, callback }) => {
       setErr("Channel name cannot be empty");
       return false;
     }
-    const isNameValid = await isChannelnameAllowed(user, _name);
-    if (!isNameValid) {
-      setErr("Channel name already exists");
-      return false;
-    }
     return true;
   };
 
@@ -56,9 +48,13 @@ const CreateNewChannel = ({ open, onClose, callback }) => {
     setcreating(true);
     const isValid = await _validEntries();
     if (isValid) {
-      await createChannel(user, _name, _server);
-      onClose();
-      callback();
+      const status = await createChannel(user, _name, _server);
+      if (status === "failed") {
+        setErr("Error in creating channel");
+      } else {
+        onClose();
+        callback();
+      }
     }
     setcreating(false);
   };
@@ -95,7 +91,7 @@ const CreateNewChannel = ({ open, onClose, callback }) => {
             disabled={creating}
             onChange={(e) => setName(e.target.value)}
           />
-          {_err && <p style={{ color: "red" }}>Name already exists.</p>}
+          {_err && <p style={{ color: "red" }}>Error in creating channel.</p>}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

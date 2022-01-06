@@ -1,29 +1,13 @@
 import axios from "axios";
 import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
-const API = `/api/channel`;
-const API_RTMP = `/api/rtmp`;
-
-const _headers = (user) => {
-  return {
-    Authorization: `Bearer ${user.token}`,
-  };
-};
+const API = `/channel`;
+const API_RTMP = `/rtmp`;
 
 const changeRtmpStatus = async (channel, user) => {
   try {
-    const response = await axios.post(
-      `${API}/edit/status`,
-      {
-        channelid: channel["_id"],
-      },
-      {
-        headers: _headers(user),
-      }
-    );
-    const data = response.data;
+    await axios.put(`${API}/status/${channel["id"]}`);
     CacheService.remove(CACHEKEYS.FETCH_CHANNELS);
-    if (data.payload.status === "failed") return false;
     return true;
   } catch (error) {
     return false;
@@ -32,15 +16,7 @@ const changeRtmpStatus = async (channel, user) => {
 
 const getBitrateMedata = async (server, user) => {
   try {
-    const response = await axios.post(
-      `${API_RTMP}/stat`,
-      {
-        server,
-      },
-      {
-        headers: _headers(user),
-      }
-    );
+    const response = await axios.get(`${API_RTMP}/stat/${server}`);
     const data = response.data;
     let payload = null;
     if (data.status === "success") {
@@ -69,15 +45,9 @@ const getViews = async (servers = [], user) => {
     const cachkey = CACHEKEYS.FETCH_VIEW_COUNT;
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
-    const response = await axios.post(
-      `${API_RTMP}/view`,
-      {
-        servers: servers,
-      },
-      {
-        headers: _headers(user),
-      }
-    );
+    const response = await axios.post(`${API_RTMP}/view`, {
+      servers: servers,
+    });
     const data = response.data;
     if (data.status === "failed") return countmap;
     const countArray = data.payload;
@@ -101,15 +71,9 @@ const getHealth = async (servers = [], user) => {
     const cachkey = CACHEKEYS.FETCH_CHANNEL_HEALTH;
     const cachevalue = CacheService.get(cachkey);
     if (cachevalue !== null) return cachevalue;
-    const response = await axios.post(
-      `${API_RTMP}/health`,
-      {
-        servers: servers,
-      },
-      {
-        headers: _headers(user),
-      }
-    );
+    const response = await axios.post(`${API_RTMP}/health`, {
+      servers: servers,
+    });
     const data = response.data;
     if (data.status === "failed") return healthmap;
     const healthArray = data.payload;
@@ -124,29 +88,10 @@ const getHealth = async (servers = [], user) => {
   }
 };
 
-const getXmlData = async (server, user) => {
-  try {
-    const response = await axios.post(
-      `${API_RTMP}/stat`,
-      {
-        server,
-      },
-      {
-        headers: _headers(user),
-      }
-    );
-    const data = response.data;
-    if (data.status === "success") return data.payload;
-    return "";
-  } catch (error) {
-    return "";
-  }
-};
 export {
   changeRtmpStatus,
   rebootServer,
   getBitrateMedata,
   getHealth,
   getViews,
-  getXmlData,
 };

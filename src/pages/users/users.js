@@ -54,8 +54,8 @@ const Users = () => {
   };
 
   const _changeAdminStatus = async (_u) => {
-    const us = await promoteDemoteAdmin(user, _u.admin, _u.token);
-    if (us !== null) {
+    const us = await promoteDemoteAdmin(_u);
+    if (us === "success") {
       _loadUsers();
     }
   };

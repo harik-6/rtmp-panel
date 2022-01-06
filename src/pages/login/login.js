@@ -16,11 +16,11 @@ import LockIcon from "@mui/icons-material/Lock";
 import TxtField from "../../components/TxtField";
 
 // services
-import { getUser, getUserDetails } from "../../service/user.service";
+import { getUser } from "../../service/user.service";
 import { getApp } from "./login.config";
 import CacheService from "../../service/cache.service";
 import Devices from "../../Devices";
-import CACHEKEYS from "../../cacheKeys";
+// import CACHEKEYS from "../../cacheKeys";
 
 // styled
 const LoginPage = styled.div`
@@ -162,20 +162,20 @@ const Login = () => {
     }
   };
 
-  const _isExpired = (_eat) => {
-    return new Date(_eat).valueOf() < new Date().valueOf();
-  };
+  // const _isExpired = (_eat) => {
+  //   return new Date(_eat).valueOf() < new Date().valueOf();
+  // };
 
-  const _checkAutoLogin = async () => {
-    setloginin(true);
-    const sessiondata = CacheService.get(CACHEKEYS.SESSION_AUTH_DATA);
-    if (sessiondata === null || _isExpired(sessiondata.eat)) {
-      setloginin(false);
-    } else {
-      const user = await getUserDetails(sessiondata.session);
-      _routeToHome(user);
-    }
-  };
+  // const _checkAutoLogin = async () => {
+  //   setloginin(true);
+  //   const sessiondata = CacheService.get(CACHEKEYS.SESSION_AUTH_DATA);
+  //   if (sessiondata === null || _isExpired(sessiondata.eat)) {
+  //     setloginin(false);
+  //   } else {
+  //     const user = await getUserDetails(sessiondata.session);
+  //     _routeToHome(user);
+  //   }
+  // };
 
   const togglePassword = () => {
     setShowPass(!showPass);
@@ -193,7 +193,7 @@ const Login = () => {
 
   useEffect(() => {
     _setAppName();
-    _checkAutoLogin();
+    // _checkAutoLogin();
     // eslint-disable-next-line
   }, []);
 

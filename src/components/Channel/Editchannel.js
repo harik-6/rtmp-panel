@@ -15,10 +15,7 @@ import Slide from "@mui/material/Slide";
 import TxtField from "../TxtField";
 
 // services
-import {
-  isChannelnameAllowed,
-  editchannel,
-} from "../../service/channel.service";
+import { editchannel } from "../../service/channel.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -49,11 +46,6 @@ const EditChannel = ({ open, onClose, callback, channel }) => {
       setErr("Channel name cannot be empty");
       return false;
     }
-    const isNameValid = await isChannelnameAllowed(user, name);
-    if (!isNameValid) {
-      setErr("Channel name already exists");
-      return false;
-    }
     return true;
   };
 
@@ -61,9 +53,13 @@ const EditChannel = ({ open, onClose, callback, channel }) => {
     setcreating(true);
     const isValid = await _validEntries();
     if (isValid) {
-      await editchannel(chnl, user);
-      callback();
-      closeDialog();
+      const status = await editchannel(chnl, user);
+      if (status === "failed") {
+        setErr(true);
+      } else {
+        callback();
+        closeDialog();
+      }
     }
     setcreating(false);
   };
@@ -90,6 +86,7 @@ const EditChannel = ({ open, onClose, callback, channel }) => {
       <DialogTitle id="edit-channel-form-title">{"Edit channel"}</DialogTitle>
       <DialogContent sx={{ width: "350px" }}>
         <DialogContentText id="edit-channel-form-title-description">
+          {_err && <p style={{ color: "red" }}>Error in saving changes.</p>}
           <TxtField
             id="name"
             name="name"
@@ -98,7 +95,6 @@ const EditChannel = ({ open, onClose, callback, channel }) => {
             disabled={creating}
             onChange={handleChange}
           />
-          {_err && <p style={{ color: "red" }}>Name already exists.</p>}
           <TxtField
             id="key"
             name="key"
