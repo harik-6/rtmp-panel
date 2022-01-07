@@ -58,7 +58,7 @@ const deleteChannel = async (channelid) => {
 
 const getChannelDetailsByName = async (channelName) => {
   try {
-    const response = await axios.get(`${API}/detail?name=${channelName}`);
+    const response = await axios.get(`${API}/detail/${channelName}`);
     const data = response.data;
     if (data.status === "success") return data.payload;
     return null;
