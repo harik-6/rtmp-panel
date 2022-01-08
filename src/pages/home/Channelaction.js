@@ -12,7 +12,8 @@ import EditChannel from "../../components/Channel/Editchannel";
 
 // services
 import { deleteChannel } from "../../service/channel.service";
-import { rebootServer, changeRtmpStatus } from "../../service/rtmp.service";
+import { changeRtmpStatus } from "../../service/rtmp.service";
+import { rebootServer } from "../../service/server.service";
 
 const ActionDiv = styled.div`
   display: flex;
@@ -58,7 +59,7 @@ const ChannelAction = ({ channel, health, user, callback }) => {
   const [_toEdit, setToEdit] = useState(channel);
 
   const _rebootAndCallback = async () => {
-    await rebootServer([_toEdit]);
+    await rebootServer(_toEdit.server);
     callback();
   };
 

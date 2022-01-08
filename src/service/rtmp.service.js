@@ -28,17 +28,6 @@ const getBitrateMedata = async (server, user) => {
   }
 };
 
-const rebootServer = async (channellist) => {
-  const channel = channellist[0];
-  try {
-    const rebootUrl = `https://${channel.server}/sys_reboot`;
-    await axios.post(rebootUrl);
-    return;
-  } catch (error) {
-    return;
-  }
-};
-
 const getViews = async (servers = [], user) => {
   let countmap = {};
   try {
@@ -88,10 +77,4 @@ const getHealth = async (servers = [], user) => {
   }
 };
 
-export {
-  changeRtmpStatus,
-  rebootServer,
-  getBitrateMedata,
-  getHealth,
-  getViews,
-};
+export { changeRtmpStatus, getBitrateMedata, getHealth, getViews };
