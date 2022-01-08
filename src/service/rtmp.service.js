@@ -43,7 +43,7 @@ const getViews = async (servers = [], user) => {
     countArray.forEach((obj) => {
       const { rtmpCount, hlsCount, channelName } = obj;
       countmap[channelName] = {
-        rtmpCount,
+        rtmpCount: Math.min(rtmpCount - 1, 0),
         hlsCount,
       };
     });

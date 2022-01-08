@@ -66,7 +66,6 @@ const Servers = () => {
 
   const _loadAllServers = async () => {
     const ss = await getServers();
-    console.log(ss);
     setServers(ss);
     setActiveServer(ss[0]);
     _loadAllVersions(ss);
