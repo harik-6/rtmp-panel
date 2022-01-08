@@ -1,9 +1,7 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import AppContext from "../../context/context";
 
 // mui-components
-import CardContent from "@mui/material/CardContent";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -13,7 +11,6 @@ import TableRow from "@mui/material/TableRow";
 
 // components
 import Preloader from "../../components/Preloader";
-import WarningModal from "../../components/Warningmodal";
 
 // services
 import {
@@ -22,18 +19,12 @@ import {
   limitStatus,
   startLimit,
   stopLimit,
+  getVersion,
 } from "../../service/server.service";
-import TxtField from "../../components/TxtField";
-import axios from "axios";
+import EditServer from "../../components/Server/EditServer";
 
 // styled
 const ServersPage = styled.div``;
-
-const Content = styled(CardContent)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
 
 const Info = styled.p`
   opacity: 0.4;
@@ -53,19 +44,32 @@ const TableContainerStyled = styled(TableContainer)`
 const Domains = styled.p``;
 
 const Servers = () => {
-  // store variabled
-  const { store } = useContext(AppContext);
-  // const { servers } = store;
-
   // stat variabled
   const [servers, setServers] = useState([]);
-  const [_server, setServer] = useState("");
+  const [_activeServer, setActiveServer] = useState("");
   const [_booting, setBooting] = useState(false);
   const [_open, setOpen] = useState(false);
+  const [_vMap, setVMap] = useState({});
+
+  const _loadAllVersions = async (_slist) => {
+    let map = {};
+    for (let i = 0; i < _slist.length; i++) {
+      try {
+        const v = await getVersion(_slist[i].domains[0]);
+        map[_slist[i].ip] = v;
+      } catch (_) {
+        map[_slist[i].ip] = "N/A";
+      }
+      setVMap(map);
+    }
+  };
 
   const _loadAllServers = async () => {
     const ss = await getServers();
+    console.log(ss);
     setServers(ss);
+    setActiveServer(ss[0]);
+    _loadAllVersions(ss);
   };
 
   const _rebootServer = async (_sname) => {
@@ -77,22 +81,37 @@ const Servers = () => {
     }, 4 * 1000);
   };
 
-  const _startLimit = async (_sname, bwIn, bwOut, _sid, status) => {
+  const _limitStatus = async (_sid, _status) => {
     try {
-      await startLimit(_sname, bwIn, bwOut);
-      await limitStatus(_sid, status);
+      await limitStatus(_sid, _status);
+      _loadAllServers();
     } catch (_) {}
   };
 
-  const _stopLimit = async (_sname, _sid, status) => {
+  const _startLimit = async (_sname, bwIn, bwOut, _sid) => {
+    try {
+      await startLimit(_sname, bwIn, bwOut);
+      await _limitStatus(_sid, true);
+    } catch (_) {}
+  };
+
+  const _stopLimit = async (_sname, _sid) => {
     try {
       await stopLimit(_sname);
-      await limitStatus(_sid, status);
+      await _limitStatus(_sid, false);
     } catch (_) {}
+  };
+
+  const _editServer = async (_s) => {
+    setActiveServer(_s);
+    setTimeout(() => {
+      setOpen(true);
+    });
   };
 
   useEffect(() => {
     _loadAllServers();
+    // eslint-disable-next-line
   }, []);
 
   if (_booting) {
@@ -114,6 +133,7 @@ const Servers = () => {
             <TableCellStyled align="left">Bandwidth Out</TableCellStyled>
             <TableCellStyled align="left">Limited bandwidth</TableCellStyled>
             <TableCellStyled align="left">Domains</TableCellStyled>
+            <TableCellStyled align="left">Version</TableCellStyled>
             <TableCellStyled align="left">Actions</TableCellStyled>
           </TableRow>
           <TableBody>
@@ -122,22 +142,8 @@ const Servers = () => {
               return (
                 <TableRow key={s.ip + " " + index}>
                   <TableCellStyled align="left">{s.ip}</TableCellStyled>
-                  <TableCellStyled align="left">
-                    <TxtField
-                      id="bwIn"
-                      name="bwIn"
-                      value={s.bwIn}
-                      onChange={() => {}}
-                    />
-                  </TableCellStyled>
-                  <TableCellStyled align="left">
-                    <TxtField
-                      id="bwOut"
-                      name="bwOut"
-                      value={s.bwOut}
-                      onChange={() => {}}
-                    />
-                  </TableCellStyled>
+                  <TableCellStyled align="left">{s.bwIn}</TableCellStyled>
+                  <TableCellStyled align="left">{s.bwOut}</TableCellStyled>
                   <TableCellStyled align="left">
                     {s.isBwLimited ? "YES" : "NO"}
                   </TableCellStyled>
@@ -147,21 +153,16 @@ const Servers = () => {
                     ))}
                   </TableCellStyled>
                   <TableCellStyled align="left">
+                    {_vMap[s.ip] ?? "N/A"}
+                  </TableCellStyled>
+                  <TableCellStyled align="left">
                     <Stack direction="row" spacing={2}>
                       <Button
                         sx={{ textTransform: "none" }}
                         disableElevation
                         size="small"
                         variant="outlined"
-                        onClick={() => _rebootServer(_sname)}
-                      >
-                        Reboot
-                      </Button>
-                      <Button
-                        sx={{ textTransform: "none" }}
-                        disableElevation
-                        size="small"
-                        variant="outlined"
+                        disabled={s.isBwLimited}
                         onClick={() =>
                           _startLimit(
                             _sname,
@@ -178,17 +179,29 @@ const Servers = () => {
                         sx={{ textTransform: "none" }}
                         disableElevationsize="small"
                         variant="outlined"
+                        disabled={!s.isBwLimited}
                         onClick={() => _stopLimit(_sname, s.id, s.isBwLimited)}
                       >
                         Stop limit
                       </Button>
                       <Button
+                        onClick={() => _editServer(s)}
                         sx={{ textTransform: "none" }}
                         disableElevation
                         size="small"
                         variant="contained"
                       >
-                        Save
+                        Edit
+                      </Button>
+                      <Button
+                        sx={{ textTransform: "none" }}
+                        disableElevation
+                        size="small"
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => _rebootServer(_sname)}
+                      >
+                        Reboot
                       </Button>
                     </Stack>
                   </TableCellStyled>
@@ -198,11 +211,17 @@ const Servers = () => {
           </TableBody>
         </Table>
       </TableContainerStyled>
-      <WarningModal
+      <EditServer
         open={_open}
-        onClose={() => setOpen(false)}
-        message={`You sure you want to reboot ${_server} ?`}
-        onYes={_rebootServer}
+        server={_activeServer}
+        onClose={() => {
+          setActiveServer(_activeServer);
+          setOpen(false);
+        }}
+        callback={() => {
+          setOpen(false);
+          _loadAllServers();
+        }}
       />
     </ServersPage>
   );

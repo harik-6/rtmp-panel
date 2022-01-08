@@ -16,6 +16,16 @@ const getServers = async () => {
   }
 };
 
+const editServer = async (server) => {
+  try {
+    await axios.put(`${API}`, server);
+    CacheService.remove(CACHEKEYS.FETCH_SERVERS);
+    return "success";
+  } catch (error) {
+    return "failed";
+  }
+};
+
 const rebootServer = async (domain) => {
   try {
     await axios.post(`https://${domain}/api/restart`);
@@ -27,7 +37,8 @@ const rebootServer = async (domain) => {
 
 const limitStatus = async (serverid, status) => {
   try {
-    await axios.post(`${API}/bw/${serverid}?status=${status}`);
+    await axios.put(`${API}/bw/${serverid}?status=${status}`);
+    CacheService.remove(CACHEKEYS.FETCH_SERVERS);
     return;
   } catch (error) {
     return;
@@ -50,4 +61,21 @@ const stopLimit = async (_sname) => {
   } catch (_) {}
 };
 
-export { getServers, rebootServer, limitStatus, startLimit, stopLimit };
+const getVersion = async (_sname) => {
+  try {
+    const resp = await axios.get(`https://${_sname}/api/ping`);
+    return resp.data.payload.version;
+  } catch (_) {
+    return "N/A";
+  }
+};
+
+export {
+  getServers,
+  rebootServer,
+  limitStatus,
+  startLimit,
+  stopLimit,
+  editServer,
+  getVersion
+};
