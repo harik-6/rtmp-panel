@@ -49,9 +49,8 @@ const Servers = () => {
   const [_activeServer, setActiveServer] = useState("");
   const [_booting, setBooting] = useState(false);
   const [_open, setOpen] = useState(false);
-  const [_vMap, setVMap] = useState({});
 
-  const _loadAllVersions = async (_slist) => {
+  const _getAllVersions = async (_slist) => {
     let map = {};
     for (let i = 0; i < _slist.length; i++) {
       try {
@@ -60,15 +59,21 @@ const Servers = () => {
       } catch (_) {
         map[_slist[i].ip] = "N/A";
       }
-      setVMap(map);
     }
+    return map;
   };
 
   const _loadAllServers = async () => {
     const ss = await getServers();
-    setServers(ss);
+    const vmap = await _getAllVersions(ss);
+    const vmappeds = ss.map((s) => {
+      return {
+        ...s,
+        version: vmap[s.ip] ?? "N/A",
+      };
+    });
+    setServers(vmappeds);
     setActiveServer(ss[0]);
-    _loadAllVersions(ss);
   };
 
   const _rebootServer = async (_sname) => {
@@ -151,9 +156,7 @@ const Servers = () => {
                       <Domains>{d}</Domains>
                     ))}
                   </TableCellStyled>
-                  <TableCellStyled align="left">
-                    {_vMap[s.ip] ?? "N/A"}
-                  </TableCellStyled>
+                  <TableCellStyled align="left">{s.version}</TableCellStyled>
                   <TableCellStyled align="left">
                     <Stack direction="row" spacing={2}>
                       <Button

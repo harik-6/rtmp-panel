@@ -62,10 +62,16 @@ const stopLimit = async (_sname) => {
 };
 
 const getVersion = async (_sname) => {
+  const cachkey = CACHEKEYS.FETCH_SERVERS + _sname;
   try {
+    const cachevalue = CacheService.get(cachkey);
+    if (cachevalue !== null) return cachevalue;
     const resp = await axios.get(`https://${_sname}/api/ping`);
-    return resp.data.payload.version;
+    const version = resp.data.payload.version;
+    CacheService.set(cachkey, version);
+    return version;
   } catch (_) {
+    CacheService.set(cachkey, "N/A");
     return "N/A";
   }
 };
@@ -77,5 +83,5 @@ export {
   startLimit,
   stopLimit,
   editServer,
-  getVersion
+  getVersion,
 };
