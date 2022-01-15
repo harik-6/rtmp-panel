@@ -41,7 +41,6 @@ const TableContainerStyled = styled(TableContainer)`
   border-radius: 16px;
 `;
 
-const Domains = styled.p``;
 
 const Servers = () => {
   // stat variabled
@@ -54,7 +53,7 @@ const Servers = () => {
     let map = {};
     for (let i = 0; i < _slist.length; i++) {
       try {
-        const v = await getVersion(_slist[i].domains[0]);
+        const v = await getVersion(_slist[i].domain);
         map[_slist[i].ip] = v;
       } catch (_) {
         map[_slist[i].ip] = "N/A";
@@ -64,8 +63,9 @@ const Servers = () => {
   };
 
   const _loadAllServers = async () => {
-    const ss = await getServers();
+    let ss = await getServers();
     const vmap = await _getAllVersions(ss);
+    ss.sort((a,b) => a.ip.localeCompare(b.ip));
     const vmappeds = ss.map((s) => {
       return {
         ...s,
@@ -128,7 +128,7 @@ const Servers = () => {
 
   return (
     <ServersPage>
-      <Info>Tab on icon to reboot the server*.</Info>
+      <Info>Use action column to change server status*.</Info>
       <TableContainerStyled>
         <Table aria-label="channel-list">
           <TableRow>
@@ -136,13 +136,13 @@ const Servers = () => {
             <TableCellStyled align="left">Bandwidth IN</TableCellStyled>
             <TableCellStyled align="left">Bandwidth Out</TableCellStyled>
             <TableCellStyled align="left">Limited bandwidth</TableCellStyled>
-            <TableCellStyled align="left">Domains</TableCellStyled>
+            <TableCellStyled align="left">Domain</TableCellStyled>
             <TableCellStyled align="left">Version</TableCellStyled>
             <TableCellStyled align="left">Actions</TableCellStyled>
           </TableRow>
           <TableBody>
             {servers.map((s, index) => {
-              const _sname = s.domains[0];
+              const _sname = s.domain;
               return (
                 <TableRow key={s.ip + " " + index}>
                   <TableCellStyled align="left">{s.ip}</TableCellStyled>
@@ -151,11 +151,7 @@ const Servers = () => {
                   <TableCellStyled align="left">
                     {s.isBwLimited ? "YES" : "NO"}
                   </TableCellStyled>
-                  <TableCellStyled align="left">
-                    {s.domains.map((d) => (
-                      <Domains>{d}</Domains>
-                    ))}
-                  </TableCellStyled>
+                  <TableCellStyled align="left">{_sname}</TableCellStyled>
                   <TableCellStyled align="left">{s.version}</TableCellStyled>
                   <TableCellStyled align="left">
                     <Stack direction="row" spacing={2}>

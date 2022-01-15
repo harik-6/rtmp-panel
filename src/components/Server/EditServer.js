@@ -20,7 +20,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const blackListKey = ["id", "isBwLimited", "limit"];
+const blackListKey = ["id", "isBwLimited", "limit","domains","version"];
 
 const EditServer = ({ open, onClose, callback, server }) => {
   // state variables
