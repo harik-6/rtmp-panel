@@ -19,7 +19,6 @@ import {
   limitStatus,
   startLimit,
   stopLimit,
-  getVersion,
 } from "../../service/server.service";
 import EditServer from "../../components/Server/EditServer";
 
@@ -48,18 +47,18 @@ const Servers = () => {
   const [_booting, setBooting] = useState(false);
   const [_open, setOpen] = useState(false);
 
-  const _getAllVersions = async (_slist) => {
-    let map = {};
-    for (let i = 0; i < _slist.length; i++) {
-      try {
-        const v = await getVersion(_slist[i].domain);
-        map[_slist[i].ip] = v;
-      } catch (_) {
-        map[_slist[i].ip] = "N/A";
-      }
-    }
-    return map;
-  };
+  // const _getAllVersions = async (_slist) => {
+  //   let map = {};
+  //   for (let i = 0; i < _slist.length; i++) {
+  //     try {
+  //       const v = await getVersion(_slist[i].domain);
+  //       map[_slist[i].ip] = v;
+  //     } catch (_) {
+  //       map[_slist[i].ip] = "N/A";
+  //     }
+  //   }
+  //   return map;
+  // };
 
   const _loadAllServers = async () => {
     let ss = await getServers();
