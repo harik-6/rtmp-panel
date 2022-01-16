@@ -133,7 +133,8 @@ const Servers = () => {
             <TableCellStyled align="left">IP</TableCellStyled>
             <TableCellStyled align="left">Bandwidth IN</TableCellStyled>
             <TableCellStyled align="left">Bandwidth Out</TableCellStyled>
-            <TableCellStyled align="left">Limited bandwidth</TableCellStyled>
+            <TableCellStyled align="left">BW Status</TableCellStyled>
+            <TableCellStyled align="left">Auth Status</TableCellStyled>
             <TableCellStyled align="left">Domain</TableCellStyled>
             {/* <TableCellStyled align="left">Version</TableCellStyled> */}
             <TableCellStyled align="left">Actions</TableCellStyled>
@@ -147,7 +148,10 @@ const Servers = () => {
                   <TableCellStyled align="left">{s.bwIn}</TableCellStyled>
                   <TableCellStyled align="left">{s.bwOut}</TableCellStyled>
                   <TableCellStyled align="left">
-                    {s.isBwLimited ? "YES" : "NO"}
+                    {s.isBwEnabled ? "YES" : "NO"}
+                  </TableCellStyled>
+                  <TableCellStyled align="left">
+                    {s.isAuthEnabled ? "YES" : "NO"}
                   </TableCellStyled>
                   <TableCellStyled align="left">{_sname}</TableCellStyled>
                   {/* <TableCellStyled align="left">{s.version}</TableCellStyled> */}
