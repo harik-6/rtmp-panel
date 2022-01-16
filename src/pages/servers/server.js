@@ -8,6 +8,12 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import { Button, Stack } from "@mui/material";
 import TableRow from "@mui/material/TableRow";
+//icons
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
+
+import BwEnabled from "@mui/icons-material/HourglassEmptyOutlined";
+import BwDisabled from "@mui/icons-material/HourglassDisabledOutlined";
 
 // components
 import Preloader from "../../components/Preloader";
@@ -134,8 +140,8 @@ const Servers = () => {
             <TableCellStyled align="left">Bandwidth IN</TableCellStyled>
             <TableCellStyled align="left">Bandwidth Out</TableCellStyled>
             <TableCellStyled align="left">BW Status</TableCellStyled>
-            <TableCellStyled align="left">Auth Status</TableCellStyled>
             <TableCellStyled align="left">Domain</TableCellStyled>
+            <TableCellStyled align="left">Auth Status</TableCellStyled>
             {/* <TableCellStyled align="left">Version</TableCellStyled> */}
             <TableCellStyled align="left">Actions</TableCellStyled>
           </TableRow>
@@ -148,15 +154,33 @@ const Servers = () => {
                   <TableCellStyled align="left">{s.bwIn}</TableCellStyled>
                   <TableCellStyled align="left">{s.bwOut}</TableCellStyled>
                   <TableCellStyled align="left">
-                    {s.isBwEnabled ? "YES" : "NO"}
-                  </TableCellStyled>
-                  <TableCellStyled align="left">
-                    {s.isAuthEnabled ? "YES" : "NO"}
+                    {s.isBwEnabled ? (
+                      <BwEnabled sx={{ color: "green" }} />
+                    ) : (
+                      <BwDisabled sx={{ color: "red" }} />
+                    )}
                   </TableCellStyled>
                   <TableCellStyled align="left">{_sname}</TableCellStyled>
+                  <TableCellStyled align="left">
+                    {s.isAuthEnabled ? (
+                      <LockOutlinedIcon sx={{ color: "green" }} />
+                    ) : (
+                      <LockOpenOutlinedIcon sx={{ color: "red" }} />
+                    )}
+                  </TableCellStyled>
+
                   {/* <TableCellStyled align="left">{s.version}</TableCellStyled> */}
                   <TableCellStyled align="left">
                     <Stack direction="row" spacing={2}>
+                      <Button
+                        onClick={() => _editServer(s)}
+                        sx={{ textTransform: "none" }}
+                        disableElevation
+                        size="small"
+                        variant="contained"
+                      >
+                        Edit
+                      </Button>
                       <Button
                         sx={{ textTransform: "none" }}
                         disableElevation
@@ -184,15 +208,7 @@ const Servers = () => {
                       >
                         Stop limit
                       </Button>
-                      <Button
-                        onClick={() => _editServer(s)}
-                        sx={{ textTransform: "none" }}
-                        disableElevation
-                        size="small"
-                        variant="contained"
-                      >
-                        Edit
-                      </Button>
+
                       <Button
                         sx={{ textTransform: "none" }}
                         disableElevation
