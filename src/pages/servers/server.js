@@ -41,7 +41,6 @@ const TableContainerStyled = styled(TableContainer)`
   border-radius: 16px;
 `;
 
-
 const Servers = () => {
   // stat variabled
   const [servers, setServers] = useState([]);
@@ -64,15 +63,15 @@ const Servers = () => {
 
   const _loadAllServers = async () => {
     let ss = await getServers();
-    const vmap = await _getAllVersions(ss);
-    ss.sort((a,b) => a.ip.localeCompare(b.ip));
-    const vmappeds = ss.map((s) => {
-      return {
-        ...s,
-        version: vmap[s.ip] ?? "N/A",
-      };
-    });
-    setServers(vmappeds);
+    // const vmap = await _getAllVersions(ss);
+    ss.sort((a, b) => a.ip.localeCompare(b.ip));
+    // const vmappeds = ss.map((s) => {
+    //   return {
+    //     ...s,
+    //     version: vmap[s.ip] ?? "N/A",
+    //   };
+    // });
+    setServers(ss);
     setActiveServer(ss[0]);
   };
 
@@ -137,7 +136,7 @@ const Servers = () => {
             <TableCellStyled align="left">Bandwidth Out</TableCellStyled>
             <TableCellStyled align="left">Limited bandwidth</TableCellStyled>
             <TableCellStyled align="left">Domain</TableCellStyled>
-            <TableCellStyled align="left">Version</TableCellStyled>
+            {/* <TableCellStyled align="left">Version</TableCellStyled> */}
             <TableCellStyled align="left">Actions</TableCellStyled>
           </TableRow>
           <TableBody>
@@ -152,7 +151,7 @@ const Servers = () => {
                     {s.isBwLimited ? "YES" : "NO"}
                   </TableCellStyled>
                   <TableCellStyled align="left">{_sname}</TableCellStyled>
-                  <TableCellStyled align="left">{s.version}</TableCellStyled>
+                  {/* <TableCellStyled align="left">{s.version}</TableCellStyled> */}
                   <TableCellStyled align="left">
                     <Stack direction="row" spacing={2}>
                       <Button
