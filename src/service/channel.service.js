@@ -33,18 +33,18 @@ const createChannel = async (user, channelname, server) => {
 
 const getChannels = async (user) => {
   try {
-    const cachkey = CACHEKEYS.FETCH_CHANNELS;
-    const cachevalue = CacheService.get(cachkey);
-    if (cachevalue !== null) return cachevalue;
     const response = await axios.get(`${API}/${user.id}`);
     const data = response.data.payload || [];
     data.sort((a, b) => a.name.localeCompare(b.name));
-    CacheService.set(cachkey, data);
     return data;
   } catch (error) {
-    return null;
+    throw new Error(error.message);
   }
 };
+
+// const getChannels = (user) => {
+//   return axios.get(`${API}/${user.id}`);
+// };
 
 const deleteChannel = async (channelid) => {
   try {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { QueryClientProvider, QueryClient } from "react-query";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -23,23 +24,35 @@ const theme = createTheme({
   },
 });
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: Infinity,
+      staleTime: Infinity,
+      refetchOnMount: false,
+    },
+  },
+});
+
 const Apppanel = () => {
   if (maintanence) {
     return <MaintanencePage />;
   } else {
     return (
-      <AppState>
-        <Router>
-          <Switch>
-            <Route exact path="/play/:channel" component={Preview} />
-            <Route exact path="/login" component={Login} />
-            {/* <Route exact path="/logout">
+      <QueryClientProvider client={queryClient}>
+        <AppState>
+          <Router>
+            <Switch>
+              <Route exact path="/play/:channel" component={Preview} />
+              <Route exact path="/login" component={Login} />
+              {/* <Route exact path="/logout">
               <Redirect to="/login" />{" "}
             </Route> */}
-            <Route path="" component={Main} />
-          </Switch>
-        </Router>
-      </AppState>
+              <Route path="" component={Main} />
+            </Switch>
+          </Router>
+        </AppState>
+      </QueryClientProvider>
     );
   }
 };

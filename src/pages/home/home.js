@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
+import { useQuery } from "react-query";
 import styled from "styled-components";
 import AppContext from "../../context/context";
 
@@ -28,6 +29,8 @@ import { getViews, getHealth } from "../../service/rtmp.service";
 import Actions from "../../context/actions";
 import Constants from "../../constants";
 import Devices from "../../Devices";
+import KEYS from "../cachekey";
+// import { fetchChannels } from "../../queries/channel.queries";
 
 // styled
 const Page = styled.div`
@@ -87,28 +90,20 @@ const Home = () => {
   const { dispatch, store } = useContext(AppContext);
   const { user } = store;
 
-  // state variables
-  const [_channels, setChannels] = useState([]);
   const [_views, setViews] = useState({});
   const [_health, setHealth] = useState({});
-  const [_loading, setLoading] = useState(false);
   const [_selected, setSelected] = useState({});
-  const [_servers, setServers] = useState([]);
-  const [_filtered, setFiltered] = useState([]);
-  const [_selectedServer, setSelectedserver] = useState();
+  const [_server, setServer] = useState();
   const [_opencreate, setOpencreate] = useState(false);
 
-  const _setServers = (list = []) => {
-    let set = [...new Set(list.map((c) => c.server))];
-    set.sort();
-    setServers(set);
-    setSelectedserver("All");
-    dispatch({
-      type: Actions.SET_SERVER_LIST,
-      payload: set,
-    });
-    return set;
-  };
+  const { isLoading, data } = useQuery(
+    [KEYS.FETCH_CHANNELS, user],
+    async () => {
+      const d = await getChannels(user);
+      setServer(d[0].server);
+      return d;
+    }
+  );
 
   const _setViews = async (list = []) => {
     const views = await getViews(list, user);
@@ -118,31 +113,6 @@ const Home = () => {
   const _setHealth = async (list = []) => {
     const health = await getHealth(list, user);
     setHealth(health);
-  };
-
-  const _changeSeletedServer = (_s) => {
-    setSelectedserver(_s);
-    let fil = [];
-    fil = _channels.filter((c) => c.server === _s);
-    setFiltered(fil);
-    setSelected(fil[0]);
-  };
-
-  const _loadChannels = async () => {
-    setLoading(true);
-    let list = await getChannels(user);
-    list.sort((a, b) => a.name.localeCompare(b.name));
-    setChannels(list);
-    setSelected(list[0]);
-    setFiltered(list);
-    dispatch({
-      type: Actions.SET_CHANNEL_LIST,
-      payload: list,
-    });
-    const servers = _setServers(list);
-    await _setViews(servers);
-    await _setHealth(servers);
-    setLoading(false);
   };
 
   const _openCreateChannel = () => {
@@ -161,26 +131,25 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    _loadChannels();
-    // eslint-disable-next-line
-  }, [user]);
-
-  if (_loading) {
+  if (isLoading) {
     return <Preloader message={"Loading channels..."} />;
   }
+
+  const _servers = [...new Set(data.map((c) => c.server))];
+  const _filterServer = _server || _servers[0];
+  const _channels = data.filter((d) => d.server === _filterServer);
 
   return (
     <>
       <UtilDiv>
         <ServerSelect
           serverNames={_servers}
-          onSelect={_changeSeletedServer}
-          selectedServer={_selectedServer}
+          onSelect={setServer}
+          selectedServer={_filterServer}
           labelVisible={false}
         />
         <LegendDiv>
-          <ChannelNumbers channels={_filtered} health={_health} />
+          <ChannelNumbers channels={_channels} health={_health} />
           <Button
             sx={{ marginLeft: "16px" }}
             size="small"
@@ -192,12 +161,12 @@ const Home = () => {
           </Button>
         </LegendDiv>
       </UtilDiv>
-      {_filtered.length === 0 ? (
+      {_channels.length === 0 ? (
         <Nodata message={"You have not created channels."} />
       ) : (
         <Page>
           <ChannelListDiv className="channel-list-div">
-            {_filtered.map((c, index) => (
+            {_channels.map((c, index) => (
               <Channeltile
                 key={index + "-" + c.name}
                 selected={_selected?.name === c.name}
@@ -215,7 +184,7 @@ const Home = () => {
                   channel={_selected}
                   health={_health[_selected?.name]}
                   user={user}
-                  callback={() => _loadChannels()}
+                  callback={() => {}}
                 />
                 <PlayerDiv>
                   <PlayerClipper>
@@ -236,7 +205,7 @@ const Home = () => {
       <CreateNewChannel
         open={_opencreate}
         onClose={() => setOpencreate(false)}
-        callback={() => _loadChannels()}
+        callback={() => {}}
       />
     </>
   );
