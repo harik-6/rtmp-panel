@@ -22,7 +22,7 @@ import CreateNewChannel from "../../components/Channel/Createchannel";
 
 // services
 import { getChannels } from "../../service/channel.service";
-import { getViews, getHealth } from "../../service/rtmp.service";
+import { getViews } from "../../service/rtmp.service";
 
 // vars
 import Actions from "../../context/actions";
@@ -90,7 +90,6 @@ const Home = () => {
   // state variables
   const [_channels, setChannels] = useState([]);
   const [_views, setViews] = useState({});
-  const [_health, setHealth] = useState({});
   const [_loading, setLoading] = useState(false);
   const [_selected, setSelected] = useState({});
   const [_servers, setServers] = useState([]);
@@ -115,11 +114,6 @@ const Home = () => {
     setViews(views);
   };
 
-  const _setHealth = async (list = []) => {
-    const health = await getHealth(list, user);
-    setHealth(health);
-  };
-
   const _changeSeletedServer = (_s) => {
     setSelectedserver(_s);
     let fil = [];
@@ -141,7 +135,7 @@ const Home = () => {
     });
     const servers = _setServers(list);
     await _setViews(servers);
-    await _setHealth(servers);
+    // await _setHealth(servers);
     setLoading(false);
   };
 
@@ -180,7 +174,7 @@ const Home = () => {
           labelVisible={false}
         />
         <LegendDiv>
-          <ChannelNumbers channels={_filtered} health={_health} />
+          <ChannelNumbers channels={_filtered} health={_views} />
           <Button
             sx={{ marginLeft: "16px" }}
             size="small"
@@ -203,7 +197,7 @@ const Home = () => {
                 selected={_selected?.name === c.name}
                 channel={c}
                 view={_views[c.name]}
-                health={_health[c.name]}
+                health={_views[c.name]?.health}
                 onClick={() => setSelected(c)}
               />
             ))}
@@ -213,7 +207,7 @@ const Home = () => {
               <CardContent>
                 <ChannelAction
                   channel={_selected}
-                  health={_health[_selected?.name]}
+                  health={_views[_selected?.name]?.health}
                   user={user}
                   callback={() => _loadChannels()}
                 />

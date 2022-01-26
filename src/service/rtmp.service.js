@@ -43,10 +43,11 @@ const getViews = async (servers = [], user) => {
     if (data.status === "failed") return countmap;
     const countArray = data.payload;
     countArray.forEach((obj) => {
-      const { rtmp, hls, name } = obj;
+      const { rtmp, hls, name, health } = obj;
       countmap[name] = {
         rtmpCount: Math.max(rtmp - 1, 0),
-        hlsCount : hls,
+        hlsCount: hls,
+        health,
       };
     });
     CacheService.set(cachkey, countmap);

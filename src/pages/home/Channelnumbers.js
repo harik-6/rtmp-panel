@@ -24,7 +24,7 @@ const Count = styled.p`
 
 const ChannelNumbers = ({ channels, health }) => {
   const _countActive = () => {
-    return channels.filter((c) => health[c.name]).length;
+    return channels.filter((c) => health[c.name]?.health).length;
   };
   return (
     <Div>
