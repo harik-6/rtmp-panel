@@ -7,8 +7,6 @@ const Servers = () => {
   const { store } = useContext(AppContext);
   const { user, servers } = store;
 
-  console.log("servers from store", store);
-
   useEffect(() => {}, [user, servers]);
 
   if (user.usertype === "s") {
