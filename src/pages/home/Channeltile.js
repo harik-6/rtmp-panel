@@ -8,7 +8,6 @@ import Legend from "../../components/Legend";
 
 import Constants from "../../constants";
 
-
 const Name = styled.p`
   font-size: 15px;
   margin-bottom: 4px;
@@ -34,7 +33,6 @@ const Div = styled.div`
   font-size: 12px;
 `;
 
-
 const Channeltile = ({ channel, view, selected, health, onClick }) => {
   return (
     <Card
@@ -59,11 +57,11 @@ const Channeltile = ({ channel, view, selected, health, onClick }) => {
           </Div>
           <Div>
             <Legend type="rtmpcount" />
-            <p>{view?.rtmpCount}</p>
+            <p>{health ? view?.rtmpCount : 0}</p>
           </Div>
           <Div>
             <Legend type="hlscount" />
-            <p>{view?.hlsCount}</p>
+            <p>{health ? view?.hlsCount : 0}</p>
           </Div>
         </Indicators>
       </CardContent>

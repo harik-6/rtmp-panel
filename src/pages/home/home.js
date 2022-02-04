@@ -23,7 +23,7 @@ import CreateNewChannel from "../../components/Channel/Createchannel";
 
 // services
 import { getChannels } from "../../service/channel.service";
-import { getViews, getHealth } from "../../service/rtmp.service";
+import { getViews } from "../../service/rtmp.service";
 
 // vars
 import Actions from "../../context/actions";
@@ -172,7 +172,7 @@ const Home = () => {
                 selected={_selected?.name === c.name}
                 channel={c}
                 view={_views[c.name]}
-                health={_health[c.name]}
+                health={_views[c.name]?.health}
                 onClick={() => setSelected(c)}
               />
             ))}
@@ -182,7 +182,7 @@ const Home = () => {
               <CardContent>
                 <ChannelAction
                   channel={_selected}
-                  health={_health[_selected?.name]}
+                  health={_views[_selected?.name]?.health}
                   user={user}
                   callback={() => {}}
                 />
