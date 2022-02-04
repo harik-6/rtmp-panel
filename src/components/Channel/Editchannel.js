@@ -27,6 +27,7 @@ const blackListMap = {
 };
 
 const EditChannel = ({ open, onClose, callback, channel }) => {
+
   // store variables
   const { store } = useContext(AppContext);
   const { user } = store;

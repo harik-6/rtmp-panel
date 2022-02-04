@@ -119,7 +119,7 @@ const Usercard = ({ user, callback, onDelete, showAdmin, onChangeAdmin }) => {
             <div>
               {_renderName()}
               <Server>{user?.server}</Server>
-              <Limit>Channel limit : {user?.limit}</Limit>
+              {/* <Limit>Channel limit : {user?.limit}</Limit> */}
             </div>
           </DataDiv>
           <ActionDiv>

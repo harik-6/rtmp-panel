@@ -140,17 +140,6 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
             disabled={creating}
             onChange={handleChange}
           />
-          <TxtField
-            id="limit"
-            name="limit"
-            label="Limit"
-            value={userObj.limit}
-            type="number"
-            disabled={creating}
-            onChange={handleChange}
-            error={_limiterr}
-            helperText={_limiterr}
-          />
           <FormControl component="fieldset">
             <FormLabel component="preview-legend">Preview URL</FormLabel>
             <RadioGroup

@@ -125,8 +125,8 @@ const Login = () => {
     name: "",
     phone: "",
   });
-  const [username, setusername] = useState("admin@streamwell");
-  const [password, setpassword] = useState("@dm1n@$tream248well");
+  const [username, setusername] = useState("");
+  const [password, setpassword] = useState("");
   const [logingin, setloginin] = useState(false);
   const [error, seterror] = useState(false);
   const [showPass, setShowPass] = useState(false);

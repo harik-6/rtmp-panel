@@ -134,7 +134,10 @@ const ChannelAction = ({ channel, user, callback }) => {
       />
       <EditChannel
         open={_openedit}
-        onClose={() => setOpenedit(false)}
+        onClose={() => {
+          setToEdit(channel);
+          setOpenedit(false);
+        }}
         callback={callback}
         channel={_toEdit}
       />

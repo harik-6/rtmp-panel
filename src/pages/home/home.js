@@ -120,6 +120,10 @@ const Home = () => {
       type: Actions.SET_SERVER_LIST,
       payload: servers,
     });
+    dispatch({
+      type: Actions.SET_CHANNEL_LIST,
+      payload: data,
+    });
   };
 
   useEffect(() => {
@@ -212,7 +216,7 @@ const Home = () => {
       <CreateNewChannel
         open={_opencreate}
         onClose={() => setOpencreate(false)}
-        callback={() => {}}
+        callback={_fetchChannels}
       />
     </>
   );

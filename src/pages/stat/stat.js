@@ -111,6 +111,8 @@ const Stat = () => {
     return <Preloader message={"Loading statistics..."} />;
   }
 
+  console.log(tableData);
+
   return (
     <div>
       <TopDiv>
