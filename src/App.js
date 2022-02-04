@@ -24,35 +24,23 @@ const theme = createTheme({
   },
 });
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      cacheTime: Infinity,
-      staleTime: Infinity,
-      refetchOnMount: false,
-    },
-  },
-});
-
 const Apppanel = () => {
   if (maintanence) {
     return <MaintanencePage />;
   } else {
     return (
-      <QueryClientProvider client={queryClient}>
-        <AppState>
-          <Router>
-            <Switch>
-              <Route exact path="/play/:channel" component={Preview} />
-              <Route exact path="/login" component={Login} />
-              {/* <Route exact path="/logout">
+      <AppState>
+        <Router>
+          <Switch>
+            <Route exact path="/play/:channel" component={Preview} />
+            <Route exact path="/login" component={Login} />
+            {/* <Route exact path="/logout">
               <Redirect to="/login" />{" "}
             </Route> */}
-              <Route path="" component={Main} />
-            </Switch>
-          </Router>
-        </AppState>
-      </QueryClientProvider>
+            <Route path="" component={Main} />
+          </Switch>
+        </Router>
+      </AppState>
     );
   }
 };
