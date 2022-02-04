@@ -5,8 +5,6 @@ import AppContext from "../../context/context";
 // mui
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 
 // components
 import Channeltile from "./Channeltile";
@@ -18,7 +16,6 @@ import ChannelLinks from "./Channellinks";
 import ChannelNumbers from "./Channelnumbers";
 import Preloader from "../../components/Preloader";
 import Nodata from "../../components/Nodata";
-import CreateNewChannel from "../../components/Channel/Createchannel";
 
 // services
 import { getChannels } from "../../service/channel.service";
@@ -101,7 +98,6 @@ const Home = () => {
   const [_selected, setSelected] = useState(null);
   const [_server, setServer] = useState();
   const [_servers, setServersList] = useState([]);
-  const [_opencreate, setOpencreate] = useState(false);
   const [_loading, setLoading] = useState(true);
 
   const _fetchChannels = async () => {
@@ -152,15 +148,6 @@ const Home = () => {
         />
         <LegendDiv>
           <ChannelNumbers channels={_channels} />
-          <Button
-            sx={{ marginLeft: "16px" }}
-            size="small"
-            variant="contained"
-            endIcon={<AddIcon />}
-            onClick={() => setOpencreate(true)}
-          >
-            New Channel
-          </Button>
         </LegendDiv>
       </UtilDiv>
       {_channels.length === 0 ? (
@@ -209,11 +196,6 @@ const Home = () => {
           )}
         </Page>
       )}
-      <CreateNewChannel
-        open={_opencreate}
-        onClose={() => setOpencreate(false)}
-        callback={_fetchChannels}
-      />
     </>
   );
 };

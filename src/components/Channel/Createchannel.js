@@ -14,7 +14,7 @@ import {
 import Slide from "@mui/material/Slide";
 
 // components
-import ServerSelect from "../Serverselect";
+// import ServerSelect from "../Serverselect";
 import TxtField from "../TxtField";
 
 // services
@@ -24,16 +24,15 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const CreateNewChannel = ({ open, onClose, callback }) => {
+const CreateNewChannel = ({ open, onClose, callback, server }) => {
   // store variables
   const { store } = useContext(AppContext);
-  const { user, servers } = store;
+  const { user } = store;
 
   // state variables
   const [_name, setName] = useState("");
   const [creating, setcreating] = useState(false);
   const [_err, setErr] = useState(false);
-  const [_server, setSelectedServer] = useState(user.server);
 
   const _validEntries = async () => {
     setErr(null);
@@ -48,7 +47,7 @@ const CreateNewChannel = ({ open, onClose, callback }) => {
     setcreating(true);
     const isValid = await _validEntries();
     if (isValid) {
-      const status = await createChannel(user, _name, _server);
+      const status = await createChannel(user, _name, server);
       if (status === "failed") {
         setErr("Error in creating channel");
       } else {
@@ -79,10 +78,16 @@ const CreateNewChannel = ({ open, onClose, callback }) => {
       </DialogTitle>
       <DialogContent sx={{ width: "350px" }}>
         <DialogContentText id="create-channel-form-title-description">
-          <ServerSelect
+          {/* <ServerSelect
             selectedServer={_server}
             serverNames={servers}
             onSelect={setSelectedServer}
+          /> */}
+          <TxtField
+            id="_server"
+            label="Server"
+            value={server}
+            // onChange={(e) => setName(e.target.value)}
           />
           <TxtField
             id="_name"

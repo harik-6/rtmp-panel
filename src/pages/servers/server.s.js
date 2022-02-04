@@ -18,6 +18,7 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
 // components
 import Preloader from "../../components/Preloader";
+import CreateNewChannel from "../../components/Channel/Createchannel";
 
 // services
 import {
@@ -48,18 +49,20 @@ const TableContainerStyled = styled(TableContainer)`
   border-radius: 16px;
 `;
 
-const ServersS = () => {
+const ServersS = ({ map }) => {
   // stat variabled
-  const [servers, setServers] = useState([]);
+  const [servers, setServerList] = useState([]);
   const [_activeServer, setActiveServer] = useState("");
   const [_booting, setBooting] = useState(false);
   const [_open, setOpen] = useState(false);
   const [_new, setNew] = useState(false);
+  const [_opencreate, setOpencreate] = useState(false);
+  const [_server, setServer] = useState("");
 
   const _loadAllServers = async () => {
     let ss = await getServers();
     ss.sort((a, b) => a.ip.localeCompare(b.ip));
-    setServers(ss);
+    setServerList(ss);
     setActiveServer(ss[0]);
   };
 
@@ -101,7 +104,7 @@ const ServersS = () => {
   };
 
   const _deleteServer = async (_sid) => {
-    setServers([]);
+    setServerList([]);
     await deleteServer(_sid);
     _loadAllServers();
   };
@@ -127,6 +130,7 @@ const ServersS = () => {
           size="small"
           variant="contained"
           endIcon={<AddIcon />}
+          disableElevation
         >
           New Server
         </Button>
@@ -136,9 +140,10 @@ const ServersS = () => {
           <TableRow>
             <TableCellStyled align="left">IP</TableCellStyled>
             <TableCellStyled align="left">Domain</TableCellStyled>
-            <TableCellStyled align="left">Bandwidth IN</TableCellStyled>
-            <TableCellStyled align="left">Bandwidth Out</TableCellStyled>
+            {/* <TableCellStyled align="left">Bandwidth IN</TableCellStyled>
+            <TableCellStyled align="left">Bandwidth Out</TableCellStyled> */}
             <TableCellStyled align="left">Limit</TableCellStyled>
+            <TableCellStyled align="left"># Channels</TableCellStyled>
             <TableCellStyled align="left">BW Status</TableCellStyled>
             <TableCellStyled align="left">Secured</TableCellStyled>
             {/* <TableCellStyled align="left">Version</TableCellStyled> */}
@@ -148,13 +153,16 @@ const ServersS = () => {
           <TableBody>
             {servers.map((s, index) => {
               const _sname = s.domain;
+              const _limit = s.limit;
+              const _used = map[_sname] || "N/A";
               return (
                 <TableRow key={s.id + " " + index}>
                   <TableCellStyled align="left">{s.ip}</TableCellStyled>
                   <TableCellStyled align="left">{_sname}</TableCellStyled>
-                  <TableCellStyled align="left">{s.bwIn}</TableCellStyled>
-                  <TableCellStyled align="left">{s.bwOut}</TableCellStyled>
-                  <TableCellStyled align="left">{s.limit}</TableCellStyled>
+                  {/* <TableCellStyled align="left">{s.bwIn}</TableCellStyled> */}
+                  {/* <TableCellStyled align="left">{s.bwOut}</TableCellStyled> */}
+                  <TableCellStyled align="left">{_limit}</TableCellStyled>
+                  <TableCellStyled align="left">{_used}</TableCellStyled>
                   <TableCellStyled align="left">
                     {s.isBwEnabled ? (
                       <BwEnabled sx={{ color: "green" }} />
@@ -174,11 +182,24 @@ const ServersS = () => {
                   <TableCellStyled align="left">
                     <Stack direction="row" spacing={2}>
                       <Button
+                        sx={{ textTransform: "none" }}
+                        size="small"
+                        disableElevation
+                        disabled={_limit === _used}
+                        variant="outlined"
+                        onClick={() => {
+                          setServer(_sname);
+                          setOpencreate(true);
+                        }}
+                      >
+                        Add Channel
+                      </Button>
+                      <Button
                         onClick={() => _editServer(s)}
                         sx={{ textTransform: "none" }}
                         disableElevation
                         size="small"
-                        variant="contained"
+                        variant="outlined"
                       >
                         Edit
                       </Button>
@@ -186,7 +207,7 @@ const ServersS = () => {
                         sx={{ textTransform: "none" }}
                         disableElevation
                         size="small"
-                        variant="outlined"
+                        variant="contained"
                         disabled={s.isBwLimited}
                         onClick={() =>
                           _startLimit(
@@ -203,7 +224,7 @@ const ServersS = () => {
                       <Button
                         sx={{ textTransform: "none" }}
                         disableElevationsize="small"
-                        variant="outlined"
+                        variant="contained"
                         disabled={!s.isBwLimited}
                         onClick={() => _stopLimit(_sname, s.id, s.isBwLimited)}
                       >
@@ -254,6 +275,12 @@ const ServersS = () => {
           setNew(false);
           _loadAllServers();
         }}
+      />
+      <CreateNewChannel
+        open={_opencreate}
+        onClose={() => setOpencreate(false)}
+        callback={() => {}}
+        server={_server}
       />
     </ServersPage>
   );

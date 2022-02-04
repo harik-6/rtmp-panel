@@ -14,6 +14,7 @@ import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 
 // components
 import Preloader from "../../components/Preloader";
+import CreateNewChannel from "../../components/Channel/Createchannel";
 
 // services
 import {
@@ -40,11 +41,13 @@ const TableContainerStyled = styled(TableContainer)`
   border-radius: 16px;
 `;
 
-const ServersA = ({ servers }) => {
+const ServersA = ({ servers, map }) => {
   // stat variabled
   const [_booting, setBooting] = useState(false);
-  const [_servers, setServer] = useState([]);
+  const [_servers, setServerList] = useState([]);
   const [_loading, setLoading] = useState(false);
+  const [_opencreate, setOpencreate] = useState(false);
+  const [_server, setServer] = useState("");
 
   const _rebootServer = async (_sname) => {
     setBooting(true);
@@ -57,7 +60,7 @@ const ServersA = ({ servers }) => {
   const _fetchServerDetails = async (_s) => {
     setLoading(true);
     const s = await getServerDetailsByName(_s);
-    setServer(s);
+    setServerList(s);
     setLoading(false);
   };
 
@@ -81,6 +84,7 @@ const ServersA = ({ servers }) => {
           <TableRow>
             <TableCellStyled align="left">Domain</TableCellStyled>
             <TableCellStyled align="left">Limit</TableCellStyled>
+            <TableCellStyled align="left"># Channels</TableCellStyled>
             <TableCellStyled align="left">Status</TableCellStyled>
             <TableCellStyled align="left">Secured</TableCellStyled>
             {/* <TableCellStyled align="left">Version</TableCellStyled> */}
@@ -89,10 +93,13 @@ const ServersA = ({ servers }) => {
           <TableBody>
             {_servers.map((s, index) => {
               const _sname = s.domain;
+              const _limit = s.limit;
+              const _used = map[_sname] || "N/A";
               return (
                 <TableRow key={s + " " + index}>
                   <TableCellStyled align="left">{_sname}</TableCellStyled>
-                  <TableCellStyled align="left">{s.limit}</TableCellStyled>
+                  <TableCellStyled align="left">{_limit}</TableCellStyled>
+                  <TableCellStyled align="left">{_used}</TableCellStyled>
                   <TableCellStyled align="left">
                     <Legend type={"live"} />
                   </TableCellStyled>
@@ -107,6 +114,19 @@ const ServersA = ({ servers }) => {
                   {/* <TableCellStyled align="left">{s.version}</TableCellStyled> */}
                   <TableCellStyled align="left">
                     <Stack direction="row" spacing={2}>
+                      <Button
+                        sx={{ textTransform: "none" }}
+                        size="small"
+                        disableElevation
+                        disabled={_limit === _used}
+                        variant="outlined"
+                        onClick={() => {
+                          setServer(_sname);
+                          setOpencreate(true);
+                        }}
+                      >
+                        Add Channel
+                      </Button>
                       <Button
                         sx={{ textTransform: "none" }}
                         disableElevation
@@ -125,6 +145,12 @@ const ServersA = ({ servers }) => {
           </TableBody>
         </Table>
       </TableContainerStyled>
+      <CreateNewChannel
+        open={_opencreate}
+        onClose={() => setOpencreate(false)}
+        callback={() => {}}
+        server={_server}
+      />
     </ServersPage>
   );
 };
