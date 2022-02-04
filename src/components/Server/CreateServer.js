@@ -14,37 +14,31 @@ import Slide from "@mui/material/Slide";
 import TxtField from "../TxtField";
 
 // services
-import { editServer } from "../../service/server.service";
+import { createServer } from "../../service/server.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const blackListKey = ["id", "isBwLimited", "domains", "version"];
+const vars = ["domain", "ip", "limit"];
 
-const EditServer = ({ open, onClose, callback, server }) => {
+const CreateServer = ({ open, onClose, callback }) => {
   // state variables
-  const [chnl, setChnl] = useState(server);
+  const [serv, setserv] = useState({ domain: "", ip: "" });
   const [_err, setErr] = useState(false);
   const [creating, setcreating] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setChnl({
-      ...chnl,
+    setserv({
+      ...serv,
       [name]: value,
     });
   };
 
-  const _editChannel = async () => {
+  const _editserver = async () => {
     setcreating(true);
-    let domains = chnl.domains.toString();
-    const splitted = domains.split(",");
-    const toedit = {
-      ...chnl,
-      domains: splitted,
-    };
-    const status = await editServer(toedit);
+    const status = await createServer(serv);
     if (status === "success") {
       setcreating(false);
       callback();
@@ -61,9 +55,7 @@ const EditServer = ({ open, onClose, callback, server }) => {
     onClose();
   };
 
-  React.useEffect(() => {
-    setChnl(server);
-  }, [server]);
+  React.useEffect(() => {}, []);
 
   return (
     <Dialog
@@ -71,24 +63,22 @@ const EditServer = ({ open, onClose, callback, server }) => {
       TransitionComponent={Transition}
       keepMounted
       onClose={closeDialog}
-      aria-labelledby="create-channel-form"
+      aria-labelledby="create-server-form"
     >
-      <DialogTitle id="edit-channel-form-title">{"Edit Server"}</DialogTitle>
+      <DialogTitle id="edit-server-form-title">{"Edit Server"}</DialogTitle>
       <DialogContent sx={{ width: "350px" }}>
-        <DialogContentText id="edit-channel-form-title-description">
+        <DialogContentText id="edit-server-form-title-description">
           {_err && <p style={{ color: "red" }}>Error in saving changes.</p>}
-          {Object.keys(chnl)
-            .filter((k) => blackListKey.indexOf(k) === -1)
-            .map((k) => (
-              <TxtField
-                id={k}
-                name={k}
-                label={k}
-                value={chnl[k]}
-                disabled={creating}
-                onChange={handleChange}
-              />
-            ))}
+          {vars.map((k) => (
+            <TxtField
+              id={k}
+              name={k}
+              label={k}
+              value={serv[k]}
+              disabled={creating}
+              onChange={handleChange}
+            />
+          ))}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -98,7 +88,7 @@ const EditServer = ({ open, onClose, callback, server }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={_editChannel}
+          onClick={_editserver}
           variant="contained"
           color="primary"
           disableElevation
@@ -111,4 +101,4 @@ const EditServer = ({ open, onClose, callback, server }) => {
   );
 };
 
-export default EditServer;
+export default CreateServer;

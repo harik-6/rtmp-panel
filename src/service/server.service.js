@@ -16,9 +16,45 @@ const getServers = async () => {
   }
 };
 
+const getServerDetailsByName = async (list = []) => {
+  try {
+    const query = list.join(",");
+    const cachkey = CACHEKEYS.FETCH_SERVER_NAME + "-" + query;
+    const cachevalue = CacheService.get(cachkey);
+    if (cachevalue !== null) return cachevalue;
+    const response = await axios.get(`${API}/domain?name=${query}`);
+    const data = response.data.payload || [];
+    const filter = data.filter((d) => d !== null);
+    CacheService.set(cachkey, filter);
+    return filter;
+  } catch (error) {
+    return [];
+  }
+};
+
+const createServer = async (server) => {
+  try {
+    await axios.post(`${API}`, server);
+    CacheService.remove(CACHEKEYS.FETCH_SERVERS);
+    return "success";
+  } catch (error) {
+    return "failed";
+  }
+};
+
 const editServer = async (server) => {
   try {
     await axios.put(`${API}`, server);
+    CacheService.remove(CACHEKEYS.FETCH_SERVERS);
+    return "success";
+  } catch (error) {
+    return "failed";
+  }
+};
+
+const deleteServer = async (serverid) => {
+  try {
+    await axios.delete(`${API}/${serverid}`);
     CacheService.remove(CACHEKEYS.FETCH_SERVERS);
     return "success";
   } catch (error) {
@@ -61,21 +97,6 @@ const stopLimit = async (_sname) => {
   } catch (_) {}
 };
 
-const getVersion = async (_sname) => {
-  const cachkey = CACHEKEYS.FETCH_SERVERS + _sname;
-  try {
-    const cachevalue = CacheService.get(cachkey);
-    if (cachevalue !== null) return cachevalue;
-    const resp = await axios.get(`https://${_sname}/api/ping`);
-    const version = resp.data.payload.version;
-    CacheService.set(cachkey, version);
-    return version;
-  } catch (_) {
-    CacheService.set(cachkey, "N/A");
-    return "N/A";
-  }
-};
-
 export {
   getServers,
   rebootServer,
@@ -83,5 +104,7 @@ export {
   startLimit,
   stopLimit,
   editServer,
-  getVersion,
+  getServerDetailsByName,
+  createServer,
+  deleteServer,
 };

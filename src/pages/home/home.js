@@ -116,6 +116,10 @@ const Home = () => {
     setServersList(["All", ...servers]);
     setServer(servers[0]);
     setLoading(false);
+    dispatch({
+      type: Actions.SET_SERVER_LIST,
+      payload: servers,
+    });
   };
 
   useEffect(() => {
@@ -186,7 +190,7 @@ const Home = () => {
                   <ChannelAction
                     channel={_selected}
                     user={user}
-                    callback={() => {}}
+                    callback={_fetchChannels}
                   />
                   <PlayerDiv>
                     <PlayerClipper>

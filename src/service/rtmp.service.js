@@ -29,27 +29,4 @@ const getBitrateMedata = async (server, user) => {
   }
 };
 
-const getHealth = async (servers = [], user) => {
-  let healthmap = {};
-  try {
-    const cachkey = CACHEKEYS.FETCH_CHANNEL_HEALTH;
-    const cachevalue = CacheService.get(cachkey);
-    if (cachevalue !== null) return cachevalue;
-    const response = await axios.post(`${API_HEALTH}`, {
-      servers: servers,
-    });
-    const data = response.data;
-    if (data.status === "failed") return healthmap;
-    const healthArray = data.payload;
-    healthArray.forEach((obj) => {
-      const { name, health } = obj;
-      healthmap[name] = health;
-    });
-    CacheService.set(cachkey, healthmap);
-    return healthmap;
-  } catch (error) {
-    return healthmap;
-  }
-};
-
-export { changeRtmpStatus, getBitrateMedata, getHealth };
+export { changeRtmpStatus, getBitrateMedata };
