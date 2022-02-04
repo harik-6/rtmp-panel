@@ -14,6 +14,7 @@ import EditChannel from "../../components/Channel/Editchannel";
 import { deleteChannel } from "../../service/channel.service";
 import { changeRtmpStatus } from "../../service/rtmp.service";
 import { rebootServer } from "../../service/server.service";
+import { getViewsByChannel } from "../../service/view.service";
 
 const ActionDiv = styled.div`
   display: flex;
@@ -52,11 +53,20 @@ const Server = styled.p`
   opacity: 0.6;
 `;
 
-const ChannelAction = ({ channel, health, user, callback }) => {
+const ChannelAction = ({ channel, user, callback }) => {
   // state variables
   const [_openedit, setOpenedit] = useState(false);
   const [_opendelete, setOpendelete] = useState(false);
   const [_toEdit, setToEdit] = useState(channel);
+  const [_health, setHealth] = useState(false);
+
+  const _checkHealth = async () => {
+    const view = await getViewsByChannel({
+      name: channel.name,
+      hls: channel.hls,
+    });
+    setHealth(view.health);
+  };
 
   const _rebootAndCallback = async () => {
     await rebootServer(_toEdit.server);
@@ -74,7 +84,11 @@ const ChannelAction = ({ channel, health, user, callback }) => {
   };
 
   React.useEffect(() => {
-    setToEdit(channel);
+    if (channel?.name) {
+      setToEdit(channel);
+      _checkHealth(channel);
+    }
+    // eslint-disable-next-line
   }, [channel]);
 
   return (
@@ -85,8 +99,8 @@ const ChannelAction = ({ channel, health, user, callback }) => {
       </div>
       <Div>
         <Action>
-          <Legend type={health ? "live" : "idle"} />
-          <p>{health ? "Live" : "Idle"}</p>
+          <Legend type={_health ? "live" : "idle"} />
+          <p>{_health ? "Live" : "Idle"}</p>
         </Action>
         {user.usertype === "s" && (
           <Action onClick={() => setOpenedit(true)}>
@@ -100,17 +114,17 @@ const ChannelAction = ({ channel, health, user, callback }) => {
         </Action>
         {user.usertype === "s" && (
           <Action>
-          <FormControlLabel
-            control={
-              <Switch
-                onChange={_onOffChannel}
-                size="small"
-                checked={_toEdit.status}
-              />
-            }
-            label={_toEdit.status ? "On" : "Off"}
-          />
-        </Action>
+            <FormControlLabel
+              control={
+                <Switch
+                  onChange={_onOffChannel}
+                  size="small"
+                  checked={_toEdit.status}
+                />
+              }
+              label={_toEdit.status ? "On" : "Off"}
+            />
+          </Action>
         )}
       </Div>
       <WarningModal
@@ -121,7 +135,10 @@ const ChannelAction = ({ channel, health, user, callback }) => {
       />
       <EditChannel
         open={_openedit}
-        onClose={() => setOpenedit(false)}
+        onClose={() => {
+          setToEdit(channel);
+          setOpenedit(false);
+        }}
         callback={callback}
         channel={_toEdit}
       />

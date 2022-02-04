@@ -5,8 +5,6 @@ import AppContext from "../../context/context";
 // mui
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 
 // components
 import Channeltile from "./Channeltile";
@@ -18,15 +16,12 @@ import ChannelLinks from "./Channellinks";
 import ChannelNumbers from "./Channelnumbers";
 import Preloader from "../../components/Preloader";
 import Nodata from "../../components/Nodata";
-import CreateNewChannel from "../../components/Channel/Createchannel";
 
 // services
 import { getChannels } from "../../service/channel.service";
-import { getViews } from "../../service/rtmp.service";
 
 // vars
 import Actions from "../../context/actions";
-import Constants from "../../constants";
 import Devices from "../../Devices";
 
 // styled
@@ -82,81 +77,48 @@ const LegendDiv = styled.div`
   gap: 8px;
 `;
 
+const NoChannelSelected = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SelectChannelInfo = styled.p`
+  font-size: 22px;
+`;
+
 const Home = () => {
   // store variables
   const { dispatch, store } = useContext(AppContext);
   const { user } = store;
 
-  // state variables
-  const [_channels, setChannels] = useState([]);
-  const [_views, setViews] = useState({});
-  const [_loading, setLoading] = useState(false);
-  const [_selected, setSelected] = useState({});
-  const [_servers, setServers] = useState([]);
-  const [_filtered, setFiltered] = useState([]);
-  const [_selectedServer, setSelectedserver] = useState();
-  const [_opencreate, setOpencreate] = useState(false);
+  const [data, setData] = useState([]);
+  const [_selected, setSelected] = useState(null);
+  const [_server, setServer] = useState();
+  const [_servers, setServersList] = useState([]);
+  const [_loading, setLoading] = useState(true);
 
-  const _setServers = (list = []) => {
-    let set = [...new Set(list.map((c) => c.server))];
-    set.sort();
-    setServers(set);
-    setSelectedserver("All");
+  const _fetchChannels = async () => {
+    setLoading(true);
+    const { data, servers } = await getChannels(user);
+    setData(data);
+    setServersList(["All", ...servers]);
+    setServer(servers[0]);
+    setLoading(false);
     dispatch({
       type: Actions.SET_SERVER_LIST,
-      payload: set,
+      payload: servers,
     });
-    return set;
-  };
-
-  const _setViews = async (list = []) => {
-    const views = await getViews(list, user);
-    setViews(views);
-  };
-
-  const _changeSeletedServer = (_s) => {
-    setSelectedserver(_s);
-    let fil = [];
-    fil = _channels.filter((c) => c.server === _s);
-    setFiltered(fil);
-    setSelected(fil[0]);
-  };
-
-  const _loadChannels = async () => {
-    setLoading(true);
-    let list = await getChannels(user);
-    list.sort((a, b) => a.name.localeCompare(b.name));
-    setChannels(list);
-    setSelected(list[0]);
-    setFiltered(list);
     dispatch({
       type: Actions.SET_CHANNEL_LIST,
-      payload: list,
+      payload: data,
     });
-    const servers = _setServers(list);
-    await _setViews(servers);
-    // await _setHealth(servers);
-    setLoading(false);
-  };
-
-  const _openCreateChannel = () => {
-    const _ul = user.limit;
-    const _cl = _channels.length;
-    if (_cl >= _ul) {
-      dispatch({
-        type: Actions.SHOW_ALERT,
-        payload: {
-          type: Constants.alert_error,
-          message: "Error : Channel limit exceeded",
-        },
-      });
-    } else {
-      setOpencreate(true);
-    }
   };
 
   useEffect(() => {
-    _loadChannels();
+    _fetchChannels();
     // eslint-disable-next-line
   }, [user]);
 
@@ -164,74 +126,76 @@ const Home = () => {
     return <Preloader message={"Loading channels..."} />;
   }
 
+  const _filterServer = _server || "All";
+  let _channels = data;
+  if (_filterServer !== "All") {
+    _channels = data
+      .filter((d) => d.server === _filterServer)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
   return (
     <>
       <UtilDiv>
         <ServerSelect
           serverNames={_servers}
-          onSelect={_changeSeletedServer}
-          selectedServer={_selectedServer}
+          onSelect={(s) => {
+            setSelected(null);
+            setServer(s);
+          }}
+          selectedServer={_filterServer}
           labelVisible={false}
         />
         <LegendDiv>
-          <ChannelNumbers channels={_filtered} health={_views} />
-          <Button
-            sx={{ marginLeft: "16px" }}
-            size="small"
-            variant="contained"
-            endIcon={<AddIcon />}
-            onClick={_openCreateChannel}
-          >
-            New Channel
-          </Button>
+          <ChannelNumbers channels={_channels} />
         </LegendDiv>
       </UtilDiv>
-      {_filtered.length === 0 ? (
+      {_channels.length === 0 ? (
         <Nodata message={"You have not created channels."} />
       ) : (
         <Page>
           <ChannelListDiv className="channel-list-div">
-            {_filtered.map((c, index) => (
+            {_channels.map((c, index) => (
               <Channeltile
                 key={index + "-" + c.name}
                 selected={_selected?.name === c.name}
                 channel={c}
-                view={_views[c.name]}
-                health={_views[c.name]?.health}
                 onClick={() => setSelected(c)}
               />
             ))}
           </ChannelListDiv>
-          <DetailDiv>
-            <Card sx={{ borderRadius: "16px" }} elevation={0}>
-              <CardContent>
-                <ChannelAction
-                  channel={_selected}
-                  health={_views[_selected?.name]?.health}
-                  user={user}
-                  callback={() => _loadChannels()}
-                />
-                <PlayerDiv>
-                  <PlayerClipper>
-                    <ReactPlayer
-                      id="channel-preview-player"
-                      url={_selected?.hls}
-                      controls={true}
-                      playing={false}
-                    />
-                  </PlayerClipper>
-                </PlayerDiv>
-                <ChannelLinks channel={_selected} access={user.access} />
-              </CardContent>
-            </Card>
-          </DetailDiv>
+          {_selected === null ? (
+            <NoChannelSelected>
+              <SelectChannelInfo>
+                Select any channel from list to see Preview and Links
+              </SelectChannelInfo>
+            </NoChannelSelected>
+          ) : (
+            <DetailDiv>
+              <Card sx={{ borderRadius: "16px" }} elevation={0}>
+                <CardContent>
+                  <ChannelAction
+                    channel={_selected}
+                    user={user}
+                    callback={_fetchChannels}
+                  />
+                  <PlayerDiv>
+                    <PlayerClipper>
+                      <ReactPlayer
+                        id="channel-preview-player"
+                        url={_selected?.hls}
+                        controls={true}
+                        playing={false}
+                      />
+                    </PlayerClipper>
+                  </PlayerDiv>
+                  <ChannelLinks channel={_selected} access={user.access} />
+                </CardContent>
+              </Card>
+            </DetailDiv>
+          )}
         </Page>
       )}
-      <CreateNewChannel
-        open={_opencreate}
-        onClose={() => setOpencreate(false)}
-        callback={() => _loadChannels()}
-      />
     </>
   );
 };

@@ -31,12 +31,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const EditUser = ({ open, onClose, callback, userToEdit }) => {
   // store vaiable
   const { store } = useContext(AppContext);
-  const { user, channels } = store;
+  const { user } = store;
 
   // state variabled
   const [creating, setCreating] = useState(false);
   const [err, setErr] = useState(null);
-  const [_limiterr, setLimiterr] = useState(null);
   const [userObj, setUserObj] = useState({
     ...userToEdit,
   });
@@ -53,24 +52,10 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
 
   const _validEntries = async () => {
     setErr(null);
-    setLimiterr(null);
-    const { username, limit } = userObj;
+    const { username } = userObj;
     if (username.length === 0) {
       setErr("Username cannot be empty");
       return false;
-    }
-    if (limit <= 0) {
-      setLimiterr("Invalid limit");
-      return false;
-    }
-    if (user.usertype === "a") {
-      const consumed = +channels.length;
-      const max = +user.limit;
-      const _l = +limit;
-      if (consumed + _l > max) {
-        setLimiterr("Channel limit exceded");
-        return false;
-      }
     }
     return true;
   };
@@ -139,17 +124,6 @@ const EditUser = ({ open, onClose, callback, userToEdit }) => {
             value={userObj.server}
             disabled={creating}
             onChange={handleChange}
-          />
-          <TxtField
-            id="limit"
-            name="limit"
-            label="Limit"
-            value={userObj.limit}
-            type="number"
-            disabled={creating}
-            onChange={handleChange}
-            error={_limiterr}
-            helperText={_limiterr}
           />
           <FormControl component="fieldset">
             <FormLabel component="preview-legend">Preview URL</FormLabel>

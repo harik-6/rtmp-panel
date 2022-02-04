@@ -56,6 +56,12 @@ const adminNavigations = [
     icon: <StatIcon />,
   },
   {
+    name: "Servers",
+    path: "/servers",
+    tabIndex: 5,
+    icon: <ServerIcon />,
+  },
+  {
     name: "Users",
     path: "/users",
     tabIndex: 3,

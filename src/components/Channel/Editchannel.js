@@ -21,7 +21,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const blackListMap = {
+  id: true,
+  status: true,
+};
+
 const EditChannel = ({ open, onClose, callback, channel }) => {
+
   // store variables
   const { store } = useContext(AppContext);
   const { user } = store;
@@ -87,70 +93,18 @@ const EditChannel = ({ open, onClose, callback, channel }) => {
       <DialogContent sx={{ width: "350px" }}>
         <DialogContentText id="edit-channel-form-title-description">
           {_err && <p style={{ color: "red" }}>Error in saving changes.</p>}
-          <TxtField
-            id="name"
-            name="name"
-            label="Name"
-            value={chnl.name}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TxtField
-            id="key"
-            name="key"
-            label="Key"
-            value={chnl.key}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TxtField
-            id="server"
-            name="server"
-            label="Server"
-            value={chnl.server}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TxtField
-            id="stream"
-            name="stream"
-            label="Stream url"
-            value={chnl.stream}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TxtField
-            id="rtmp"
-            name="rtmp"
-            label="Rtmp play url"
-            value={chnl.rtmp}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TxtField
-            id="hls"
-            name="hls"
-            label="Hls play url"
-            value={chnl.hls}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TxtField
-            id="token"
-            name="token"
-            label="Token"
-            value={chnl.token}
-            disabled={creating}
-            onChange={handleChange}
-          />
-          <TxtField
-            id="preview"
-            name="preview"
-            label="Preview play url"
-            value={chnl.preview}
-            disabled={creating}
-            onChange={handleChange}
-          />
+          {Object.keys(chnl)
+            .filter((k) => !blackListMap[k])
+            .map((k) => (
+              <TxtField
+                id={k}
+                name={k}
+                label={k}
+                value={chnl[k]}
+                disabled={creating}
+                onChange={handleChange}
+              />
+            ))}
         </DialogContentText>
         {creating && (
           <div style={{ display: "flex", justifyContent: "center" }}>

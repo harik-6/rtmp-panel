@@ -26,9 +26,6 @@ const Server = styled.p`
   margin-bottom: 8px;
 `;
 
-const Limit = styled.p`
-  opacity: 0.6;8
-`;
 
 const DataDiv = styled.div`
   display: flex;
@@ -119,7 +116,7 @@ const Usercard = ({ user, callback, onDelete, showAdmin, onChangeAdmin }) => {
             <div>
               {_renderName()}
               <Server>{user?.server}</Server>
-              <Limit>Channel limit : {user?.limit}</Limit>
+              {/* <Limit>Channel limit : {user?.limit}</Limit> */}
             </div>
           </DataDiv>
           <ActionDiv>

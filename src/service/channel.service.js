@@ -1,6 +1,8 @@
 import axios from "axios";
 import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
+import { getViewsByServers } from "./view.service";
+
 const API = `/api/channel`;
 
 const _constructChannel = (user, channelname, server) => {
@@ -38,13 +40,21 @@ const getChannels = async (user) => {
     if (cachevalue !== null) return cachevalue;
     const response = await axios.get(`${API}/${user.id}`);
     const data = response.data.payload || [];
-    data.sort((a, b) => a.name.localeCompare(b.name));
-    CacheService.set(cachkey, data);
-    return data;
+    const servers = [...new Set(data.map((c) => c.server))];
+    servers.sort();
+    await getViewsByServers(servers);
+    return {
+      data,
+      servers,
+    };
   } catch (error) {
-    return null;
+    throw new Error(error.message);
   }
 };
+
+// const getChannels = (user) => {
+//   return axios.get(`${API}/${user.id}`);
+// };
 
 const deleteChannel = async (channelid) => {
   try {
