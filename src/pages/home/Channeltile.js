@@ -88,6 +88,7 @@ const ChannelTileContainer = ({ channel, selected, onClick }) => {
 
   useEffect(() => {
     _fetchView();
+    // eslint-disable-next-line
   }, []);
 
   return (

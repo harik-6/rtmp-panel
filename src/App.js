@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { QueryClientProvider, QueryClient } from "react-query";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";

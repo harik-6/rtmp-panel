@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useState } from "react";
-import { useQuery } from "react-query";
 import styled from "styled-components";
 import AppContext from "../../context/context";
 
@@ -23,14 +22,10 @@ import CreateNewChannel from "../../components/Channel/Createchannel";
 
 // services
 import { getChannels } from "../../service/channel.service";
-import { getViews } from "../../service/rtmp.service";
 
 // vars
 import Actions from "../../context/actions";
-import Constants from "../../constants";
 import Devices from "../../Devices";
-import KEYS from "../cachekey";
-// import { fetchChannels } from "../../queries/channel.queries";
 
 // styled
 const Page = styled.div`
@@ -128,6 +123,7 @@ const Home = () => {
 
   useEffect(() => {
     _fetchChannels();
+    // eslint-disable-next-line
   }, [user]);
 
   if (_loading) {

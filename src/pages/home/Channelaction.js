@@ -88,6 +88,7 @@ const ChannelAction = ({ channel, user, callback }) => {
       setToEdit(channel);
       _checkHealth(channel);
     }
+    // eslint-disable-next-line
   }, [channel]);
 
   return (

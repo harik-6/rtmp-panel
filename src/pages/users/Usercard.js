@@ -26,9 +26,6 @@ const Server = styled.p`
   margin-bottom: 8px;
 `;
 
-const Limit = styled.p`
-  opacity: 0.6;8
-`;
 
 const DataDiv = styled.div`
   display: flex;

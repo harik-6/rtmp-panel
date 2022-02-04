@@ -39,6 +39,7 @@ const ChannelNumbers = ({ channels }) => {
 
   React.useEffect(() => {
     _countHealthyChannels();
+    // eslint-disable-next-line
   }, [channels]);
 
   return (

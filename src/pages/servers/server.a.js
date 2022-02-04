@@ -43,7 +43,6 @@ const TableContainerStyled = styled(TableContainer)`
 const ServersA = ({ servers }) => {
   // stat variabled
   const [_booting, setBooting] = useState(false);
-  const [_open, setOpen] = useState(false);
   const [_servers, setServer] = useState([]);
   const [_loading, setLoading] = useState(false);
 
@@ -52,7 +51,6 @@ const ServersA = ({ servers }) => {
     await rebootServer(_sname);
     setTimeout(() => {
       setBooting(false);
-      setOpen(false);
     }, 4 * 1000);
   };
 

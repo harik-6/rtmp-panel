@@ -3,7 +3,6 @@ import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `/api/channel`;
 const API_RTMP = `/api/rtmp`;
-const API_HEALTH = `/api/health`;
 
 const changeRtmpStatus = async (channel, user) => {
   try {
