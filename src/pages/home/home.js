@@ -127,11 +127,9 @@ const Home = () => {
   }
 
   const _filterServer = _server || "All";
-  let _channels = data;
+  let _channels = data.sort((a, b) => a.name.localeCompare(b.name));
   if (_filterServer !== "All") {
-    _channels = data
-      .filter((d) => d.server === _filterServer)
-      .sort((a, b) => a.name.localeCompare(b.name));
+    _channels = data.filter((d) => d.server === _filterServer);
   }
 
   return (
