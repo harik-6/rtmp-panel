@@ -112,20 +112,18 @@ const ChannelAction = ({ channel, user, callback }) => {
           <DeleteIcon />
           <p>Delete</p>
         </Action>
-        {user.usertype === "s" && (
-          <Action>
-            <FormControlLabel
-              control={
-                <Switch
-                  onChange={_onOffChannel}
-                  size="small"
-                  checked={_toEdit.status}
-                />
-              }
-              label={_toEdit.status ? "On" : "Off"}
-            />
-          </Action>
-        )}
+        <Action>
+          <FormControlLabel
+            control={
+              <Switch
+                onChange={_onOffChannel}
+                size="small"
+                checked={_toEdit.status}
+              />
+            }
+            label={_toEdit.status ? "On" : "Off"}
+          />
+        </Action>
       </Div>
       <WarningModal
         open={_opendelete}
