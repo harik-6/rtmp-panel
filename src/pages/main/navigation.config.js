@@ -29,6 +29,12 @@ const userNavigations = [
     icon: <StatIcon />,
   },
   {
+    name: "Servers",
+    path: "/servers",
+    tabIndex: 5,
+    icon: <ServerIcon />,
+  },
+  {
     name: "Profile",
     path: "/profile",
     tabIndex: 4,
