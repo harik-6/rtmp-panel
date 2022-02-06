@@ -38,11 +38,10 @@ const EditServer = ({ open, onClose, callback, server }) => {
 
   const _editChannel = async () => {
     setcreating(true);
-    let domains = chnl.domains.toString();
-    const splitted = domains.split(",");
+    // let domains = chnl.domains.toString();
+    // const splitted = domains.split(",");
     const toedit = {
       ...chnl,
-      domains: splitted,
     };
     const status = await editServer(toedit);
     if (status === "success") {
