@@ -118,7 +118,7 @@ const ServersA = ({ servers, map }) => {
                         sx={{ textTransform: "none" }}
                         size="small"
                         disableElevation
-                        disabled={_limit === _used}
+                        disabled={_used >= _limit}
                         variant="outlined"
                         onClick={() => {
                           setServer(_sname);
