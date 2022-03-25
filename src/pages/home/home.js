@@ -109,7 +109,7 @@ const Home = () => {
     setLoading(false);
     dispatch({
       type: Actions.SET_SERVER_LIST,
-      payload: servers,
+      payload: [...new Set([...servers,user.server])],
     });
     dispatch({
       type: Actions.SET_CHANNEL_LIST,
