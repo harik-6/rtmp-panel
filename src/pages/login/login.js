@@ -60,6 +60,8 @@ const Name = styled.p`
   font-weight: bold;
   font-size: 80px;
   margin-top: -32px;
+  padding-bottom:32px;
+  margin-left:-2px;
   //responsive
   @media ${Devices.tablet} {
     font-size: 40px;
