@@ -23,9 +23,9 @@ const getApp = (location) => {
       phone: "+91 70757 57910",
     };
   }
-  if (location.includes("sscloud")) {
+  if (location.includes("sscloud7")) {
     return {
-      name: "SS Cloud",
+      name: "Cloud7",
       phone: "+91 96009 69006",
     };
   }
