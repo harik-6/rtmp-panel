@@ -2,6 +2,7 @@ import axios from "axios";
 import CacheService from "./cache.service";
 import CACHEKEYS from "../cacheKeys";
 const API = `/api/server`;
+const API_SSH = `/api/ssh`;
 
 const getServers = async () => {
   try {
@@ -64,7 +65,7 @@ const deleteServer = async (serverid) => {
 
 const rebootServer = async (domain) => {
   try {
-    await axios.post(`https://${domain}/api/restart`);
+    await axios.post(`${API_SSH}/restart?domain=${domain}`);
     return;
   } catch (error) {
     return;
@@ -87,14 +88,14 @@ const startLimit = async (_sname, bwIn, bwOut) => {
       `https://${_sname}/api/bw/start?bwin=${bwIn}&bwout=${bwOut}`
     );
     return;
-  } catch (_) {}
+  } catch (_) { }
 };
 
 const stopLimit = async (_sname) => {
   try {
     await axios.post(`https://${_sname}/api/bw/stop`);
     return;
-  } catch (_) {}
+  } catch (_) { }
 };
 
 export {
