@@ -98,6 +98,14 @@ const stopLimit = async (_sname) => {
   } catch (_) { }
 };
 
+const syncIps = async () => {
+  try {
+    await axios.post(`${API}/sync-ip`);
+    CacheService.remove(CACHEKEYS.FETCH_SERVERS);
+    return;
+  } catch (_) { }
+}
+
 export {
   getServers,
   rebootServer,
@@ -108,4 +116,5 @@ export {
   getServerDetailsByName,
   createServer,
   deleteServer,
+  syncIps
 };

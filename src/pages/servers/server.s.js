@@ -14,6 +14,7 @@ import TableRow from "@mui/material/TableRow";
 // import BwEnabled from "@mui/icons-material/HourglassEmptyOutlined";
 // import BwDisabled from "@mui/icons-material/HourglassDisabledOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import SyncIcon from '@mui/icons-material/Sync';
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
 // components
@@ -28,6 +29,7 @@ import {
   // startLimit,
   // stopLimit,
   deleteServer,
+  syncIps
 } from "../../service/server.service";
 import EditServer from "../../components/Server/EditServer";
 import CreateServer from "../../components/Server/CreateServer";
@@ -38,6 +40,9 @@ const ServersPage = styled.div``;
 const Info = styled.p`
   text-align: right;
   margin-bottom: 8px;
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
 `;
 
 const TableCellStyled = styled(TableCell)`
@@ -122,6 +127,12 @@ const ServersS = ({ map }) => {
     return true;
   }
 
+  const _syncIpAndServers = async () => {
+    setServerList([]);
+    await syncIps();
+    _loadAllServers();
+  }
+
 
   useEffect(() => {
     _loadAllServers();
@@ -150,6 +161,15 @@ const ServersS = ({ map }) => {
           disableElevation
         >
           New Server
+        </Button>
+        <Button
+          onClick={_syncIpAndServers}
+          size="small"
+          variant="contained"
+          endIcon={<SyncIcon />}
+          disableElevation
+        >
+          Sync IP
         </Button>
       </Info>
       <TableContainerStyled>
